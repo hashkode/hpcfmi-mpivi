@@ -1,0 +1,54 @@
+# Build, Release, Debug Folders etc.
+**/[Dd]oc
+**/[Bb]uild*
+**/[Ii]nstall*
+**/[Rr]elease*
+**/[Dd]ebug*
+**/trash
+**/tmp
+**/__pycache__
+**/.pytest_cache
+**/*.egg-info
+
+# Different files from compiling (if not located in directories mentioned above)
+*.o
+*.exe
+*.so
+*.a
+
+# Computer specific IDE settings
+*.user
+**/.vs
+**/.idea
+
+# Binary data files
+*.npy
+*.npz
+*.pyc
+*.pickle
+*.mat
+
+# Latex build files
+_minted-*/
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.bbl
+*.blg
+*.tdo
+*.nav
+*.snm
+*.toc
+*.vrb
+*.sfp
+*.sfr
+#*.pdf
+
+# OS specific files and folders
+*~
+**/.DS_Store
+**/__MACOSX
+
+# Other files
+*.lnk
