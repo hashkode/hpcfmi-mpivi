@@ -9,6 +9,7 @@
 **/__pycache__
 **/.pytest_cache
 **/*.egg-info
+cmake-*
 
 # Different files from compiling (if not located in directories mentioned above)
 *.o
