@@ -5,7 +5,6 @@ all:
 	@echo "This is a dummy to prevent running make without explicit target!"
 
 clean:
-	$(MAKE) -C lib/ clean
 	rm -rf doc
 	rm -rf build* debug* release*
 	rm -f CMakeLists.txt.user
@@ -20,7 +19,10 @@ compile: clean
 	mkdir -p build/
 	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release ..
 	$(MAKE) -C build/
-	$(MAKE) -C build/ install
+
+test: compile
+	cd build/
+	./test.sh
 
 pack: clean
 	rm -f $(TARNAME)

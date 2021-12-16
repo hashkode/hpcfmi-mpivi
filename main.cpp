@@ -5,7 +5,8 @@
 #include <cmath>
 #include <chrono>
 
-#include "Simulator.h"
+#include "simulator.h"
+#include "npy.hpp"
 
 // start of sample code from HPCfMI lecture
 template<typename T>
@@ -97,7 +98,7 @@ Parameters load_parameters(const std::string &path, const std::string &filename)
 // end of sample code from HPCfMI lecture
 
 int main(int argc, char *argv[]) {
-    const std::string path = "../../../data/data_normal/cpp/";
+    const std::string path = "../data/data_normal/cpp/";
 
     Parameters p = load_parameters(path, "params.txt");
 
