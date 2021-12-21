@@ -6,6 +6,7 @@ all:
 
 clean:
 	$(MAKE) -C lib/ clean
+	$(MAKE) -C rep/ clean
 	rm -rf doc
 	rm -rf build* debug* release*
 	rm -f CMakeLists.txt.user
@@ -21,6 +22,9 @@ compile: clean
 	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release ..
 	$(MAKE) -C build/
 	$(MAKE) -C build/ install
+	
+report:
+	$(MAKE) -C rep/ report.pdf
 
 pack: clean
 	rm -f $(TARNAME)

@@ -1,0 +1,161 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Technische Universität München
+%% Lehrstuhl für Elektrische Energiespeichertechnik
+%% Latex-Vorlage für Short Paper/Hauptseminar
+%% Kontakt: 
+%% Stand: 10.05.2013
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% *** IEEE (S) Dokumentklasse ***
+\documentclass[10pt]{IEEEStran}
+
+
+%% *** Schriften und Sprache ***
+	\usepackage[latin1]{inputenc}		% Texcodierung
+	\usepackage[T1]{fontenc}				% T1 Schriften
+	\usepackage[english]{babel}			% deutsche Silbentrennung und Beschriftungen
+	%\usepackage{mathptmx} 					% Times Schriftart
+	%\usepackage[scaled]{helvet} 		% Helvetica Serifenfreie Schriftart
+	%\usepackage{courier}
+	\usepackage[babel,german=quotes]{csquotes} % Deutsche Anführungszeichen mittels \enquote{}
+	\usepackage{xspace}							% Intelligente Leerzeichen
+
+
+%% *** Bilder und Geometrie ***
+	\usepackage[pdftex]{graphicx}			% Grafiken einbinden
+	
+		\graphicspath{{IMG/}} 												% Pfad für Bilder angeben
+		\DeclareGraphicsExtensions{.pdf,.jpeg,.png}		% Endungen die eingebunden werden
+	\usepackage[caption=false,font=footnotesize]{subfig}	% Caption wird von IEEE übernommen: http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
+	\usepackage[a4paper,left=1.65cm,right=1.65cm,top=1.78cm,bottom=1.78cm,includeheadfoot]{geometry}
+	%\usepackage{pdfpages}						% PDF Dateien einfügen
+	%\usepackage{color}								% Farben ermöglichen
+	%\usepackage{capt-of}
+	%\usepackage{setspace}	
+
+
+%% *** Tabellen ***
+	%\usepackage{longtable}						% Tabellen über mehrere Seiten
+	\usepackage{array}								% erweitern Tabelleneigenschaften: http://www.ctan.org/tex-archive/macros/latex/required/tools/
+	\usepackage{mdwtab}								% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
+	%\usepackage{booktabs}
+	%\usepackage{tabularx}
+	%\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+
+%% *** Mathe ***
+	\usepackage[cmex10]{amsmath}
+		\interdisplaylinepenalty=2500 	% Verhindert Seitenumbruch bei längeren Formeln
+	\usepackage{mdwmath}							% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
+	\usepackage{amsmath,amsfonts,amssymb}
+	\usepackage[squaren,textstyle]{SIunits}
+	%\usepackage{siunitx}  
+	%\sisetup{locale = DE, per-mode=symbol,range-units=single} 
+	\usepackage{icomma}
+
+%Abkürzungsverzeichnispakete
+\usepackage[nolist]{acronym}
+	
+	
+	
+%% *** Algorithmen ***
+	%\usepackage{algorithmic} 				% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithmicx/
+		%\floatname{algorithm}{Algorithmus}
+		%\renewcommand{\algorithmicfor}{\textbf{Für}}
+		%\renewcommand{\algorithmicdo}{\textbf{:}}
+		%\renewcommand{\algorithmicendfor}{}
+
+	
+%% *** Quellcode ***
+	%\usepackage{listings}						% Direktes einbinden von Quellcode
+	%\usepackage{verbatim}						% Quellcode anstatt Listings
+	%\usepackage[numbered]{mcode}			% MatLab Code
+	%\renewcommand{\lstlistingname}{Quellcode}
+
+
+%% *** Einstellungen ***
+	%\setcounter{secnumdepth}{4}				% Kapitelnummerierung mit x Ebenen
+	%\setcounter{tocdepth}{4}					% Eintrag ins Inhaltsverzeichnis bis Ebene x
+	%\definecolor{Gray}{gray}{0.4}
+	%\onehalfspacing
+		
+	%\setlength{\parindent}{0mm}			% Erstzeileneinzug bei neuem Absatz
+	%\setlength{\parskip}{8pt}				% Abstand zwischen Absätzen einstellen
+	%\setcapindent{1em}								% Zeilenumbruch bei Bildbeschreibungen
+
+
+%% *** Kopf- und Fusszeile ***
+	%\usepackage{scrpage2}							% Seitenlayout KOMA-Script
+	%\pagestyle{scrheadings}
+	%
+	%\automark[section]{chapter}
+	%\setheadsepline{1.0pt}[\color{Gray}]
+	%
+	%\ihead{}
+	%\chead{}
+	%\ohead{\color{Gray}\textbf{\headmark}}
+
+	
+%% *** Nummerierung und Beschriftung ***
+	%\addtokomafont{captionlabel}{\normalfont\bfseries}
+	%\addtokomafont{caption}{\normalfont\bfseries}
+
+
+%% *** Literatur ***
+	%\usepackage{cite}								% http://www.ctan.org/tex-archive/macros/latex/contrib/cite/
+	% cite.sty was written by Donald Arseneau
+	% V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
+	% \cite{} output to follow that of IEEE. Loading the cite package will
+	% result in citation numbers being automatically sorted and properly
+	% "compressed/ranged". e.g., [1], [9], [2], [7], [5], [6] without using
+	% cite.sty will become [1], [2], [5]--[7], [9] using cite.sty. cite.sty's
+	% \cite will automatically add leading space, if needed. Use cite.sty's
+	% noadjust option (cite.sty V3.8 and later) if you want to turn this off.
+	% cite.sty is already installed on most LaTeX systems. Be sure and use
+	% version 4.0 (2003-05-27) and later if using hyperref.sty. cite.sty does
+	% not currently provide for hyperlinked citations.
+	
+	\usepackage[numbers]{natbib}
+	
+	% *** Chronologische Sortierung ***
+	%\bibliographystyle{EES_DIN1505_UNSRT}
+	
+	% *** Alphabetische Sortierung ***
+	%\bibliographystyle{EES_DIN1505_ABBRV}
+	\bibliographystyle{EES_STANDARD}
+	
+	\renewcommand{\refname}{List of Bibliography}	% Literatur in Literaturverzeichnis umbenennen
+
+
+%% *** PDF, URL und HYPERLINK Packete ***
+%% *** MEISTENS ALS LETZES EINBINDEN! ***
+	\usepackage{url}															% Einfügen von URLs: \url{my_url_here}
+	\usepackage{float}														% http://www.ctan.org/tex-archive/macros/latex/contrib/float
+	\newcommand\MYhyperrefoptions{
+		bookmarks					= true,
+		bookmarksnumbered	= true,
+		pdfpagemode				= {UseOutlines},
+		plainpages				= false,
+		pdfpagelabels			= true,
+		colorlinks				= true,
+		linkcolor					= {black},
+		citecolor					=	{black},
+		urlcolor					= {blue},
+		bookmarksopen			= false
+	}
+
+	\ifCLASSINFOpdf
+		\usepackage[\MYhyperrefoptions,pdftex]{hyperref}
+	\else
+		\usepackage[\MYhyperrefoptions,breaklinks=true,dvips]{hyperref}
+		\usepackage{breakurl}
+	\fi
+	
+	\hypersetup{
+		pdftitle			= {Hauptseminar},
+		pdfauthor			= {\AutorVorname \AutorNachname},
+		pdfsubject		= {\Thema},
+		pdfkeywords		= {\Keywords},
+		pdfcreator		= {LaTeX},
+		pdfproducer		= {LaTeX}
+	}
