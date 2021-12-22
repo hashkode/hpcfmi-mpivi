@@ -21,6 +21,7 @@ cmake-*
 *.user
 **/.vs
 **/.idea
+*.vscode
 
 # Binary data files
 *.npy
@@ -53,3 +54,4 @@ _minted-*/
 
 # Other files
 *.lnk
+**/data/**/cpp/params.txt

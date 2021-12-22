@@ -26,12 +26,20 @@ compile: clean
 report:
 	$(MAKE) -C rep/ report.pdf
 
+test: compile
+	cd build/
+	$(MAKE) -C utl/ test
+
 pack: clean
 	rm -f $(TARNAME)
 	tar -czf $(TARNAME) backend/ cpp_backend/ tests/ Makefile main.py
 
 unpack:
-	tar -xzf $(TARNAME) 
-	
+	tar -xzf $(TARNAME)
+
 send: pack
 	scp $(TARNAME) $(HOST):~/Projects/hpcmi/
+
+init:
+	git submodule update --init --recursive
+	$(MAKE) -C utl/ init
