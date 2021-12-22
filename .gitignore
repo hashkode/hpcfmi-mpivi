@@ -54,3 +54,4 @@ _minted-*/
 
 # Other files
 *.lnk
+**/data/**/cpp/params.txt

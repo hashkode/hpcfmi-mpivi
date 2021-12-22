@@ -32,6 +32,13 @@ find_package(MPI REQUIRED)
 # Capital letters required here and in the following, I learned it the hard way ...
 find_package(BLAS REQUIRED)
 
+# The Linear Algebra Package (LAPACK) makes use of the operations defined in BLAS to provide the actual
+# linear algebra stuff (e.g. equation solver or SVD), Numpy also uses it in the background.
+#
+# OpenLapack provides the implementation similar to OpenBlas, Intel MKL would be faster and has everything
+# included (BLAS + LAPACK + OpenMP), but Intel is greedy and restricts it to their CPUs ...
+find_package(LAPACK REQUIRED)
+
 # All additional source files for debugging, e.g. if the debugging code is located in different files
 set(SRC_FILES main.cpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})

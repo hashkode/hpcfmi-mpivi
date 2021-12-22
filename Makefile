@@ -22,14 +22,18 @@ compile: clean
 
 test: compile
 	cd build/
-	./test.sh
+	./utl/test.sh
 
 pack: clean
 	rm -f $(TARNAME)
 	tar -czf $(TARNAME) backend/ cpp_backend/ tests/ Makefile main.py
 
 unpack:
-	tar -xzf $(TARNAME) 
-	
+	tar -xzf $(TARNAME)
+
 send: pack
 	scp $(TARNAME) $(HOST):~/Projects/hpcmi/
+
+init:
+	git submodule update --init --recursive
+	./utl/init.sh
