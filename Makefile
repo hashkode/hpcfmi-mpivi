@@ -5,7 +5,6 @@ all:
 	@echo "This is a dummy to prevent running make without explicit target!"
 
 clean:
-	$(MAKE) -C lib/ clean
 	$(MAKE) -C rep/ clean
 	rm -rf doc
 	rm -rf build* debug* release*
