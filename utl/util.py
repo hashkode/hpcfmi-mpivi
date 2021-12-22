@@ -2,31 +2,6 @@ import pickle
 from pathlib import Path
 import numpy as np
 
-def load_sparse_matrix(directory, name):
-  """
-  Loads all the components of a sparse matrix.
-
-  Parameters
-  ----------
-  directory : Path
-    The path where the files are present
-
-  name : str
-    The base name of the file
-
-  Returns
-  -------
-  data : tuple
-    The four components of a sparse matrix in CSR Format
-  """
-
-  indptr = np.load(directory / f"{name}_indptr.npy")
-  indices = np.load(directory / f"{name}_indices.npy")
-  data = np.load(directory / f"{name}_data.npy")
-  shape = np.load(directory / f"{name}_shape.npy")
-
-  return data, indices, indptr, shape
-
 def convert_data_for_cpp(directory):
   """
   This function loads the data and stores them in a way to make loading in c++ more easy.
@@ -42,6 +17,31 @@ def convert_data_for_cpp(directory):
   directory = Path(directory)
   directory_cpp = directory / "cpp/"
   directory_cpp.mkdir(exist_ok=True)
+
+  def load_sparse_matrix(directory, name):
+    """
+    Loads all the components of a sparse matrix.
+
+    Parameters
+    ----------
+    directory : Path
+      The path where the files are present
+
+    name : str
+      The base name of the file
+
+    Returns
+    -------
+    data : tuple
+      The four components of a sparse matrix in CSR Format
+    """
+
+    indptr = np.load(directory / f"{name}_indptr.npy")
+    indices = np.load(directory / f"{name}_indices.npy")
+    data = np.load(directory / f"{name}_data.npy")
+    shape = np.load(directory / f"{name}_shape.npy")
+
+    return data, indices, indptr, shape
 
   def write_sparse_binary(filename):
     """ Wrapper to write sparse matrices in binary format """
