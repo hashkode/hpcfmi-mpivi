@@ -21,14 +21,13 @@ compile: clean
 	mkdir -p build/
 	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release ..
 	$(MAKE) -C build/
-	$(MAKE) -C build/ install
-	
-report:
-	$(MAKE) -C rep/ report.pdf
 
 test: compile
 	cd build/
 	$(MAKE) -C utl/ test
+	
+report:
+	$(MAKE) -C rep/ report.pdf
 
 pack: clean
 	rm -f $(TARNAME)
