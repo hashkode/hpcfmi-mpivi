@@ -5,7 +5,6 @@ all:
 	@echo "This is a dummy to prevent running make without explicit target!"
 
 clean:
-	$(MAKE) -C lib/ clean
 	rm -rf doc
 	rm -rf build* debug* release*
 	rm -f CMakeLists.txt.user
@@ -20,14 +19,21 @@ compile: clean
 	mkdir -p build/
 	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release ..
 	$(MAKE) -C build/
-	$(MAKE) -C build/ install
+
+test: compile
+	cd build/
+	$(MAKE) -C utl/ test
 
 pack: clean
 	rm -f $(TARNAME)
 	tar -czf $(TARNAME) backend/ cpp_backend/ tests/ Makefile main.py
 
 unpack:
-	tar -xzf $(TARNAME) 
-	
+	tar -xzf $(TARNAME)
+
 send: pack
 	scp $(TARNAME) $(HOST):~/Projects/hpcmi/
+
+init:
+	git submodule update --init --recursive
+	$(MAKE) -C utl/ init
