@@ -5,7 +5,9 @@
 #include <cmath>
 #include <chrono>
 
-#include "Simulator.h"
+
+#include "simulator.h"
+#include "npy.hpp"
 
 // start of sample code from HPCfMI lecture
 template<typename T>
@@ -95,19 +97,35 @@ Parameters load_parameters(const std::string &path, const std::string &filename)
     return p;
 }
 // end of sample code from HPCfMI lecture
+template<typename T>
+void test_load(std::vector<T> &data, const std::string &path, const std::string &filename) {
+    
+    std::vector<unsigned long> shape;
+    bool fortran_order;
+
+    std::string ss = path + filename;
+
+    std::cout << ss << std::endl;
+
+    //std::string spath = "../data/data_normal/P_data.npy";
+    //std::vector<float> sdata;
+    //std::cout << spath << std::endl;
+    npy::LoadArrayFromNumpy(ss, shape, fortran_order, data);
+}
 
 int main(int argc, char *argv[]) {
-    const std::string path = "../../../data/data_normal/cpp/";
+    
+    const std::string path = "../data/data_small/";
 
-    Parameters p = load_parameters(path, "params.txt");
+    Parameters p = load_parameters(path, "cpp/params.txt");
 
     std::vector<int> indices, indptr;
     std::vector<float> data, jStar;
 
-    load_data<float>(data, path, "P_data.bin", p.data);
-    load_data<int>(indices, path, "P_indices.bin", p.indices);
-    load_data<int>(indptr, path, "P_indptr.bin", p.indptr);
-    load_data<float>(jStar, path, "P_indptr.bin", p.NS);
+    test_load<float>(data, path, "P_data.npy");
+    test_load<int>(indices, path, "P_indices.npy");
+    test_load<int>(indptr, path, "P_indptr.npy");
+    test_load<float>(jStar, path, "J_star_alpha_0_99.npy");
 
     std::vector<float> j;
     j.reserve(p.NS);
@@ -115,9 +133,9 @@ int main(int argc, char *argv[]) {
     pi.reserve(p.NS);
     float alpha = .99;
     float eps = 1e-6;
-
+    
     auto tStart = std::chrono::system_clock::now();
-
+    
     float err = Backend::valueIteration(&j[0], &data[0], &indices[0], &indptr[0], p.NS, &pi[0], alpha,
                                         p.fuel_capacity, p.number_stars, p.max_controls, eps, true);
 
@@ -131,6 +149,6 @@ int main(int argc, char *argv[]) {
     std::cout << "err: " << err << ", diff:" << diff << std::endl;
     std::cout << "This took " << std::chrono::duration_cast<std::chrono::seconds>(tEnd - tStart).count() << "s"
               << std::endl;
-
+    //*/
     return 0;
 }

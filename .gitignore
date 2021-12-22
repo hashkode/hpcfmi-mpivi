@@ -21,6 +21,7 @@ cmake-*
 *.user
 **/.vs
 **/.idea
+*.vscode
 
 # Binary data files
 *.npy
