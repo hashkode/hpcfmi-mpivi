@@ -9,28 +9,6 @@
 #include "simulator.h"
 #include "npy.hpp"
 
-// start of sample code from HPCfMI lecture
-template<typename T>
-void
-load_data(std::vector<T> &data, const std::string &path, const std::string &filename, const unsigned int num_elements) {
-    std::stringstream ss;
-    ss << path << filename;
-    std::ifstream ifs(ss.str(), std::ios::binary);
-
-    if (!ifs.is_open())
-        throw std::runtime_error("Check the filename");
-
-    // Copy file into memory as byte sequence (pay attention to endian)
-    std::vector<char> buffer((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-
-    // Reinterpet the byte sequence based on template data type
-    T *buffer_casted = reinterpret_cast<T *>(buffer.data());
-
-    // Copy the elements, afaik there is no other (simpler) way to use the bytes directly
-    data.resize(num_elements);
-    std::copy(buffer_casted, buffer_casted + num_elements, data.data());
-}
-
 ///
 /// \brief The Parameters struct
 ///
@@ -96,9 +74,10 @@ Parameters load_parameters(const std::string &path, const std::string &filename)
 
     return p;
 }
-// end of sample code from HPCfMI lecture
+
+// Loading npy files into std::vector<T>
 template<typename T>
-void test_load(std::vector<T> &data, const std::string &path, const std::string &filename) {
+void load_npy(std::vector<T> &data, const std::string &path, const std::string &filename) {
     
     std::vector<unsigned long> shape;
     bool fortran_order;
@@ -107,14 +86,12 @@ void test_load(std::vector<T> &data, const std::string &path, const std::string 
 
     std::cout << ss << std::endl;
 
-    //std::string spath = "../data/data_normal/P_data.npy";
-    //std::vector<float> sdata;
-    //std::cout << spath << std::endl;
     npy::LoadArrayFromNumpy(ss, shape, fortran_order, data);
 }
 
 int main(int argc, char *argv[]) {
     
+    //Path to folder with data
     const std::string path = "../data/data_small/";
 
     Parameters p = load_parameters(path, "cpp/params.txt");
@@ -122,10 +99,10 @@ int main(int argc, char *argv[]) {
     std::vector<int> indices, indptr;
     std::vector<float> data, jStar;
 
-    test_load<float>(data, path, "P_data.npy");
-    test_load<int>(indices, path, "P_indices.npy");
-    test_load<int>(indptr, path, "P_indptr.npy");
-    test_load<float>(jStar, path, "J_star_alpha_0_99.npy");
+    load_npy<float>(data, path, "P_data.npy");
+    load_npy<int>(indices, path, "P_indices.npy");
+    load_npy<int>(indptr, path, "P_indptr.npy");
+    load_npy<float>(jStar, path, "J_star_alpha_0_99.npy");
 
     std::vector<float> j;
     j.reserve(p.NS);
