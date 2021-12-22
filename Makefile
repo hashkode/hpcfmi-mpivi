@@ -22,7 +22,7 @@ compile: clean
 
 test: compile
 	cd build/
-	./utl/test.sh
+	$(MAKE) -C utl/ test
 
 pack: clean
 	rm -f $(TARNAME)
@@ -36,4 +36,4 @@ send: pack
 
 init:
 	git submodule update --init --recursive
-	./utl/init.sh
+	$(MAKE) -C utl/ init
