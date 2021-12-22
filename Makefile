@@ -5,6 +5,7 @@ all:
 	@echo "This is a dummy to prevent running make without explicit target!"
 
 clean:
+	$(MAKE) -C rep/ clean
 	rm -rf doc
 	rm -rf build* debug* release*
 	rm -f CMakeLists.txt.user
@@ -23,6 +24,9 @@ compile: clean
 test: compile
 	cd build/
 	$(MAKE) -C utl/ test
+	
+report:
+	$(MAKE) -C rep/ report.pdf
 
 pack: clean
 	rm -f $(TARNAME)
