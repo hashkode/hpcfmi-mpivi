@@ -1,0 +1,41 @@
+	
+@startuml Class Model
+!define DARKBLUE 
+!includeurl https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+class " Value Iteration" as Basis{
+    Eigen::Map<Eigen::VectorXf> &j
+    Eigen::Map<SparseMatrixType> &p
+    Eigen::Map<Eigen::VectorXi> pi
+    const float alpha
+    const int maxF
+    const int nStars
+    const int maxU
+    const float epsThreshold
+  
+method asyncValueIteration()
+method syncValueIteration()
+method valueIteration()
+method updateBlock()
+method calculateStageCost()
+method decodeState()
+method calculateExpectedCost()
+}
+class "Schema 1" as schema1{
+std::vector<int> comm_periods  
+method AsyncValueIterationSchema1()
+method getName()
+}
+class "Schema 2" as schema2{
+std::vector<int> comm_periods
+method AsyncValueIterationSchema2()
+method getName()
+}
+class "Schema 3" as schema3{
+std::vector<int> comm_periods
+method AsyncValueIterationSchema3()
+method getName()
+}
+Basis <|-- schema1
+Basis <|-- schema2
+Basis <|-- schema3
+@enduml
