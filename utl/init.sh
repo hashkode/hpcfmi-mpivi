@@ -1,4 +1,6 @@
 #!/bin/bash
+# todo download data set into home directory 
+
 cd "$(dirname "$0")"
 
 if [ -d "../data/data_debug" ] 
