@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     //path << system("whoami") << /data/data_small/;
     std::cout << path << std::endl;
 
-    Parameters p = load_parameters(path, "cpp/params.txt");
+    Parameters p = load_parameters(path, "params.txt");
 
     std::vector<int> indices, indptr;
     std::vector<float> data, jStar;

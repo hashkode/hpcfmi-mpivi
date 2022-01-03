@@ -3,49 +3,103 @@
 # compare md5 check sums from /home/<user> dir and /var/temp/<user>
 # copy missing/wrong files
 
-if [ -d "/var/tmp/$(whoami)" ]
+home_path="/home/$(whoami)/data/"
+var_path="/var/tmp/$(whoami)/data"
+
+if [ -d "$var_path" ]
 then
-  md5sum /home/$(whoami)/data/data_debug/* > checksum_debug_home.chk
-  md5sum /var/tmp/$(whoami)/data/data_debug/* > checksum_debug_temp.chk
-  
-  if md5sum --status -c checksum_debug_home.chk checksum_debug_temp.chk
+# data_debug
+  tmp="data_debug"
+  if [ -d "$var_path/$tmp" ]
   then
-    echo "dataset debug is okay"
+    md5sum $home_path/$tmp/* > checksum_${tmp}_home.chk
+    md5sum $var_path/$tmp/* > checksum_${tmp}_temp.chk
+  
+    if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
+    then
+      DIFF=$(diff $home_path/$tmp $var_path/$tmp) 
+      if [ -z "$DIFF" ]
+        then
+          echo "dataset $tmp is okay"
+        else
+          echo "dataset $tmp is compromised --> copying from home"
+          mkdir -p $var_path/$tmp
+          cp -R $home_path/$tmp/* $var_path/$tmp
+        fi
+    else
+      echo "dataset $tmp is compromised --> copying from home"
+      mkdir -p $var_path/$tmp
+      cp -R $home_path/$tmp/* $var_path/$tmp
+    fi
   else
-    echo "dataset data_debug is compromised --> copying from home"
-    mkdir -p /var/tmp/$(whoami)/data/data_debug
-    cp -R /home/$(whoami)/data/data_debug/* /var/tmp/$(whoami)/data/data_debug
+    echo "dataset $tmp is deleted --> copying from home"
+    mkdir -p $var_path/$tmp
+    cp -R $home_path/$tmp/* $var_path/$tmp
+  fi 
+  
+# data_small
+  tmp="data_small"
+  if [ -d "$var_path/$tmp" ]
+  then
+    md5sum $home_path/$tmp/* > checksum_${tmp}_home.chk
+    md5sum $var_path/$tmp/* > checksum_${tmp}_temp.chk
+  
+    if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
+    then
+      DIFF=$(diff $home_path/$tmp $var_path/$tmp) 
+      if [ -z "$DIFF" ]
+        then
+          echo "dataset $tmp is okay"
+        else
+          echo "dataset $tmp is compromised --> copying from home"
+          mkdir -p $var_path/$tmp
+          cp -R $home_path/$tmp/* $var_path/$tmp
+        fi
+    else
+      echo "dataset $tmp is compromised --> copying from home"
+      mkdir -p $var_path/$tmp
+      cp -R $home_path/$tmp/* $var_path/$tmp
+    fi
+  else
+    echo "dataset $tmp is deleted --> copying from home"
+    mkdir -p $var_path/$tmp
+    cp -R $home_path/$tmp/* $var_path/$tmp
   fi
   
-  md5sum /home/$(whoami)/data/data_small/* > checksum_small_home.chk
-  md5sum /var/tmp/$(whoami)/data/data_small/* > checksum_small_temp.chk
-  
-  if md5sum --status -c checksum_small_home.chk checksum_small_temp.chk
+# data_normal
+  tmp="data_normal"
+  if [ -d "$var_path/$tmp" ]
   then
-    echo "dataset small is okay"
-  else
-    echo "dataset data_small is compromised --> copying from home"
-    mkdir -p /var/tmp/$(whoami)/data/data_small
-    cp -R /home/$(whoami)/data/data_small/* /var/tmp/$(whoami)/data/data_small
-  fi
+    md5sum $home_path/$tmp/* > checksum_${tmp}_home.chk
+    md5sum $var_path/$tmp/* > checksum_${tmp}_temp.chk
   
-  md5sum /home/$(whoami)/data/data_normal/* > checksum_normal_home.chk
-  md5sum /var/tmp/$(whoami)/data/data_normal/* > checksum_normal_temp.chk
-  
-  if md5sum --status -c checksum_normal_home.chk checksum_normal_temp.chk
-  then
-    echo "dataset normal is okay"
+    if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
+    then
+      DIFF=$(diff $home_path/$tmp $var_path/$tmp) 
+      if [ -z "$DIFF" ]
+        then
+          echo "dataset $tmp is okay"
+        else
+          echo "dataset $tmp is compromised --> copying from home"
+          mkdir -p $var_path/$tmp
+          cp -R $home_path/$tmp/* $var_path/$tmp
+        fi
+    else
+      echo "dataset $tmp is compromised --> copying from home"
+      mkdir -p $var_path/$tmp
+      cp -R $home_path/$tmp/* $var_path/$tmp
+    fi
   else
-    echo "dataset data_normal is compromised --> copying from home"
-    mkdir -p /var/tmp/$(whoami)/data/data_normal
-    cp -R /home/$(whoami)/data/data_normal/* /var/tmp/$(whoami)/data/data_normal
-  fi
+    echo "dataset $tmp is deleted --> copying from home"
+    mkdir -p $var_path/$tmp
+    cp -R $home_path/$tmp/* $var_path/$tmp
+  fi 
   
 else
   echo "no dataset in /var/temp/ --> copying files ..."
   #mkdir /var/tmp/$(whoami)
-  mkdir -p /var/tmp/$(whoami)/data
-  cp -R /home/$(whoami)/data/* /var/tmp/$(whoami)/data
+  mkdir -p $var_path
+  cp -R $home_path/* $var_path
   echo "copying finished"
 fi
 
