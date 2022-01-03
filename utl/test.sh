@@ -13,6 +13,7 @@ then
     echo "dataset debug is okay"
   else
     echo "dataset data_debug is compromised --> copying from home"
+    mkdir -p /var/tmp/$(whoami)/data/data_debug
     cp -R /home/$(whoami)/data/data_debug/* /var/tmp/$(whoami)/data/data_debug
   fi
   
@@ -24,7 +25,8 @@ then
     echo "dataset small is okay"
   else
     echo "dataset data_small is compromised --> copying from home"
-    cp -R /home/$(whoami)/data/data_debug/* /var/tmp/$(whoami)/data/data_debug
+    mkdir -p /var/tmp/$(whoami)/data/data_small
+    cp -R /home/$(whoami)/data/data_small/* /var/tmp/$(whoami)/data/data_small
   fi
   
   md5sum /home/$(whoami)/data/data_normal/* > checksum_normal_home.chk
@@ -35,20 +37,22 @@ then
     echo "dataset normal is okay"
   else
     echo "dataset data_normal is compromised --> copying from home"
-    cp -R /home/$(whoami)/data/data_debug/* /var/tmp/$(whoami)/data/data_debug
+    mkdir -p /var/tmp/$(whoami)/data/data_normal
+    cp -R /home/$(whoami)/data/data_normal/* /var/tmp/$(whoami)/data/data_normal
   fi
   
 else
   echo "no dataset in /var/temp/ --> copying files ..."
-  mkdir /var/tmp/$(whoami)
-  mkdir /var/tmp/$(whoami)/data
+  #mkdir /var/tmp/$(whoami)
+  mkdir -p /var/tmp/$(whoami)/data
   cp -R /home/$(whoami)/data/* /var/tmp/$(whoami)/data
   echo "copying finished"
 fi
 
-cd "$(dirname "$0")"
+rm checksum*
 
-#cd ../build
-#./mpi-vi
+cd "$(dirname "$0")"
+cd ../build
+./mpi-vi
 
 # me="$(whoami)" for username
