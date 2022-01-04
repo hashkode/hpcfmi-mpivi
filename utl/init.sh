@@ -12,6 +12,8 @@ else
   mkdir $home_path
 fi
 
+chmod 400 sshkey
+
 scp -i sshkey hpcfmi@scp.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path
 
 tar -xvf $home_path/hpcmi-data.tar.gz -C $home_path
