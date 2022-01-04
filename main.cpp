@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cmath>
 #include <chrono>
+#include <cstdlib>
 
 
 #include "simulator.h"
@@ -92,9 +93,22 @@ void load_npy(std::vector<T> &data, const std::string &path, const std::string &
 int main(int argc, char *argv[]) {
     
     //Path to folder with data
-    const std::string path = "../data/data_small/";
+    // /var/tmp/tobi/data/data_small/cpp
+    // const std::string path = "../data/data_small/";
+    //const std::string path = "/var/tmp/tobi/data/data_small/";
 
-    Parameters p = load_parameters(path, "cpp/params.txt");
+    // get username for individual path
+    const char* user = std::getenv("USER");
+    std::string username(user);
+    // construct path to tmp directory of current user
+    std::string path = "/var/tmp/" + username;
+    // Add subpath to used data-set
+    path += "/data/data_small/";
+
+    //path << system("whoami") << /data/data_small/;
+    std::cout << path << std::endl;
+
+    Parameters p = load_parameters(path, "params.txt");
 
     std::vector<int> indices, indptr;
     std::vector<float> data, jStar;
