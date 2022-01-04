@@ -11,17 +11,18 @@ then
 else
   mkdir $home_path
 fi
-
+# permission adjustment for sshkey
 chmod 400 sshkey
-
+# download data
 scp -i sshkey hpcfmi@scp.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path
-
+# extract data
 tar -xvf $home_path/hpcmi-data.tar.gz -C $home_path
 mv $home_path/hpcmi-data/data_debug $home_path/data_debug
 mv $home_path/hpcmi-data/data_small $home_path/data_small
 mv $home_path/hpcmi-data/data_normal $home_path/data_normal
 rm -r $home_path/hpcmi-data
 
+# prepare data, i.e. convert parameters in txt-format for c++ handling
 if [ -d "$home_path/data_debug" ] 
 then
   python3 preparedata.py -d $home_path/data_debug
