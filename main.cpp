@@ -111,6 +111,12 @@ int main(int argc, char *argv[]) {
     float alpha = .99;
     float eps = 1e-6;
     
+        //Init Openmpi
+    MPI_Init(&argc, &argv);
+    int world_size, world_rank;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size); // Number of processes
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank); // Rank of this process
+
     auto tStart = std::chrono::system_clock::now();
     
     float err = Backend::valueIteration(&j[0], &data[0], &indices[0], &indptr[0], p.NS, &pi[0], alpha,
@@ -127,5 +133,7 @@ int main(int argc, char *argv[]) {
     std::cout << "This took " << std::chrono::duration_cast<std::chrono::seconds>(tEnd - tStart).count() << "s"
               << std::endl;
     //*/
+    MPI_Finalize(); //end openmpi
+    
     return 0;
 }
