@@ -119,8 +119,10 @@ int main(int argc, char *argv[]) {
 
     auto tStart = std::chrono::system_clock::now();
     
-    float err = Backend::valueIteration(&j[0], &data[0], &indices[0], &indptr[0], p.NS, &pi[0], alpha,
-                                        p.fuel_capacity, p.number_stars, p.max_controls, eps, true);
+    FirstSchema firsttest ;
+    float err=firsttest.AsynchronousValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
+                                         Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
+                                            float epsThreshold, int maxIteration, int commPeriode)
 
     auto tEnd = std::chrono::system_clock::now();
 
