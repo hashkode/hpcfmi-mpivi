@@ -116,6 +116,6 @@ rm checksum*
 
 cd "$(dirname "$0")"
 cd ../build
-./mpi-vi
+mpirun ./mpi-vi
 
 # me="$(whoami)" for username

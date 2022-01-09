@@ -37,7 +37,8 @@ namespace Backend {
  * @return epsilon global value when stop criterion was met
  */
     float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
-                         float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync);
+                         float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync,
+                         int nIteration, int firstState, int lastState);
 
 /**
  * Deserialize the input state into a struct representation.
@@ -128,7 +129,7 @@ namespace Backend {
     template<typename SparseMatrixType>
     float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
                              Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                             float epsThreshold,,const int nIteration,const int firstState, const int lastState);
+                             float epsThreshold, int nIteration, int firstState, int lastState);
 }
 
 #endif

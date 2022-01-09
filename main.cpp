@@ -10,8 +10,9 @@
 #include "simulator.h"
 #include "npy.hpp"
 #include "FirstSchema.h"
-#include "FirstSchema.cpp"
+#include "src/FirstSchema.cpp"
 #include <mpi.h>
+
 ///
 /// \brief The Parameters struct
 ///
@@ -81,7 +82,7 @@ Parameters load_parameters(const std::string &path, const std::string &filename)
 // Loading npy files into std::vector<T>
 template<typename T>
 void load_npy(std::vector<T> &data, const std::string &path, const std::string &filename) {
-    
+
     std::vector<unsigned long> shape;
     bool fortran_order;
 
@@ -93,14 +94,8 @@ void load_npy(std::vector<T> &data, const std::string &path, const std::string &
 }
 
 int main(int argc, char *argv[]) {
-    
-    //Path to folder with data
-    // /var/tmp/tobi/data/data_small/cpp
-    // const std::string path = "../data/data_small/";
-    //const std::string path = "/var/tmp/tobi/data/data_small/";
-
     // get username for individual path
-    const char* user = std::getenv("USER");
+    const char *user = std::getenv("USER");
     std::string username(user);
     // construct path to tmp directory of current user
     std::string path = "/var/tmp/" + username;
@@ -126,26 +121,19 @@ int main(int argc, char *argv[]) {
     pi.reserve(p.NS);
     float alpha = .99;
     float eps = 1e-6;
-    
-        //Init Openmpi
+
+    //Init Openmpi
     MPI_Init(&argc, &argv);
     int world_size, world_rank;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size); // Number of processes
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank); // Rank of this process
 
     auto tStart = std::chrono::system_clock::now();
-    
-    FirstSchema firsttest ;
-    float err=firsttest.AsynchronousValueIteration( &j,
-                                           &p,
-                                           pi,
-                                           alpha,
-                                           maxF,
-                                           nStars,
-                                           maxU,
-                                           epsThreshold,
-                                           maxIteration,
-                                           commPeriode);
+
+    FirstSchema firsttest;
+    firsttest.ValueIteration(&j[0], &data[0], &indices[0], &indptr[0], p.NS, &pi[0], alpha, p.fuel_capacity,
+                             p.number_stars, p.max_controls, eps, false, 150, 1);
+
     auto tEnd = std::chrono::system_clock::now();
 
     Eigen::Map<Eigen::VectorXf> _j0(&j[0], p.NS);
@@ -153,11 +141,15 @@ int main(int argc, char *argv[]) {
 
     float diff = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
 
-    std::cout << "err: " << err << ", diff:" << diff << std::endl;
+    for (int i = 0; i < 10; ++i) {
+        std::cout << i << ">> j0: " << _j0[i] << "; jStar: " << _jStar[i] << std::endl;
+    }
+
+    std::cout << "err: " << 0.1234 << ", diff:" << diff << std::endl;
     std::cout << "This took " << std::chrono::duration_cast<std::chrono::seconds>(tEnd - tStart).count() << "s"
               << std::endl;
     //*/
     MPI_Finalize(); //end openmpi
-    
+
     return 0;
 }

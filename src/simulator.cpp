@@ -15,7 +15,8 @@ namespace Backend {
 
     float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
                          const float alpha, const int maxF, const int nStars, const int maxU,
-                         const float epsThreshold, const bool doAsync) {
+                         const float epsThreshold, const bool doAsync, const int nIteration, const int firstState,
+                         const int lastState) {
         int nState = maxF * nStars * nStars;
         int nRow = nState;
         int nCol = nState * maxU;
@@ -25,7 +26,10 @@ namespace Backend {
         Eigen::Map<Eigen::SparseMatrix<float>> _p(nRow, nCol, pNnz, pIndptr, pIndices, pData);
 
         if (doAsync) { return asyncValueIteration(_j, _p, _pi, alpha, maxF, nStars, maxU, epsThreshold); }
-        else { return syncValueIteration(_j, _p, _pi, alpha, maxF, nStars, maxU, epsThreshold); }
+        else {
+            return syncValueIteration(_j, _p, _pi, alpha, maxF, nStars, maxU, epsThreshold, nIteration, firstState,
+                                      lastState);
+        }
 
     }
 
@@ -131,7 +135,8 @@ namespace Backend {
     template<typename SparseMatrixType>
     inline float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
                                     Eigen::Map<Eigen::VectorXi> pi, const float alpha, const int maxF,
-                                    const int nStars, const int maxU, const float epsThreshold,const int nIteration,const int firstState, const int lastState) {
+                                    const int nStars, const int maxU, const float epsThreshold, const int nIteration,
+                                    const int firstState, const int lastState) {
         int nState = maxF * nStars * nStars;
         float epsGlobal = -1;
         int iterations = 0;
