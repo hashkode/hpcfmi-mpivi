@@ -31,7 +31,9 @@ void FirstSchema::AsynchronousValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eig
      for(unsigned int t=0; t < maxIteration; ++t)
      {
          // Compute one value iteration step for a range of states
-         float epsGlobal = Backend::ValueIterationStep() // TODO : set iteration parameter
+         float epsGlobal = Backend::syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
+         Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
+         float epsThreshold,const int nIteration,const int firstState, const int lastState)
 
          // Store value of biggest change that appeared while updating J
          if(epsGlobal > error) {
