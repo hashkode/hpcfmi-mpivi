@@ -120,12 +120,15 @@ namespace Backend {
  * @param nStars number of stars
  * @param maxU number of possible control actions
  * @param epsThreshold epsilon threshold stop criterion
+ * @param nIteration number of iteration per process
+ * @param firstState first state of process
+ * @param lastState last state per process
  * @return epsilon global value when stop criterion was met
  */
     template<typename SparseMatrixType>
     float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
                              Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                             float epsThreshold);
+                             float epsThreshold,,const int nIteration,const int firstState, const int lastState);
 }
 
 #endif
