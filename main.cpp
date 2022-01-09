@@ -8,7 +8,9 @@
 
 #include "simulator.h"
 #include "npy.hpp"
-
+#include "FirstSchema.h"
+#include "FirstSchema.cpp"
+#include <mpi.h>
 ///
 /// \brief The Parameters struct
 ///
@@ -120,10 +122,16 @@ int main(int argc, char *argv[]) {
     auto tStart = std::chrono::system_clock::now();
     
     FirstSchema firsttest ;
-    float err=firsttest.AsynchronousValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                                         Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                                            float epsThreshold, int maxIteration, int commPeriode)
-
+    float err=firsttest.AsynchronousValueIteration( &j,
+                                           &p,
+                                           pi,
+                                           alpha,
+                                           maxF,
+                                           nStars,
+                                           maxU,
+                                           epsThreshold,
+                                           maxIteration,
+                                           commPeriode);
     auto tEnd = std::chrono::system_clock::now();
 
     Eigen::Map<Eigen::VectorXf> _j0(&j[0], p.NS);
