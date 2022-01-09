@@ -8,8 +8,8 @@ void FirstSchema::AsynchronousValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eig
      int world_size, world_rank;
      MPI_Comm_size(MPI_COMM_WORLD, &world_size); // Number of processes
      MPI_Comm_rank(MPI_COMM_WORLD, &world_rank); // Rank of this process
-
-
+    
+     int nIteration=10;
      // Split up states for each rank
      const int firstState = (j.size() / world_size) * world_rank;
      const int lastState=(j.size()/ world_size) * (world_rank + 1);
@@ -31,9 +31,17 @@ void FirstSchema::AsynchronousValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eig
      for(unsigned int t=0; t < maxIteration; ++t)
      {
          // Compute one value iteration step for a range of states
-         float epsGlobal = Backend::syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-         Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-         float epsThreshold,const int nIteration,const int firstState, const int lastState)
+         float epsGlobal = Backend::syncValueIteration(&j,
+                                                      &p,
+                                                      pi,
+                                                      alpha,
+                                                      maxF,
+                                                      nStars,
+                                                      maxU,
+                                                    epsThreshold,
+                                                    nIteration,
+                                                    firstState,
+                                                    lastState);
 
          // Store value of biggest change that appeared while updating J
          if(epsGlobal > error) {
@@ -58,5 +66,6 @@ void FirstSchema::AsynchronousValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eig
              // Check for convergence by seaching the biggest change in J from all processors
              MPI_Allreduce(&error, &error, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
 
-
- };
+        }
+    }
+ }
