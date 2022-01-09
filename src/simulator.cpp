@@ -131,18 +131,18 @@ namespace Backend {
     template<typename SparseMatrixType>
     inline float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
                                     Eigen::Map<Eigen::VectorXi> pi, const float alpha, const int maxF,
-                                    const int nStars, const int maxU, const float epsThreshold) {
+                                    const int nStars, const int maxU, const float epsThreshold,const int nIteration,const int firstState, const int lastState) {
         int nState = maxF * nStars * nStars;
         float epsGlobal = -1;
         int iterations = 0;
         int conditionCount = 0;
         int conditionThreshold = 5;
 
-        while (conditionCount < conditionThreshold && iterations < 10000) {
+        while (conditionCount < conditionThreshold && iterations < nIteration) {
             Eigen::VectorXf jOld = j;
 
             iterations++;
-            for (int state = 0; state < nState; state++) {
+            for (int state = firstState; state < lastState; state++) {
                 float jTmp = std::numeric_limits<float>::max();
                 int uTmp = 0;
                 StateTuple stateTuple = decodeState(state, nStars);
