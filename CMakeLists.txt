@@ -22,6 +22,9 @@ find_package(OpenMP REQUIRED)
 # Open MPI Package
 find_package(MPI REQUIRED)
 
+# Add the includes for MPI
+include_directories(${MPI_INCLUDE_PATH})
+
 # Basic Linear Algebra Subprogram (BLAS): description of fastest elementary matrix / vector operations
 # The Fortran realization of BLAS is provided by 'OpenBlas', and should be the fastest implementation
 # without vendor lock.
@@ -40,8 +43,11 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
 # All additional source files for debugging, e.g. if the debugging code is located in different files
-set(SRC_FILES main.cpp)
+file(GLOB SRC_FILES main.cpp  src/*.cpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
+
+# Link against MPI Libraries
+target_link_libraries(${PROJECT_NAME} ${MPI_LIBRARIES} -lpthread)
 
 # To make use of the our library add a subdirectory call to build and install it
 # -> no need to care about the library when using an IDE to "open" this CMakeLists.txt

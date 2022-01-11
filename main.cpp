@@ -1,14 +1,15 @@
 // A simple program to debug the backend code
 
 #include <iostream>
-#include <fstream>
-#include <cmath>
 #include <chrono>
 #include <cstdlib>
+#include <mpi.h>
 
-
-#include "simulator.h"
 #include "npy.hpp"
+
+#include "util.h"
+#include "simulator.h"
+#include "FirstSchema.h"
 
 ///
 /// \brief The Parameters struct
@@ -32,7 +33,7 @@ struct Parameters {
     unsigned int indptr;
 };
 
-Parameters load_parameters(const std::string &path, const std::string &filename) {
+Parameters loadParameters(const std::string &path, const std::string &filename) {
     std::stringstream ss;
     ss << path << filename;
 
@@ -44,79 +45,77 @@ Parameters load_parameters(const std::string &path, const std::string &filename)
         throw std::runtime_error("Check the filename");
 
     ifs >> p.confusion_distance;
-    std::cout << "Confusion " << p.confusion_distance << std::endl;
-
     ifs >> p.fuel_capacity;
-    std::cout << "Fuel " << p.fuel_capacity << std::endl;
-
     ifs >> p.max_controls;
-    std::cout << "MaxU " << p.max_controls << std::endl;
-
     ifs >> p.number_stars;
-    std::cout << "N stars " << p.number_stars << std::endl;
-
     ifs >> p.NS;
-    std::cout << "NS " << p.NS << std::endl;
-
     ifs >> p.cols;
-    std::cout << "P Cols" << p.cols << std::endl;
-
     ifs >> p.rows;
-    std::cout << "P Cols" << p.rows << std::endl;
-
     ifs >> p.data;
-    std::cout << "P data Size " << p.data << std::endl;
-
     ifs >> p.indices;
-    std::cout << "P indices Size " << p.indices << std::endl;
-
     ifs >> p.indptr;
-    std::cout << "P indptr Size " << p.indptr << std::endl;
 
     return p;
 }
 
 // Loading npy files into std::vector<T>
 template<typename T>
-void load_npy(std::vector<T> &data, const std::string &path, const std::string &filename) {
-    
+void loadNpy(std::vector<T> &data, const std::string &path, const std::string &filename) {
+
     std::vector<unsigned long> shape;
-    bool fortran_order;
+    bool fortranOrder;
 
     std::string ss = path + filename;
 
-    std::cout << ss << std::endl;
+#ifdef VERBOSE_DEBUG
+    // std::cout << ss << std::endl;
+#endif
 
-    npy::LoadArrayFromNumpy(ss, shape, fortran_order, data);
+    npy::LoadArrayFromNumpy(ss, shape, fortranOrder, data);
 }
 
 int main(int argc, char *argv[]) {
-    
-    //Path to folder with data
-    // /var/tmp/tobi/data/data_small/cpp
-    // const std::string path = "../data/data_small/";
-    //const std::string path = "/var/tmp/tobi/data/data_small/";
+    MPI_Init(&argc, &argv);
+    int worldSize, worldRank;
+    MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
+    MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
 
     // get username for individual path
-    const char* user = std::getenv("USER");
+    const char *user = std::getenv("USER");
     std::string username(user);
     // construct path to tmp directory of current user
     std::string path = "/var/tmp/" + username;
     // Add subpath to used data-set
     path += "/data/data_small/";
 
-    //path << system("whoami") << /data/data_small/;
+#ifdef VERBOSE_DEBUG
     std::cout << path << std::endl;
+#endif
 
-    Parameters p = load_parameters(path, "params.txt");
+    Parameters p = loadParameters(path, "params.txt");
+
+#ifdef VERBOSE_INFO
+    if (worldRank == 0) {
+        std::cout << "Confusion " << p.confusion_distance << std::endl;
+        std::cout << "Fuel " << p.fuel_capacity << std::endl;
+        std::cout << "MaxU " << p.max_controls << std::endl;
+        std::cout << "N stars " << p.number_stars << std::endl;
+        std::cout << "NS " << p.NS << std::endl;
+        std::cout << "P Cols" << p.cols << std::endl;
+        std::cout << "P Cols" << p.rows << std::endl;
+        std::cout << "P data Size " << p.data << std::endl;
+        std::cout << "P indices Size " << p.indices << std::endl;
+        std::cout << "P indptr Size " << p.indptr << std::endl;
+    }
+#endif
 
     std::vector<int> indices, indptr;
     std::vector<float> data, jStar;
 
-    load_npy<float>(data, path, "P_data.npy");
-    load_npy<int>(indices, path, "P_indices.npy");
-    load_npy<int>(indptr, path, "P_indptr.npy");
-    load_npy<float>(jStar, path, "J_star_alpha_0_99.npy");
+    loadNpy<float>(data, path, "P_data.npy");
+    loadNpy<int>(indices, path, "P_indices.npy");
+    loadNpy<int>(indptr, path, "P_indptr.npy");
+    loadNpy<float>(jStar, path, "J_star_alpha_0_99.npy");
 
     std::vector<float> j;
     j.reserve(p.NS);
@@ -124,22 +123,34 @@ int main(int argc, char *argv[]) {
     pi.reserve(p.NS);
     float alpha = .99;
     float eps = 1e-6;
-    
+
     auto tStart = std::chrono::system_clock::now();
-    
-    float err = Backend::valueIteration(&j[0], &data[0], &indices[0], &indptr[0], p.NS, &pi[0], alpha,
-                                        p.fuel_capacity, p.number_stars, p.max_controls, eps, true);
+
+    FirstSchema firstSchema;
+    float epsGlobal = firstSchema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha,
+                                                 p.fuel_capacity,
+                                                 p.number_stars, p.max_controls, eps, false, 150, 1);
 
     auto tEnd = std::chrono::system_clock::now();
 
-    Eigen::Map<Eigen::VectorXf> _j0(&j[0], p.NS);
-    Eigen::Map<Eigen::VectorXf> _jStar(&jStar[0], p.NS);
+    MPI_Finalize();
 
-    float diff = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
+    if (worldRank == 0) {
+        Eigen::Map<Eigen::VectorXf> _j0(j.data(), p.NS);
+        Eigen::Map<Eigen::VectorXf> _jStar(jStar.data(), p.NS);
 
-    std::cout << "err: " << err << ", diff:" << diff << std::endl;
-    std::cout << "This took " << std::chrono::duration_cast<std::chrono::seconds>(tEnd - tStart).count() << "s"
-              << std::endl;
-    //*/
+        float diff = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
+
+#ifdef VERBOSE_DEBUG
+        for (int i = 0; i < 10; ++i) {
+            std::cout << i << ">> j0: " << _j0[i] << "; jStar: " << _jStar[i] << "; pi: " << pi[i] << std::endl;
+        }
+#endif
+
+        std::cout << "epsGlobal: " << epsGlobal << ", max norm |J - J*|: " << diff << std::endl;
+        std::cout << "This took " << std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count() << "ms"
+                  << std::endl;
+    }
+
     return 0;
 }
