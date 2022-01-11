@@ -5,9 +5,9 @@
 
 class FirstSchema{
 public:
-    void ValueIteration (float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
+    float ValueIteration (std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, std::vector<int> &pi,
                                      float alpha, int maxF, const int nStars, int maxU,
-                                     float epsThreshold, bool doAsync, int maxIteration, int commPeriode);
+                                     float epsThreshold, bool doAsync, int maxIteration, int comInterval);
 
 
 };

@@ -43,7 +43,7 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
 # All additional source files for debugging, e.g. if the debugging code is located in different files
-set(SRC_FILES main.cpp)
+file(GLOB SRC_FILES main.cpp  src/*.cpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Link against MPI Libraries

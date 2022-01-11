@@ -1,73 +1,72 @@
+#include "util.h"
 #include "FirstSchema.h"
 #include <mpi.h>
-#include "simulator.cpp"
 
-void FirstSchema::ValueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
-                                 const float alpha, const int maxF, const int nStars, const int maxU,
-                                 const float epsThreshold, const bool doAsync, int maxIteration, int commPeriode) {
-    // init open mpi world and rank
-    int world_size, world_rank;
-    std::vector<float> _j;
-    _j.reserve(pNnz);
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size); // Number of processes
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank); // Rank of this process
+float FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz,
+                                  std::vector<int> &pi,
+                                  const float alpha, const int maxF, const int nStars, const int maxU,
+                                  const float epsThreshold, const bool doAsync, const int maxIteration,
+                                  const int comInterval) {
+    int worldSize, worldRank;
+    MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
+    MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
 
     int nIteration = 10;
+    auto valueIteration = Backend::ValueIteration();
+
     // Split up states for each rank
-    const int firstState = (pNnz / world_size) * world_rank;
-    int ls;
-    if (world_size - 1 == world_rank){
-        ls = pNnz - 1;
-    }
-    else{
-        ls = (pNnz / world_size) * (world_rank + 1) - 1;
-    }
-    const int lastState = ls;
-    std::cout << "pNnz: " << pNnz << ", world_size: " << world_size << ", world_rank: " << world_rank << std::endl;
+    const int firstState = (pNnz / worldSize) * worldRank;
+    const int lastState = (worldSize - 1 == worldRank) ? pNnz - 1 : (pNnz / worldSize) * (worldRank + 1) - 1;
+
+#ifdef VERBOSE_DEBUG
+    std::cout << "pNnz: " << pNnz << ", world_size: " << worldSize << ", world_rank: " << worldRank << std::endl;
     std::cout << "firstState: " << firstState << ", lastState: " << lastState << std::endl;
+#endif
 
+    std::vector<int> nStatesPerProcess, stateOffset;
+    for (int iProcessor = 0; iProcessor < worldSize; ++iProcessor) {
+        if (iProcessor + 1 < worldSize) nStatesPerProcess.push_back((pNnz / worldSize));
+        else nStatesPerProcess.push_back((pNnz / worldSize) + pNnz % worldSize);
 
-    // set number of states per process and displacements of subvectors
-    std::vector<int> nStatesPerProcess, displs;    // Number of states and Displacement of sub vectors for each process
-    for (int i = 0; i < world_size; ++i) {
-        if (i + 1 < world_size) nStatesPerProcess.push_back((pNnz / world_size));
-        else nStatesPerProcess.push_back((pNnz / world_size) + pNnz % world_size);
-
-        if (i == 0) displs.push_back(0);
-        else displs.push_back(displs[i - 1] + nStatesPerProcess[i - 1]);
+        if (iProcessor == 0) stateOffset.push_back(0);
+        else stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1]);
     }
 
-    // Keeps track of the change in J vector
-    float error = 0;
-    for (unsigned int t = 0; t < maxIteration; ++t) {
-        // Compute one value iteration step for a range of states
-        float epsGlobal = Backend::valueIteration(&_j[0], pData, pIndices, pIndptr, pNnz, pi, alpha, maxF, nStars, maxU, epsThreshold,
-                                                  doAsync, nIteration, firstState, lastState);
+    float epsGlobal = 0;
+    int iStep = 0;
+    int conditionCount = 0;
+    int conditionThreshold = 5;
+    
+    while (conditionCount < conditionThreshold && iStep < maxIteration) {
+        iStep++;
 
-        // Store value of biggest change that appeared while updating J
-        if (epsGlobal > error) {
-            error = epsGlobal;
+        float epsStep = valueIteration.valueIteration(j.data(), pData, pIndices, pIndptr, pNnz, pi.data(), alpha, maxF,
+                                                      nStars, maxU,
+                                                      epsThreshold, doAsync, nIteration, firstState, lastState);
+
+        if (epsStep > epsGlobal) {
+            epsGlobal = epsStep;
         };
 
-        // Exchange results every comm_period cycles
-        if (t % commPeriode == 0) {
-            // Merge local updates together
-            float *J_raw = _j.data();
-            MPI_Allgatherv(&J_raw[firstState],
-                           lastState - firstState,
-                           MPI_FLOAT,
-                           J_raw,
-                           nStatesPerProcess.data(),
-                           displs.data(),
-                           MPI_FLOAT,
-                           MPI_COMM_WORLD
-            );
+        if (iStep % comInterval == 0) {
+            MPI_Allgatherv(&j[firstState], lastState - firstState, MPI_FLOAT, j.data(), nStatesPerProcess.data(),
+                           stateOffset.data(), MPI_FLOAT, MPI_COMM_WORLD);
 
-            // Check for convergence by seaching the biggest change in J from all processors
-            MPI_Allreduce(&error, &error, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+            MPI_Allreduce(&epsGlobal, &epsGlobal, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
 
+            if (epsGlobal < epsThreshold) { conditionCount++; }
+            else { conditionCount = 0; }
+
+            epsGlobal = 0;
         }
     }
 
-    j = &_j[0];
+    if (worldRank == 0) {
+        std::cout << "converged at: " << iStep << std::endl;
+    }
+
+    MPI_Gatherv(&pi[firstState], lastState - firstState, MPI_INT, pi.data(),
+                nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
+
+    return epsGlobal;
 }

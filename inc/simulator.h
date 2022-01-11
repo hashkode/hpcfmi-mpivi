@@ -20,6 +20,8 @@ namespace Backend {
         int curStar;
     } StateTuple;
 
+    class ValueIteration {
+    public:
 /**
  * Run value iteration on the specified probability matrix to yield optimal cost and policy.
  * @param j pointer to an array holding the state cost
@@ -36,17 +38,18 @@ namespace Backend {
  * @param doAsync switch to enable asynchronous value iteration
  * @return epsilon global value when stop criterion was met
  */
-    float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
-                         float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync,
-                         int nIteration, int firstState, int lastState);
+        float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
+                             float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync,
+                             int nIteration, int firstState, int lastState);
 
+    private:
 /**
  * Deserialize the input state into a struct representation.
  * @param state serialized state of the space ship
  * @param nStars number of stars
  * @return deserialized state
  */
-    StateTuple decodeState(int state, int nStars);
+        StateTuple decodeState(int state, int nStars);
 
 /**
  * Calculate the stage cost of the action at the state.
@@ -54,7 +57,7 @@ namespace Backend {
  * @param action control action
  * @return stage cost
  */
-    float calculateStageCost(StateTuple &state, int action);
+        float calculateStageCost(StateTuple &state, int action);
 
 /**
  * Calculate the expected cost of the action at the state.
@@ -69,10 +72,10 @@ namespace Backend {
  * @param maxU number of possible control actions
  * @return expected cost
  */
-    template<typename SparseMatrixType>
-    float
-    calculateExpectedCost(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, StateTuple &stateTuple,
-                          int state, int action, float alpha, int maxU);
+        template<typename SparseMatrixType>
+        float
+        calculateExpectedCost(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, StateTuple &stateTuple,
+                              int state, int action, float alpha, int maxU);
 
 /**
  * Update optimal cost and policy for the the block.
@@ -87,10 +90,10 @@ namespace Backend {
  * @param maxU number of possible control actions
  * @return epsilon local value of the block update
  */
-    template<typename SparseMatrixType>
-    float
-    updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
+        template<typename SparseMatrixType>
+        float
+        updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
+                    Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
 
 /**
  * asyncValueIteration Asynchronous implementation of the value iteration algorithm.
@@ -105,10 +108,10 @@ namespace Backend {
  * @param epsThreshold epsilon threshold stop criterion
  * @return epsilon global value when stop criterion was met
  */
-    template<typename SparseMatrixType>
-    float asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                              Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                              float epsThreshold);
+        template<typename SparseMatrixType>
+        float asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
+                                  Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
+                                  float epsThreshold, int nIteration, int firstState, int lastState);
 
 /**
  * Synchronous implementation of the value iteration algorithm.
@@ -126,10 +129,11 @@ namespace Backend {
  * @param lastState last state per process
  * @return epsilon global value when stop criterion was met
  */
-    template<typename SparseMatrixType>
-    float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                             Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                             float epsThreshold, int nIteration, int firstState, int lastState);
+        template<typename SparseMatrixType>
+        float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
+                                 Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
+                                 float epsThreshold, int nIteration, int firstState, int lastState);
+    };
 }
 
 #endif

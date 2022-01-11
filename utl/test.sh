@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# compare md5 check sums from /home/<user> dir and /var/temp/<user>
+### compare md5 check sums from /home/<user> dir and /var/temp/<user>
 # copy missing/wrong files
 
 # home_path is the directory with given data, var_path is the directory where the program will later look for data
@@ -22,7 +22,7 @@ then
     if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
     then
       # check if number of files is the same since this is not checked above
-      DIFF=$(diff $home_path/$tmp $var_path/$tmp) 
+      DIFF=$(diff -r $home_path/$tmp $var_path/$tmp)
       if [ -z "$DIFF" ]
         then
           echo "dataset $tmp is okay"
@@ -54,7 +54,7 @@ then
   
     if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
     then
-      DIFF=$(diff $home_path/$tmp $var_path/$tmp) 
+      DIFF=$(diff -r $home_path/$tmp $var_path/$tmp)
       if [ -z "$DIFF" ]
         then
           echo "dataset $tmp is okay"
@@ -83,7 +83,7 @@ then
   
     if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
     then
-      DIFF=$(diff $home_path/$tmp $var_path/$tmp) 
+      DIFF=$(diff -r $home_path/$tmp $var_path/$tmp)
       if [ -z "$DIFF" ]
         then
           echo "dataset $tmp is okay"
@@ -105,7 +105,6 @@ then
 # data directory not existing -> copy complete dataset
 else
   echo "no dataset in /var/temp/ --> copying files ..."
-  #mkdir /var/tmp/$(whoami)
   mkdir -p $var_path
   cp -R $home_path/* $var_path
   echo "copying finished"
@@ -114,6 +113,7 @@ fi
 # remove checksum files -> not needed anymore
 rm checksum*
 
+### run binary
 cd "$(dirname "$0")"
 cd ../build
 mpirun ./mpi-vi
