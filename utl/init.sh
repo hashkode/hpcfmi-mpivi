@@ -29,6 +29,18 @@ home_path="/home/$(whoami)/data"
 if [ -d "$home_path" ]
 then
   echo ">> data directory already created" 
+  if [ -d "$home_path/data_debug" ]
+  then
+    rm -r "$home_path/data_debug" ]
+  fi
+  if [ -d "$home_path/data_small" ]
+  then
+    rm -r "$home_path/data_small"
+  fi
+  if [ -d "$home_path/data_normal" ]
+  then
+    rm -r "$home_path/data_normal"
+  fi
 else
   mkdir $home_path
 fi
@@ -38,9 +50,9 @@ chmod 400 sshkey
 scp -i sshkey hpcfmi@scp.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path
 # extract data
 tar -xvf $home_path/hpcmi-data.tar.gz -C $home_path
-mv $home_path/hpcmi-data/data_debug $home_path/data_debug
-mv $home_path/hpcmi-data/data_small $home_path/data_small
-mv $home_path/hpcmi-data/data_normal $home_path/data_normal
+mv $home_path/hpcmi-data/data_debug $home_path
+mv $home_path/hpcmi-data/data_small $home_path
+mv $home_path/hpcmi-data/data_normal $home_path
 rm -r $home_path/hpcmi-data
 
 # prepare data, i.e. convert parameters in txt-format for c++ handling
