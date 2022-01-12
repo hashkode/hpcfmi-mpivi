@@ -1,0 +1,34 @@
+@startuml
+'left to right direction
+' Horizontal lines: -->, <--, <-->'
+title SCHEME 1
+start
+fork
+    :rank_0/
+    :read data;
+fork again
+    :rank_N/
+    :read data;
+end fork
+while (eps < eps_thresh) is (No)
+fork
+    :rank_0/
+repeat
+backward:nIteration;
+repeat while (value Iteration)
+    :MPI_Allgatherv(J)|
+    :MPI_Allreduce(eps)|
+fork again
+    :rank_N/
+repeat
+backward:nIteration;
+repeat while (value Iteration)
+    :MPI_Allgatherv(J)|
+    :MPI_Allreduce(eps)|
+end fork
+endwhile (Yes)
+:MPI_Gatherv|
+
+stop
+
+@enduml
