@@ -10,6 +10,7 @@ if ! dpkg -l | grep cmake -c >>/dev/null; then sudo apt-get install cmake; fi
 if ! dpkg -l | grep doxygen -c >>/dev/null; then sudo apt-get install doxygen; fi
 if ! dpkg -l | grep liblapack-dev -c >>/dev/null; then sudo apt-get install liblapack-dev; fi
 if ! dpkg -l | grep liblapacke-dev -c >>/dev/null; then sudo apt-get install liblapacke-dev; fi
+if ! dpkg -l | grep graphviz -c >>/dev/null; then sudo apt-get install graphviz; fi
 ### openmpi
 if ! dpkg -l | grep openmpi-bin -c >>/dev/null; then sudo apt-get install openmpi-bin; fi
 if ! dpkg -l | grep openmpi-common -c >>/dev/null; then sudo apt-get install openmpi-common; fi
