@@ -92,7 +92,7 @@ void saveResults(std::vector<float> iStepVector,std::vector<float> durationVecto
 
     std::string comIntervallString=std::to_string(comInterval);
     std::string fileFormat= ".csv";
-
+    
     // Save duration Vector
     std::string filenameDurationVector="../results/"+durationVectorNameString+"_"+nameClass+"_"+comIntervallString+"_"+datetime()+"_"+fileFormat;
     std::ofstream outfileDuration (filenameDurationVector);
@@ -168,9 +168,9 @@ int main(int argc, char *argv[]) {
     auto tStart = std::chrono::system_clock::now();
 
 
-    float epsGlobal,iStep = Schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha,
+    auto [epsGlobal,iStep] = Schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha,
                                                  p.fuel_capacity,
-                                                 p.number_stars, p.max_controls, eps, false, 150, 1);
+                                                 p.number_stars, p.max_controls, eps, false, 150, comInterval);
 
     auto tEnd = std::chrono::system_clock::now();
 

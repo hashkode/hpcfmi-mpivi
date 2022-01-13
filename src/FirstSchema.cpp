@@ -2,7 +2,7 @@
 #include "FirstSchema.h"
 #include <mpi.h>
 
-float FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz,
+ std::tuple<float,int> FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz,
                                   std::vector<int> &pi,
                                   const float alpha, const int maxF, const int nStars, const int maxU,
                                   const float epsThreshold, const bool doAsync, const int maxIteration,
@@ -63,12 +63,12 @@ float FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pInd
 
     if (worldRank == 0) {
         std::cout << "converged at: " << iStep << std::endl;
+
     }
 
     MPI_Gatherv(&pi[firstState], lastState - firstState, MPI_INT, pi.data(),
                 nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
-
-    return epsGlobal,iStep;
+    return {epsGlobal,iStep};
 }
 std::string FirstSchema::GetName() {
     return typeid(*this).name();
