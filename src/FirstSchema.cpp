@@ -68,5 +68,8 @@ float FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pInd
     MPI_Gatherv(&pi[firstState], lastState - firstState, MPI_INT, pi.data(),
                 nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
-    return epsGlobal;
+    return epsGlobal,iStep;
+}
+std::string FirstSchema::GetName() {
+    return typeid(*this).name();
 }
