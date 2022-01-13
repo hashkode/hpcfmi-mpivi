@@ -1,7 +1,7 @@
 @startuml
 'left to right direction
 ' Horizontal lines: -->, <--, <-->'
-title SCHEME 3
+title SCHEME 4
 start
 fork
     :rank_0/
@@ -18,16 +18,15 @@ fork
 repeat
     backward:nIteration;
     repeat while (value Iteration)
-    :MPI_Recv(J)|
 fork again
     :rank_N/
 repeat
     backward:nIteration;
     repeat while (value Iteration)
-    :MPI_Isend(J)|
 end fork
 :rank_0/
-:MPI_Testall|
+:MPI_Igatherv(J)|
+:MPI_Test|
 repeat while (eps < eps_thresh) is (No) not (Yes)
 :MPI_Gatherv(Pi)|
 
