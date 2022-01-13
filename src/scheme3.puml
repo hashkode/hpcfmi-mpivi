@@ -10,20 +10,24 @@ fork again
     :rank_N/
     :read data;
 end fork
+    :rank_0/
 repeat
     :MPI_Bcast(J)|
 fork
+    :rank_0/
 repeat
     backward:nIteration;
     repeat while (value Iteration)
-    :MPI_ISEND(J)|
+    :MPI_Isend(J)|
 fork again
+    :rank_N/
 repeat
     backward:nIteration;
     repeat while (value Iteration)
-    :MPI_ISEND(J)|
+    :MPI_Isend(J)|
 end fork
 :rank_0/
+:MPI_Testall|
 repeat while (eps < eps_thresh) is (No) not (Yes)
 :MPI_Gatherv(Pi)|
 
