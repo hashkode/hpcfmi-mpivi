@@ -1,27 +1,34 @@
 @startuml
 'left to right direction
 ' Horizontal lines: -->, <--, <-->'
-title SCHEME 1
+title SCHEME 2
 start
 fork
     :rank_0/
     :read data;
-repeat
-    :nIteration;
-    :MPI_Allgatherv(J)|
-    :MPI_Allreduce(eps)|
-repeat while (eps < eps_thresh) is (No) not (Yes)
 fork again
     :rank_N/
     :read data;
+end fork
 repeat
-    :nIteration;
+:MPI_Scatterv(J)|
+fork
+    :rank_0/
+repeat
+backward:nIteration;
+repeat while (value Iteration)
     :MPI_Allgatherv(J)|
     :MPI_Allreduce(eps)|
-repeat while (eps < eps_thresh) is (No) not (Yes)
+fork again
+    :rank_N/
+repeat
+backward:nIteration;
+repeat while (value Iteration)
+    :MPI_Allgatherv(J)|
+    :MPI_Allreduce(eps)|
 end fork
+repeat while (eps < eps_thresh) is (No) not (Yes)
 :MPI_Gatherv(Pi)|
-
 stop
 
 @enduml
