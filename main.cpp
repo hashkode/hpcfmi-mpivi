@@ -73,6 +73,41 @@ void loadNpy(std::vector<T> &data, const std::string &path, const std::string &f
 
     npy::LoadArrayFromNumpy(ss, shape, fortranOrder, data);
 }
+std::string datetime()
+{
+    time_t rawtime;
+    struct tm * timeinfo;
+    char buffer[80];
+    time (&rawtime);
+    timeinfo = localtime(&rawtime);
+    strftime(buffer,80,"%Y_%m_%d_%H_%M_%S",timeinfo);
+    return std::string(buffer);
+}
+#define GET_VARIABLE_NAME(Variable) (#Variable)
+void saveResults(std::vector<float> iStepVector,std::vector<float> durationVector, int comInterval,std::string nameClass){
+    char* iStepVectorName= GET_VARIABLE_NAME(iStepVector);
+    std::string iStepVectorNameString(iStepVectorName);
+    char* durationVectorName= GET_VARIABLE_NAME(durationVector);
+    std::string durationVectorNameString(durationVectorName);
+
+    std::string comIntervallString=std::to_string(comInterval);
+    std::string fileFormat= ".csv";
+
+    // Save duration Vector
+    std::string filenameDurationVector="../results/"+durationVectorNameString+"_"+nameClass+"_"+comIntervallString+"_"+datetime()+"_"+fileFormat;
+    std::ofstream outfileDuration (filenameDurationVector);
+    std::ostream_iterator<float> output_Duration(outfileDuration, "\n");
+    std::copy(durationVector.begin(), durationVector.end(), output_Duration);
+    outfileDuration.close();
+    // Save Step Vector
+    std::string filenameIStep="../results/"+iStepVectorNameString+"_"+nameClass+"_"+comIntervallString+"_"+datetime()+"_"+fileFormat;
+    std::ofstream outfileIStep (filenameIStep);
+    std::ostream_iterator<float> output_IStep(outfileIStep, "\n");
+    std::copy(iStepVector.begin(), iStepVector.end(), output_IStep);
+    outfileIStep.close();
+
+}
+
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
@@ -108,6 +143,12 @@ int main(int argc, char *argv[]) {
         std::cout << "P indptr Size " << p.indptr << std::endl;
     }
 #endif
+    std::vector<float> iStepVector,durationVector;
+    int numberMeasurements=3;
+    int comInterval=1;
+    FirstSchema Schema;
+
+    for (int i=1;i<numberMeasurements;i++){
 
     std::vector<int> indices, indptr;
     std::vector<float> data, jStar;
@@ -126,14 +167,14 @@ int main(int argc, char *argv[]) {
 
     auto tStart = std::chrono::system_clock::now();
 
-    FirstSchema firstSchema;
-    float epsGlobal = firstSchema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha,
+
+    float epsGlobal,iStep = Schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha,
                                                  p.fuel_capacity,
                                                  p.number_stars, p.max_controls, eps, false, 150, 1);
 
     auto tEnd = std::chrono::system_clock::now();
 
-    MPI_Finalize();
+
 
     if (worldRank == 0) {
         Eigen::Map<Eigen::VectorXf> _j0(j.data(), p.NS);
@@ -146,11 +187,18 @@ int main(int argc, char *argv[]) {
             std::cout << i << ">> j0: " << _j0[i] << "; jStar: " << _jStar[i] << "; pi: " << pi[i] << std::endl;
         }
 #endif
+        float time =std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count();
+        iStepVector.push_back (iStep);
+        durationVector.push_back (time);
 
         std::cout << "epsGlobal: " << epsGlobal << ", max norm |J - J*|: " << diff << std::endl;
         std::cout << "This took " << std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count() << "ms"
                   << std::endl;
     }
+    }
+    std::string nameClass= Schema.GetName();
+    saveResults( iStepVector, durationVector, comInterval,nameClass);
+    MPI_Finalize();
 
     return 0;
 }
