@@ -42,8 +42,9 @@ public:
 
     static std::string datetime();
 
-    static void saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector, int comInterval,
-                            const std::string &nameSchema);
+    static void saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector,
+                            const std::vector<float> &jDiffsMaxNorm, const std::vector<float> &jDiffsL2Norm,
+                            const std::vector<float> &jDiffsMSE, int comInterval, const std::string &nameSchema);
 };
 
 

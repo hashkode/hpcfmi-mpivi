@@ -49,8 +49,9 @@ std::string VIUtility::datetime() {
     return buffer;
 }
 
-void VIUtility::saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector, const int comInterval,
-                            const std::string &nameSchema) {
+void VIUtility::saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector,
+                            const std::vector<float> &jDiffsMaxNorm, const std::vector<float> &jDiffsL2Norm,
+                            const std::vector<float> &jDiffsMSE, const int comInterval, const std::string &nameSchema) {
     std::string iStepVectorName = GET_VARIABLE_NAME(iStepVector);
     std::string durationVectorName = GET_VARIABLE_NAME(durationVector);
 
@@ -62,12 +63,14 @@ void VIUtility::saveResults(const std::vector<int> &iStepVector, const std::vect
     std::string filenameMeasurements =
             "../results/" + nameSchema + "_" + comIntervallString + "_" + datetime() + fileFormat;
     std::ofstream outfileMeasurements(filenameMeasurements);
-    std::string header = "steps,duration\n";
+    std::string header = "steps_total,duration_total_ms,jdiff_maxnorm,jdiff_l2norm,jdiff_mse\n";
     outfileMeasurements.write(header.c_str(), (long) header.size());
 
     for (int iMeasurement = 0; iMeasurement < nMeasurements; ++iMeasurement) {
         std::string line =
-                std::to_string(iStepVector[iMeasurement]) + "," + std::to_string(durationVector[iMeasurement]) + "\n";
+                std::to_string(iStepVector[iMeasurement]) + "," + std::to_string(durationVector[iMeasurement]) + "," +
+                std::to_string(jDiffsMaxNorm[iMeasurement]) + "," + std::to_string(jDiffsL2Norm[iMeasurement]) + "," +
+                std::to_string(jDiffsMSE[iMeasurement]) + "\n";
         outfileMeasurements.write(line.c_str(), (long) line.size());
     }
     outfileMeasurements.close();

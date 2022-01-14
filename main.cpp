@@ -66,6 +66,9 @@ int main(int argc, char *argv[]) {
 #endif
     std::vector<int> iStepVector;
     std::vector<float> durationVector;
+    std::vector<float> jDiffsMaxNorm;
+    std::vector<float> jDiffsL2Norm;
+    std::vector<float> jDiffsMSE;
     FirstSchema schema; // TODO: add to configuration file
 
     int nCycle = 3; // TODO: add to configuration file
@@ -103,7 +106,9 @@ int main(int argc, char *argv[]) {
             Eigen::Map<Eigen::VectorXf> _j0(j.data(), p.NS);
             Eigen::Map<Eigen::VectorXf> _jStar(jStar.data(), p.NS);
 
-            float diff = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
+            float jDiffMaxNorm = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
+            float jDiffL2Norm = (_j0 - _jStar).template lpNorm<2>();
+            float jDiffMSE = (_j0 - _jStar).array().square().sum() / _j0.size();
 
 #ifdef VERBOSE_DEBUG
             for (int iCycle = 0; iCycle < 10; ++iCycle) {
@@ -113,8 +118,12 @@ int main(int argc, char *argv[]) {
             float time = (float) std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count();
             iStepVector.push_back(iStep);
             durationVector.push_back(time);
+            jDiffsMaxNorm.push_back(jDiffMaxNorm);
+            jDiffsL2Norm.push_back(jDiffL2Norm);
+            jDiffsMSE.push_back(jDiffMSE);
 
-            std::cout << "epsGlobal: " << epsGlobal << ", max norm (J - J*): " << diff << std::endl;
+            std::cout << "epsGlobal: " << epsGlobal << ", max norm (J - J*): " << jDiffMaxNorm << ", l2 norm (J - J*): "
+                      << jDiffL2Norm << ", MSE (J - J*): " << jDiffMSE << std::endl;
             std::cout << "This took " << std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count()
                       << "ms" << std::endl;
         }
@@ -122,7 +131,8 @@ int main(int argc, char *argv[]) {
 
     if (worldRank == 0) {
         std::string nameClass = schema.GetName();
-        VIUtility::saveResults(iStepVector, durationVector, comInterval, nameClass);
+        VIUtility::saveResults(iStepVector, durationVector, jDiffsMaxNorm, jDiffsL2Norm, jDiffsMSE, comInterval,
+                               nameClass);
     }
 
     MPI_Finalize();
