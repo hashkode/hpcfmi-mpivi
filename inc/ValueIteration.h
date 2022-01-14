@@ -38,9 +38,10 @@ namespace Backend {
  * @param doAsync switch to enable asynchronous value iteration
  * @return epsilon global value when stop criterion was met
  */
-        float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
-                             float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync,
-                             int nIteration, int firstState, int lastState);
+        float
+        valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi, float alpha,
+                       int maxF, int nStars, int maxU, float epsThreshold, bool doAsync, int nIteration, int firstState,
+                       int lastState);
 
     private:
 /**
@@ -91,9 +92,8 @@ namespace Backend {
  * @return epsilon local value of the block update
  */
         template<typename SparseMatrixType>
-        float
-        updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                    Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
+        float updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
+                          Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
 
 /**
  * asyncValueIteration Asynchronous implementation of the value iteration algorithm.

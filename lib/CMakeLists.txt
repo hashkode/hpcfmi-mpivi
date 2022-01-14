@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.13)
+cmake_minimum_required(VERSION 3.13)
 
 # Additional 'find module' scipts in the subfolder 'cmake'
 # Currently, FindLAPACKE is the important one. FindMKL exist for the case that you need it in another project.
@@ -17,4 +17,4 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/libnpy/include # TODO: hacky, introduce cmake file for cnpy?
         ${LAPACKE_INCLUDE_DIRS_DEP} # = include directories of lapacke and dependencies
-)
+        )

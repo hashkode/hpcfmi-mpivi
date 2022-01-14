@@ -1,18 +1,19 @@
-#include "FirstSchema.h"
+#include "MpiViSchema01.h"
 
 #include <mpi.h>
 
-#include "VIUtility.h"
+#include "verbose.h"
+#include "MpiViUtility.h"
 
-FirstSchema::FirstSchema() {
+MpiViSchema01::MpiViSchema01() {
     name = std::string(__func__);
 }
 
 std::tuple<float, int>
-FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, const unsigned int pNnz,
-                            std::vector<int> &pi, const float alpha, const int maxF, const int nStars, const int maxU,
-                            const float epsThreshold, const bool doAsync, const int maxIteration,
-                            const int comInterval) {
+MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, const unsigned int pNnz,
+                              std::vector<int> &pi, const float alpha, const int maxF, const int nStars, const int maxU,
+                              const float epsThreshold, const bool doAsync, const int maxIteration,
+                              const int comInterval) {
     int worldSize, worldRank;
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
@@ -38,6 +39,20 @@ FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, 
         else stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1]);
     }
 
+#ifdef VERBOSE_DEBUG
+    std::cout << "nStatesPerProcess:" << std::endl;
+    for (int iStatesPerProcess: nStatesPerProcess){
+        std::cout << iStatesPerProcess << ", ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "stateOffset:" << std::endl;
+    for (int iStateOffset: stateOffset){
+        std::cout << iStateOffset << ", ";
+    }
+    std::cout << std::endl;
+#endif
+
     float epsGlobal = 0;
     int iStep = 0;
     int conditionCount = 0;
@@ -55,7 +70,7 @@ FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, 
         };
 
         if (iStep % comInterval == 0) {
-            MPI_Allgatherv(&j[firstState], lastState - firstState, MPI_FLOAT, j.data(), nStatesPerProcess.data(),
+            MPI_Allgatherv(&j[firstState], nStatesPerProcess[worldRank], MPI_FLOAT, j.data(), nStatesPerProcess.data(),
                            stateOffset.data(), MPI_FLOAT, MPI_COMM_WORLD);
 
             MPI_Allreduce(&epsGlobal, &epsGlobal, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
@@ -72,11 +87,11 @@ FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, 
 
     }
 
-    MPI_Gatherv(&pi[firstState], lastState - firstState, MPI_INT, pi.data(), nStatesPerProcess.data(),
+    MPI_Gatherv(&pi[firstState], nStatesPerProcess[worldRank], MPI_INT, pi.data(), nStatesPerProcess.data(),
                 stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
     return {epsGlobal, iStep};
 }
 
-std::string FirstSchema::GetName() {
+std::string MpiViSchema01::GetName() {
     return this->name;
 }

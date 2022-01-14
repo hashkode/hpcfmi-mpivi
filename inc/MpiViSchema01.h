@@ -3,12 +3,12 @@
 
 #include "ValueIteration.h"
 
-class FirstSchema {
+class MpiViSchema01 {
 private:
     std::string name;
 
 public:
-    FirstSchema();
+    MpiViSchema01();
 
     std::tuple<float, int>
     ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz,

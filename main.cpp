@@ -8,11 +8,11 @@
 
 #include "npy.hpp"
 
-#include "VIUtility.h"
-#include "ValueIteration.h"
-#include "FirstSchema.h"
+#include "verbose.h"
+#include "MpiViUtility.h"
+#include "MpiViSchema01.h"
 
-//TODO: move to VIUtility class
+//TODO: move to MpiViUtility class
 
 // Loading npy files into std::vector<T>
 template<typename T>
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     std::cout << path << std::endl;
 #endif
 
-    VIUtility::Parameters p = VIUtility::loadParameters(path, "params.txt"); // TODO: add to configuration file
+    MpiViUtility::Parameters p = MpiViUtility::loadParameters(path, "params.txt"); // TODO: add to configuration file
 
 #ifdef VERBOSE_INFO
     if (worldRank == 0) {
@@ -69,7 +69,8 @@ int main(int argc, char *argv[]) {
     std::vector<float> jDiffsMaxNorm;
     std::vector<float> jDiffsL2Norm;
     std::vector<float> jDiffsMSE;
-    FirstSchema schema; // TODO: add to configuration file
+    std::vector<long> maxRSSs;
+    MpiViSchema01 schema; // TODO: add to configuration file
 
     int nCycle = 3; // TODO: add to configuration file
     int comInterval = 1; // TODO: add to configuration file
@@ -112,7 +113,11 @@ int main(int argc, char *argv[]) {
 
 #ifdef VERBOSE_DEBUG
             for (int iCycle = 0; iCycle < 10; ++iCycle) {
-                std::cout << iCycle << ">> j0: " << _j0[iCycle] << "; jStar: " << _jStar[iCycle] << "; pi: " << pi[iCycle] << std::endl;
+                std::cout << iCycle << "\t\t>> j0: " << _j0[iCycle] << ";  \tjStar: " << _jStar[iCycle] << ";  \tpi: " << pi[iCycle] << std::endl;
+            }
+
+            for (int iCycle = p.NS - 10; iCycle < (int) p.NS; ++iCycle) {
+                std::cout << iCycle << "\t\t>> j0: " << _j0[iCycle] << ";  \tjStar: " << _jStar[iCycle] << ";  \tpi: " << pi[iCycle] << std::endl;
             }
 #endif
             float time = (float) std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count();
@@ -121,6 +126,7 @@ int main(int argc, char *argv[]) {
             jDiffsMaxNorm.push_back(jDiffMaxNorm);
             jDiffsL2Norm.push_back(jDiffL2Norm);
             jDiffsMSE.push_back(jDiffMSE);
+            maxRSSs.push_back(MpiViUtility::getMaxRSSUsage());
 
             std::cout << "epsGlobal: " << epsGlobal << ", max norm (J - J*): " << jDiffMaxNorm << ", l2 norm (J - J*): "
                       << jDiffL2Norm << ", MSE (J - J*): " << jDiffMSE << std::endl;
@@ -131,8 +137,8 @@ int main(int argc, char *argv[]) {
 
     if (worldRank == 0) {
         std::string nameClass = schema.GetName();
-        VIUtility::saveResults(iStepVector, durationVector, jDiffsMaxNorm, jDiffsL2Norm, jDiffsMSE, comInterval,
-                               nameClass);
+        MpiViUtility::saveResults(iStepVector, durationVector, jDiffsMaxNorm, jDiffsL2Norm, jDiffsMSE, maxRSSs,
+                                  comInterval, nameClass);
     }
 
     MPI_Finalize();
