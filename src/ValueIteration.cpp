@@ -1,5 +1,5 @@
-#include "util.h"
-#include "simulator.h"
+#include "VIUtility.h"
+#include "ValueIteration.h"
 
 #include <iostream>
 

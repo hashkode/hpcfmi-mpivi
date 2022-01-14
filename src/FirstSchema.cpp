@@ -1,12 +1,18 @@
-#include "util.h"
 #include "FirstSchema.h"
+
 #include <mpi.h>
 
- std::tuple<float,int> FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz,
-                                  std::vector<int> &pi,
-                                  const float alpha, const int maxF, const int nStars, const int maxU,
-                                  const float epsThreshold, const bool doAsync, const int maxIteration,
-                                  const int comInterval) {
+#include "VIUtility.h"
+
+FirstSchema::FirstSchema() {
+    name = std::string(__func__);
+}
+
+std::tuple<float, int>
+FirstSchema::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, const unsigned int pNnz,
+                            std::vector<int> &pi, const float alpha, const int maxF, const int nStars, const int maxU,
+                            const float epsThreshold, const bool doAsync, const int maxIteration,
+                            const int comInterval) {
     int worldSize, worldRank;
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
@@ -36,13 +42,13 @@
     int iStep = 0;
     int conditionCount = 0;
     int conditionThreshold = 5;
-    
+
     while (conditionCount < conditionThreshold && iStep < maxIteration) {
         iStep++;
 
         float epsStep = valueIteration.valueIteration(j.data(), pData, pIndices, pIndptr, pNnz, pi.data(), alpha, maxF,
-                                                      nStars, maxU,
-                                                      epsThreshold, doAsync, nIteration, firstState, lastState);
+                                                      nStars, maxU, epsThreshold, doAsync, nIteration, firstState,
+                                                      lastState);
 
         if (epsStep > epsGlobal) {
             epsGlobal = epsStep;
@@ -66,10 +72,11 @@
 
     }
 
-    MPI_Gatherv(&pi[firstState], lastState - firstState, MPI_INT, pi.data(),
-                nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
-    return {epsGlobal,iStep};
+    MPI_Gatherv(&pi[firstState], lastState - firstState, MPI_INT, pi.data(), nStatesPerProcess.data(),
+                stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
+    return {epsGlobal, iStep};
 }
+
 std::string FirstSchema::GetName() {
-    return typeid(*this).name();
+    return this->name;
 }
