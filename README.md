@@ -23,3 +23,32 @@ Possible variatiation points:
 - Prio C:
   - J split algorithm
   - baremetal vs. cluster/kubernetes
+
+# Makefile
+
+- **clean**:
+  - Cleans repository and removes build files.
+- **compile**:  --> here and at **test** specify which scheme(s)? default all schemes?
+  - **clean**
+  - doxygen
+  - builds project
+- **init**:
+  - updates submodules
+  - checks and installs neccessary packages
+  - downloads data-set from strato server
+  - prepares data-set according to _preparedata.py_
+- **test**:
+  - **compile**
+  - checks and updates data in local directory according to downloaded one from **init**
+  - runs executable
+- **report**:
+  - makes latex report
+- **pack**:
+  - **clean**
+  - packs project
+- **unpack**:
+  - unpacks project
+- **send**:
+  - send packed project to specified host
+- **all**:
+  - tbd
