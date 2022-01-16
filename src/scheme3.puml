@@ -4,26 +4,18 @@
 title SCHEME 3
 start
 fork
-    :rank_0/
-    :read data;
-fork again
-    :rank_N/
-    :read data;
+:<size:18><i><b>LOAD DATA</b></i></size>;
 end fork
-    :rank_0/
 repeat
+    :rank_0/
     :MPI_Bcast(J)|
 fork
     :rank_0/
-repeat
-    backward:nIteration;
-    repeat while (value Iteration)
+    :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Recv(J)|
 fork again
     :rank_N/
-repeat
-    backward:nIteration;
-    repeat while (value Iteration)
+    :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Isend(J)|
 end fork
 :rank_0/

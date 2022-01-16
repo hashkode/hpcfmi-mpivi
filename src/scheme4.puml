@@ -3,26 +3,16 @@
 ' Horizontal lines: -->, <--, <-->'
 title SCHEME 4
 start
+:<size:18><i><b>LOAD DATA</b></i></size>;
+repeat
+   :rank_0/
+   :MPI_Bcast(J)|
 fork
     :rank_0/
-    :read data;
+:<size:15><i><b>Value Iteration</b></i></size>;
 fork again
     :rank_N/
-    :read data;
-end fork
-    :rank_0/
-repeat
-    :MPI_Bcast(J)|
-fork
-    :rank_0/
-repeat
-    backward:nIteration;
-    repeat while (value Iteration)
-fork again
-    :rank_N/
-repeat
-    backward:nIteration;
-    repeat while (value Iteration)
+:<size:15><i><b>Value Iteration</b></i></size>;
 end fork
 :rank_0/
 :MPI_Igatherv(J)|

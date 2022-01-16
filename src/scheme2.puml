@@ -3,31 +3,24 @@
 ' Horizontal lines: -->, <--, <-->'
 title SCHEME 2
 start
-fork
     :rank_0/
-    :read data;
-fork again
-    :rank_N/
-    :read data;
-end fork
-repeat
-:MPI_Scatterv(J)|
+    :<size:15><i><b>read data</b></i></size>;
+:<size:15><b>MPI_Scatterv(data)</b></size>|
 fork
     :rank_0/
 repeat
-backward:nIteration;
-repeat while (value Iteration)
+    :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Allgatherv(J)|
     :MPI_Allreduce(eps)|
-fork again
-    :rank_N/
-repeat
-backward:nIteration;
-repeat while (value Iteration)
-    :MPI_Allgatherv(J)|
-    :MPI_Allreduce(eps)|
-end fork
 repeat while (eps < eps_thresh) is (No) not (Yes)
+fork again
+    :rank_N/
+repeat
+    :<size:15><i><b>Value Iteration</b></i></size>;
+    :MPI_Allgatherv(J)|
+    :MPI_Allreduce(eps)|
+repeat while (eps < eps_thresh) is (No) not (Yes)
+end fork
 :MPI_Gatherv(Pi)|
 stop
 
