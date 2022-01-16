@@ -4,30 +4,27 @@
 #include <iostream>
 
 namespace Backend {
-    float
-    ValueIteration::valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi, const float alpha, const int maxF, const int nStars, const int maxU, const float epsThreshold, const bool doAsync, const int nIteration, const int firstState, const int lastState) {
-        int nState = maxF * nStars * nStars;
-        int nRow = nState;
-        int nCol = nState * maxU;
+    float ValueIteration::valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, int *pi, MpiViUtility::ViParameters &viParameters) {
+        int nState = viParameters.NS;
+        int nRow = viParameters.NS;
+        int nCol = viParameters.NS * viParameters.max_controls;
 
         Eigen::Map<Eigen::VectorXf> _j(j, nState);
         Eigen::Map<Eigen::VectorXi> _pi(pi, nState);
-        Eigen::Map<Eigen::SparseMatrix<float>> _p(nRow, nCol, pNnz, pIndptr, pIndices, pData);
+        Eigen::Map<Eigen::SparseMatrix<float>> _p(nRow, nCol, viParameters.NS, pIndptr, pIndices, pData);
 
-        if (doAsync) {
-            return asyncValueIteration(_j, _p, _pi, alpha, maxF, nStars, maxU, epsThreshold, nIteration, firstState, lastState);
+        if (viParameters.doAsync) {
+            return asyncValueIteration(_j, _p, _pi, viParameters.alpha, viParameters.fuel_capacity, viParameters.number_stars, viParameters.max_controls, viParameters.eps, viParameters.maxIterations, viParameters.firstState, viParameters.lastState);
         } else {
-            return syncValueIteration(_j, _p, _pi, alpha, maxF, nStars, maxU, epsThreshold, nIteration, firstState, lastState);
+            return syncValueIteration(_j, _p, _pi, viParameters.alpha, viParameters.fuel_capacity, viParameters.number_stars, viParameters.max_controls, viParameters.eps, viParameters.maxIterations, viParameters.firstState, viParameters.lastState);
         }
     }
 
     inline StateTuple ValueIteration::decodeState(int state, int nStars) {
         StateTuple stateTuple{
                 .fuel = (int) (state / (nStars * nStars)),
-                .desStar = (int) ((state % (nStars * nStars)) /
-                                  nStars),
-                .curStar =
-                        (state % (nStars * nStars)) % nStars,
+                .desStar = (int) ((state % (nStars * nStars)) / nStars),
+                .curStar = (state % (nStars * nStars)) % nStars,
         };
 
         return stateTuple;
@@ -115,10 +112,7 @@ namespace Backend {
 
 #pragma omp parallel
 #pragma omp for schedule(guided, 1)
-            for (int iBlock = 0; iBlock < nBlock; iBlock++) {
-                epsGlobal = std::max(epsGlobal,
-                                     updateBlock(firstState + iBlock * blockSize, blockSize, j, p, pi, alpha, maxF, nStars, maxU));
-            }
+            for (int iBlock = 0; iBlock < nBlock; iBlock++) { epsGlobal = std::max(epsGlobal, updateBlock(firstState + iBlock * blockSize, blockSize, j, p, pi, alpha, maxF, nStars, maxU)); }
 
             if (epsGlobal < epsThreshold) {
                 conditionCount++;

@@ -6,7 +6,7 @@
 #define MPI_VI_VERBOSE_H
 
 // verbosity setting
-#define VERBOSE_INFO
+//#define VERBOSE_INFO
 //#define VERBOSE_DEBUG
 
 #ifdef VERBOSE_DEBUG

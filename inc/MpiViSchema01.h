@@ -2,6 +2,7 @@
 #define _FirstSchema_H_
 
 #include "ValueIteration.h"
+#include "MpiViUtility.h"
 
 class MpiViSchema01 {
 private:
@@ -10,7 +11,7 @@ private:
 public:
     MpiViSchema01();
 
-    std::tuple<float, int> ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, std::vector<int> &pi, float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync, int maxIteration, int comInterval);
+    void ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, std::vector<int> &pi, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters);
 
     std::string GetName();
 };

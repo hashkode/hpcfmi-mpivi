@@ -7,6 +7,8 @@
 #include "Eigen/Sparse"
 #include "omp.h"
 
+#include "MpiViUtility.h"
+
 /**
  * This namespace holds the implementation of value iteration to determine optimal cost and policy per state for a space travel problem.
  */
@@ -38,7 +40,7 @@ namespace Backend {
  * @param doAsync switch to enable asynchronous value iteration
  * @return epsilon global value when stop criterion was met
  */
-        float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi, float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync, int nIteration, int firstState, int lastState);
+        float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, int *pi, MpiViUtility::ViParameters &viParameters);
 
     private:
         /**

@@ -31,10 +31,18 @@ void loadNpy(std::vector<T> &data, const std::string &path, const std::string &f
 }
 
 int main(int argc, char *argv[]) {
+    // initialisation
+    auto tStart = std::chrono::system_clock::now();
+    MpiViUtility::LogParameters logParameters;
+    logParameters.startDatetime = MpiViUtility::datetime();
+    logParameters.filePath = "../results/";// TODO: parse from configuration file
+
+    MpiViUtility::MpiParameters mpiParameters;
+    mpiParameters.mpiViConfiguration = "local";// TODO: parse from configuration file
+
     MPI_Init(&argc, &argv);
-    int worldSize, worldRank;
-    MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
-    MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
+    MPI_Comm_size(MPI_COMM_WORLD, &mpiParameters.worldSize);
+    MPI_Comm_rank(MPI_COMM_WORLD, &mpiParameters.worldRank);
 
     // get username for individual path
     const char *user = std::getenv("USER");
@@ -48,92 +56,77 @@ int main(int argc, char *argv[]) {
     std::cout << path << std::endl;
 #endif
 
-    MpiViUtility::Parameters p = MpiViUtility::loadParameters(path, "params.txt");// TODO: add to configuration file
+    MpiViUtility::ViParameters viParameters;
+    MpiViUtility::loadParameters(viParameters, path, "params.txt");// TODO: add to configuration file
 
 #ifdef VERBOSE_INFO
     if (worldRank == 0) {
-        std::cout << "Confusion " << p.confusion_distance << std::endl;
-        std::cout << "Fuel " << p.fuel_capacity << std::endl;
-        std::cout << "MaxU " << p.max_controls << std::endl;
-        std::cout << "N stars " << p.number_stars << std::endl;
-        std::cout << "NS " << p.NS << std::endl;
-        std::cout << "P Cols" << p.cols << std::endl;
-        std::cout << "P Cols" << p.rows << std::endl;
-        std::cout << "P data Size " << p.data << std::endl;
-        std::cout << "P indices Size " << p.indices << std::endl;
-        std::cout << "P indptr Size " << p.indptr << std::endl;
+        std::cout << "Confusion " << viParameters.confusion_distance << std::endl;
+        std::cout << "Fuel " << viParameters.fuel_capacity << std::endl;
+        std::cout << "MaxU " << viParameters.max_controls << std::endl;
+        std::cout << "N stars " << viParameters.number_stars << std::endl;
+        std::cout << "NS " << viParameters.NS << std::endl;
+        std::cout << "P Cols" << viParameters.cols << std::endl;
+        std::cout << "P Rows" << viParameters.rows << std::endl;
+        std::cout << "P data Size " << viParameters.data << std::endl;
+        std::cout << "P indices Size " << viParameters.indices << std::endl;
+        std::cout << "P indptr Size " << viParameters.indptr << std::endl;
     }
 #endif
-    std::vector<int> iStepVector;
-    std::vector<float> durationVector;
-    std::vector<float> jDiffsMaxNorm;
-    std::vector<float> jDiffsL2Norm;
-    std::vector<float> jDiffsMSE;
-    std::vector<long> maxRSSs;
     MpiViSchema01 schema;// TODO: add to configuration file
 
-    int nCycle = 3;         // TODO: add to configuration file
-    int comInterval = 1;    // TODO: add to configuration file
-    int maxIterations = 150;// TODO: add to configuration file
-    bool doAsync = false;   // TODO: add to configuration file
+    mpiParameters.comInterval = 1;       // TODO: add to configuration file
+    mpiParameters.maxIterations = 150;   // TODO: add to configuration file
+    mpiParameters.conditionThreshold = 5;// TODO: add to configuration file
 
-    for (int iCycle = 0; iCycle < nCycle; ++iCycle) {
-        std::vector<int> indices, indptr;
-        std::vector<float> data, jStar;
+    viParameters.doAsync = false;   // TODO: add to configuration file
+    viParameters.alpha = .99;       // TODO: add to configuration file
+    viParameters.eps = 1e-6;        // TODO: add to configuration file
+    viParameters.maxIterations = 10;// TODO: add to configuration file
 
-        loadNpy<float>(data, path, "P_data.npy");
-        loadNpy<int>(indices, path, "P_indices.npy");
-        loadNpy<int>(indptr, path, "P_indptr.npy");
-        loadNpy<float>(jStar, path, "J_star_alpha_0_99.npy");
+    std::vector<int> indices, indptr;
+    std::vector<float> data, jStar;
 
-        std::vector<float> j;
-        j.reserve(p.NS);
-        std::vector<int> pi;
-        pi.reserve(p.NS);
-        float alpha = .99;// TODO: add to configuration file
-        float eps = 1e-6; // TODO: add to configuration file
+    loadNpy<float>(data, path, "P_data.npy");
+    loadNpy<int>(indices, path, "P_indices.npy");
+    loadNpy<int>(indptr, path, "P_indptr.npy");
+    loadNpy<float>(jStar, path, "J_star_alpha_0_99.npy");
 
-        auto tStart = std::chrono::system_clock::now();
+    std::vector<float> j;
+    j.reserve(viParameters.NS);
+    std::vector<int> pi;
+    pi.reserve(viParameters.NS);
 
+    // mpi vi execution
+    auto tStartVi = std::chrono::system_clock::now();
+    schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), pi, viParameters, mpiParameters, logParameters);
+    auto tEndVi = std::chrono::system_clock::now();
 
-        auto [epsGlobal, iStep] = schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha, p.fuel_capacity, p.number_stars, p.max_controls, eps, doAsync, maxIterations, comInterval);
+    // measurement and logging
+    if (mpiParameters.worldRank == 0) {
+        Eigen::Map<Eigen::VectorXf> _j0(j.data(), viParameters.NS);
+        Eigen::Map<Eigen::VectorXf> _jStar(jStar.data(), viParameters.NS);
 
-        auto tEnd = std::chrono::system_clock::now();
-
-
-        if (worldRank == 0) {
-            Eigen::Map<Eigen::VectorXf> _j0(j.data(), p.NS);
-            Eigen::Map<Eigen::VectorXf> _jStar(jStar.data(), p.NS);
-
-            float jDiffMaxNorm = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
-            float jDiffL2Norm = (_j0 - _jStar).template lpNorm<2>();
-            float jDiffMSE = (_j0 - _jStar).array().square().sum() / _j0.size();
+        logParameters.jDiffMaxNorm = (_j0 - _jStar).template lpNorm<Eigen::Infinity>();
+        logParameters.jDiffL2Norm = (_j0 - _jStar).template lpNorm<2>();
+        logParameters.jDiffMSE = (_j0 - _jStar).array().square().sum() / _j0.size();
 
 #ifdef VERBOSE_DEBUG
-            for (int iCycle = 0; iCycle < 10; ++iCycle) {
-                std::cout << iCycle << "\t\t>> j0: " << _j0[iCycle] << ";  \tjStar: " << _jStar[iCycle] << ";  \tpi: " << pi[iCycle] << std::endl;
-            }
+        for (int iState = 0; iState < 10; ++iState) { std::cout << iState << "\t\t>> j0: " << _j0[iState] << ";  \tjStar: " << _jStar[iState] << ";  \tpi: " << pi[iState] << std::endl; }
 
-            for (int iCycle = p.NS - 10; iCycle < (int) p.NS; ++iCycle) {
-                std::cout << iCycle << "\t\t>> j0: " << _j0[iCycle] << ";  \tjStar: " << _jStar[iCycle] << ";  \tpi: " << pi[iCycle] << std::endl;
-            }
+        for (int iState = viParameters.NS - 10; iState < (int) viParameters.NS; ++iState) { std::cout << iState << "\t\t>> j0: " << _j0[iState] << ";  \tjStar: " << _jStar[iState] << ";  \tpi: " << pi[iState] << std::endl; }
 #endif
-            float time = (float) std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count();
-            iStepVector.push_back(iStep);
-            durationVector.push_back(time);
-            jDiffsMaxNorm.push_back(jDiffMaxNorm);
-            jDiffsL2Norm.push_back(jDiffL2Norm);
-            jDiffsMSE.push_back(jDiffMSE);
-            maxRSSs.push_back(MpiViUtility::getMaxRSSUsage());
+        logParameters.runtimeVi = (unsigned int) std::chrono::duration_cast<std::chrono::milliseconds>(tEndVi - tStartVi).count();
+        logParameters.maxRSS = MpiViUtility::getMaxRSSUsage();
 
-            std::cout << "epsGlobal: " << epsGlobal << ", max norm (J - J*): " << jDiffMaxNorm << ", l2 norm (J - J*): " << jDiffL2Norm << ", MSE (J - J*): " << jDiffMSE << std::endl;
-            std::cout << "This took " << std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count() << "ms" << std::endl;
-        }
-    }
+        logParameters.nameSchemaClass = schema.GetName();
+        auto tEnd = std::chrono::system_clock::now();
+        logParameters.runtime = (unsigned int) std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count();
 
-    if (worldRank == 0) {
-        std::string nameClass = schema.GetName();
-        MpiViUtility::saveResults(iStepVector, durationVector, jDiffsMaxNorm, jDiffsL2Norm, jDiffsMSE, maxRSSs, comInterval, nameClass);
+        MpiViUtility::saveResults(mpiParameters, logParameters);
+
+        std::cout << "epsGlobal: " << logParameters.epsGlobal << ", max norm (J - J*): " << logParameters.jDiffMaxNorm << ", l2 norm (J - J*): " << logParameters.jDiffL2Norm << ", MSE (J - J*): " << logParameters.jDiffMSE << std::endl;
+        std::cout << "converged at: " << logParameters.steps << ", runtime: " << logParameters.runtime << "ms, MpiVi took: " << logParameters.runtimeVi << "ms, with maxRSSU: " << logParameters.maxRSS << "kb" << std::endl;
     }
 
     MPI_Finalize();

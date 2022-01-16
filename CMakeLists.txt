@@ -72,3 +72,13 @@ execute_process(
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
         "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
+
+# Get the git user-email
+execute_process(
+        COMMAND git config --get user.email
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_USER_EMAIL
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        "-DGIT_USER_EMAIL=\"${GIT_USER_EMAIL}\"")

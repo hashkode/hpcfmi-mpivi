@@ -8,36 +8,74 @@
 #include <string>
 #include <vector>
 
+//TODO: remove if not needed
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
 #ifndef GIT_COMMIT_HASH
 #define GIT_COMMIT_HASH "?"
 #endif
 
+#ifndef GIT_USER_EMAIL
+#define GIT_USER_EMAIL "?"
+#endif
+
 
 class MpiViUtility {
 public:
-    struct Parameters {
-        // Parameters for the MDP
+    struct ViParameters {
+        // ViParameters for the MDP
         float confusion_distance;
         unsigned int fuel_capacity;
         unsigned int max_controls;
         unsigned int number_stars;
         unsigned int NS;
 
-        // Parameters for P Matrix
+        // ViParameters for P Matrix
         unsigned int cols;
         unsigned int rows;
         unsigned int data;
         unsigned int indices;
         unsigned int indptr;
+
+        // misc.
+        bool doAsync;
+        float alpha;
+        float eps;
+        int maxIterations;
+        int firstState;
+        int lastState;
     };
 
-    static MpiViUtility::Parameters loadParameters(const std::string &path, const std::string &filename);
+    struct MpiParameters {
+        std::string mpiViConfiguration;
+        int worldSize;
+        int worldRank;
+        int comInterval;
+        int maxIterations;
+        int conditionThreshold;
+    };
+
+    struct LogParameters {
+        std::string filePath;
+        std::string startDatetime;
+        std::string nameSchemaClass;
+        unsigned int runtime;
+        unsigned int runtimeVi;
+        long maxRSS;
+        float epsGlobal;
+        int steps;
+        float jDiffMaxNorm;
+        float jDiffL2Norm;
+        float jDiffMSE;
+    };
+
+    static void loadParameters(MpiViUtility::ViParameters &viParameters, const std::string &path, const std::string &filename);
 
     static std::string datetime();
 
-    static void saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector, const std::vector<float> &jDiffsMaxNorm, const std::vector<float> &jDiffsL2Norm, const std::vector<float> &jDiffsMSE, const std::vector<long> &maxRSSs, int comInterval, const std::string &nameSchema);
+    static void saveResults(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters);
+
+    static void appendCsv(const std::string &filenameMeasurements, const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters);
 
     static long getMaxRSSUsage();
 };
