@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 project(mpi-vi)
 
+# Enable and require C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Compiler flags for all configuration, -Wall enables all warnings
 set(CMAKE_CXX_FLAGS "-Wall")
 
