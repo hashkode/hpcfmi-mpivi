@@ -2,18 +2,15 @@
 
 #include <mpi.h>
 
-#include "verbose.h"
 #include "MpiViUtility.h"
+#include "verbose.h"
 
 MpiViSchema01::MpiViSchema01() {
     name = std::string(__func__);
 }
 
 std::tuple<float, int>
-MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, const unsigned int pNnz,
-                              std::vector<int> &pi, const float alpha, const int maxF, const int nStars, const int maxU,
-                              const float epsThreshold, const bool doAsync, const int maxIteration,
-                              const int comInterval) {
+MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, const unsigned int pNnz, std::vector<int> &pi, const float alpha, const int maxF, const int nStars, const int maxU, const float epsThreshold, const bool doAsync, const int maxIteration, const int comInterval) {
     int worldSize, worldRank;
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
@@ -33,21 +30,23 @@ MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices
     std::vector<int> nStatesPerProcess, stateOffset;
     for (int iProcessor = 0; iProcessor < worldSize; ++iProcessor) {
         if (iProcessor + 1 < worldSize) nStatesPerProcess.push_back((pNnz / worldSize));
-        else nStatesPerProcess.push_back((pNnz / worldSize) + pNnz % worldSize);
+        else
+            nStatesPerProcess.push_back((pNnz / worldSize) + pNnz % worldSize);
 
         if (iProcessor == 0) stateOffset.push_back(0);
-        else stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1]);
+        else
+            stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1]);
     }
 
 #ifdef VERBOSE_DEBUG
     std::cout << "nStatesPerProcess:" << std::endl;
-    for (int iStatesPerProcess: nStatesPerProcess){
+    for (int iStatesPerProcess: nStatesPerProcess) {
         std::cout << iStatesPerProcess << ", ";
     }
     std::cout << std::endl;
 
     std::cout << "stateOffset:" << std::endl;
-    for (int iStateOffset: stateOffset){
+    for (int iStateOffset: stateOffset) {
         std::cout << iStateOffset << ", ";
     }
     std::cout << std::endl;
@@ -61,22 +60,22 @@ MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices
     while (conditionCount < conditionThreshold && iStep < maxIteration) {
         iStep++;
 
-        float epsStep = valueIteration.valueIteration(j.data(), pData, pIndices, pIndptr, pNnz, pi.data(), alpha, maxF,
-                                                      nStars, maxU, epsThreshold, doAsync, nIteration, firstState,
-                                                      lastState);
+        float epsStep = valueIteration.valueIteration(j.data(), pData, pIndices, pIndptr, pNnz, pi.data(), alpha, maxF, nStars, maxU, epsThreshold, doAsync, nIteration, firstState, lastState);
 
         if (epsStep > epsGlobal) {
             epsGlobal = epsStep;
         };
 
         if (iStep % comInterval == 0) {
-            MPI_Allgatherv(&j[firstState], nStatesPerProcess[worldRank], MPI_FLOAT, j.data(), nStatesPerProcess.data(),
-                           stateOffset.data(), MPI_FLOAT, MPI_COMM_WORLD);
+            MPI_Allgatherv(&j[firstState], nStatesPerProcess[worldRank], MPI_FLOAT, j.data(), nStatesPerProcess.data(), stateOffset.data(), MPI_FLOAT, MPI_COMM_WORLD);
 
             MPI_Allreduce(&epsGlobal, &epsGlobal, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
 
-            if (epsGlobal < epsThreshold) { conditionCount++; }
-            else { conditionCount = 0; }
+            if (epsGlobal < epsThreshold) {
+                conditionCount++;
+            } else {
+                conditionCount = 0;
+            }
 
             epsGlobal = 0;
         }
@@ -84,11 +83,9 @@ MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices
 
     if (worldRank == 0) {
         std::cout << "converged at: " << iStep << std::endl;
-
     }
 
-    MPI_Gatherv(&pi[firstState], nStatesPerProcess[worldRank], MPI_INT, pi.data(), nStatesPerProcess.data(),
-                stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv(&pi[firstState], nStatesPerProcess[worldRank], MPI_INT, pi.data(), nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
     return {epsGlobal, iStep};
 }
 

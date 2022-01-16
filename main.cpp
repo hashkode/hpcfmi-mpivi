@@ -1,16 +1,16 @@
 // A simple program to debug the backend code
 
-#include <string>
-#include <iostream>
 #include <chrono>
 #include <cstdlib>
+#include <iostream>
 #include <mpi.h>
+#include <string>
 
 #include "npy.hpp"
 
-#include "verbose.h"
-#include "MpiViUtility.h"
 #include "MpiViSchema01.h"
+#include "MpiViUtility.h"
+#include "verbose.h"
 
 //TODO: move to MpiViUtility class
 
@@ -40,15 +40,15 @@ int main(int argc, char *argv[]) {
     const char *user = std::getenv("USER");
     std::string username(user);
     // construct path to tmp directory of current user
-    std::string path = "/var/tmp/" + username; // TODO: add to configuration file
+    std::string path = "/var/tmp/" + username;// TODO: add to configuration file
     // Add subpath to used data-set
-    path += "/data/data_small/"; // TODO: add to configuration file
+    path += "/data/data_small/";// TODO: add to configuration file
 
 #ifdef VERBOSE_DEBUG
     std::cout << path << std::endl;
 #endif
 
-    MpiViUtility::Parameters p = MpiViUtility::loadParameters(path, "params.txt"); // TODO: add to configuration file
+    MpiViUtility::Parameters p = MpiViUtility::loadParameters(path, "params.txt");// TODO: add to configuration file
 
 #ifdef VERBOSE_INFO
     if (worldRank == 0) {
@@ -70,12 +70,12 @@ int main(int argc, char *argv[]) {
     std::vector<float> jDiffsL2Norm;
     std::vector<float> jDiffsMSE;
     std::vector<long> maxRSSs;
-    MpiViSchema01 schema; // TODO: add to configuration file
+    MpiViSchema01 schema;// TODO: add to configuration file
 
-    int nCycle = 3; // TODO: add to configuration file
-    int comInterval = 1; // TODO: add to configuration file
-    int maxIterations = 150; // TODO: add to configuration file
-    bool doAsync = false; // TODO: add to configuration file
+    int nCycle = 3;         // TODO: add to configuration file
+    int comInterval = 1;    // TODO: add to configuration file
+    int maxIterations = 150;// TODO: add to configuration file
+    bool doAsync = false;   // TODO: add to configuration file
 
     for (int iCycle = 0; iCycle < nCycle; ++iCycle) {
         std::vector<int> indices, indptr;
@@ -90,15 +90,13 @@ int main(int argc, char *argv[]) {
         j.reserve(p.NS);
         std::vector<int> pi;
         pi.reserve(p.NS);
-        float alpha = .99; // TODO: add to configuration file
+        float alpha = .99;// TODO: add to configuration file
         float eps = 1e-6; // TODO: add to configuration file
 
         auto tStart = std::chrono::system_clock::now();
 
 
-        auto[epsGlobal, iStep] = schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha,
-                                                       p.fuel_capacity, p.number_stars, p.max_controls, eps, doAsync,
-                                                       maxIterations, comInterval);
+        auto [epsGlobal, iStep] = schema.ValueIteration(j, data.data(), indices.data(), indptr.data(), p.NS, pi, alpha, p.fuel_capacity, p.number_stars, p.max_controls, eps, doAsync, maxIterations, comInterval);
 
         auto tEnd = std::chrono::system_clock::now();
 
@@ -128,17 +126,14 @@ int main(int argc, char *argv[]) {
             jDiffsMSE.push_back(jDiffMSE);
             maxRSSs.push_back(MpiViUtility::getMaxRSSUsage());
 
-            std::cout << "epsGlobal: " << epsGlobal << ", max norm (J - J*): " << jDiffMaxNorm << ", l2 norm (J - J*): "
-                      << jDiffL2Norm << ", MSE (J - J*): " << jDiffMSE << std::endl;
-            std::cout << "This took " << std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count()
-                      << "ms" << std::endl;
+            std::cout << "epsGlobal: " << epsGlobal << ", max norm (J - J*): " << jDiffMaxNorm << ", l2 norm (J - J*): " << jDiffL2Norm << ", MSE (J - J*): " << jDiffMSE << std::endl;
+            std::cout << "This took " << std::chrono::duration_cast<std::chrono::milliseconds>(tEnd - tStart).count() << "ms" << std::endl;
         }
     }
 
     if (worldRank == 0) {
         std::string nameClass = schema.GetName();
-        MpiViUtility::saveResults(iStepVector, durationVector, jDiffsMaxNorm, jDiffsL2Norm, jDiffsMSE, maxRSSs,
-                                  comInterval, nameClass);
+        MpiViUtility::saveResults(iStepVector, durationVector, jDiffsMaxNorm, jDiffsL2Norm, jDiffsMSE, maxRSSs, comInterval, nameClass);
     }
 
     MPI_Finalize();

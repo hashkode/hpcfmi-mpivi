@@ -37,13 +37,10 @@ public:
 
     static std::string datetime();
 
-    static void saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector,
-                            const std::vector<float> &jDiffsMaxNorm, const std::vector<float> &jDiffsL2Norm,
-                            const std::vector<float> &jDiffsMSE, const std::vector<long> &maxRSSs, int comInterval,
-                            const std::string &nameSchema);
+    static void saveResults(const std::vector<int> &iStepVector, const std::vector<float> &durationVector, const std::vector<float> &jDiffsMaxNorm, const std::vector<float> &jDiffsL2Norm, const std::vector<float> &jDiffsMSE, const std::vector<long> &maxRSSs, int comInterval, const std::string &nameSchema);
 
     static long getMaxRSSUsage();
 };
 
 
-#endif //MPI_VI_MPIVIUTILITY_H
+#endif//MPI_VI_MPIVIUTILITY_H

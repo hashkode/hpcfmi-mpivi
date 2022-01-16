@@ -16,5 +16,4 @@ find_package(LAPACKE REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
         ${CMAKE_CURRENT_LIST_DIR}/libnpy/include # TODO: hacky, introduce cmake file for cnpy?
-        ${LAPACKE_INCLUDE_DIRS_DEP} # = include directories of lapacke and dependencies
-        )
+        ${LAPACKE_INCLUDE_DIRS_DEP}) # = include directories of lapacke and dependencies

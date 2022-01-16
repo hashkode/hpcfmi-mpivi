@@ -15,4 +15,4 @@
 #endif
 #endif
 
-#endif //MPI_VI_VERBOSE_H
+#endif//MPI_VI_VERBOSE_H
