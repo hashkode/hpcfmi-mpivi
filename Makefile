@@ -24,7 +24,10 @@ compile: clean
 test: compile
 	cd build/
 	$(MAKE) -C utl/ test
-	
+
+testX: test
+	./utl/runTestX.sh $(filter-out $@, $(MAKECMDGOALS))
+
 report:
 	$(MAKE) -C rep/ report.pdf
 

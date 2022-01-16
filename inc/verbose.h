@@ -1,12 +1,12 @@
 //
-// Created by tobias on 11.01.22.
+// Created by tobias on 14.01.22.
 //
 
-#ifndef MPI_VI_UTIL_H
-#define MPI_VI_UTIL_H
+#ifndef MPI_VI_VERBOSE_H
+#define MPI_VI_VERBOSE_H
 
 // verbosity setting
-#define VERBOSE_INFO
+//#define VERBOSE_INFO
 //#define VERBOSE_DEBUG
 
 #ifdef VERBOSE_DEBUG
@@ -15,4 +15,4 @@
 #endif
 #endif
 
-#endif //MPI_VI_UTIL_H
+#endif//MPI_VI_VERBOSE_H

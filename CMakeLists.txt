@@ -1,5 +1,9 @@
-cmake_minimum_required (VERSION 3.13)
+cmake_minimum_required(VERSION 3.13)
 project(mpi-vi)
+
+# Enable and require C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Compiler flags for all configuration, -Wall enables all warnings
 set(CMAKE_CXX_FLAGS "-Wall")
@@ -43,7 +47,7 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
 # All additional source files for debugging, e.g. if the debugging code is located in different files
-file(GLOB SRC_FILES main.cpp  src/*.cpp)
+file(GLOB SRC_FILES main.cpp src/*.cpp)
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
 # Link against MPI Libraries
@@ -54,3 +58,31 @@ target_link_libraries(${PROJECT_NAME} ${MPI_LIBRARIES} -lpthread)
 add_subdirectory(lib)
 add_subdirectory(inc)
 add_subdirectory(src)
+
+# adapted from: https://stackoverflow.com/a/63924044
+# Get the current working branch
+execute_process(
+        COMMAND git rev-parse --abbrev-ref HEAD
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_BRANCH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Get the latest commit hash
+execute_process(
+        COMMAND git describe --always --dirty --match '>barfoo<'
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_COMMIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        "-DGIT_COMMIT_HASH=\"${GIT_COMMIT_HASH}\"")
+
+# Get the git user-email
+execute_process(
+        COMMAND git config --get user.email
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE GIT_USER_EMAIL
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        "-DGIT_USER_EMAIL=\"${GIT_USER_EMAIL}\"")

@@ -7,11 +7,13 @@
 #include "Eigen/Sparse"
 #include "omp.h"
 
+#include "MpiViUtility.h"
+
 /**
  * This namespace holds the implementation of value iteration to determine optimal cost and policy per state for a space travel problem.
  */
 namespace Backend {
-/**
+    /**
  * This type defines a struct to hold the decomposed state information for easier access.
  */
     typedef struct {
@@ -22,7 +24,7 @@ namespace Backend {
 
     class ValueIteration {
     public:
-/**
+        /**
  * Run value iteration on the specified probability matrix to yield optimal cost and policy.
  * @param j pointer to an array holding the state cost
  * @param pData pointer to the data property of a sparse matrix with transition data
@@ -38,12 +40,10 @@ namespace Backend {
  * @param doAsync switch to enable asynchronous value iteration
  * @return epsilon global value when stop criterion was met
  */
-        float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, unsigned int pNnz, int *pi,
-                             float alpha, int maxF, int nStars, int maxU, float epsThreshold, bool doAsync,
-                             int nIteration, int firstState, int lastState);
+        float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, int *pi, MpiViUtility::ViParameters &viParameters);
 
     private:
-/**
+        /**
  * Deserialize the input state into a struct representation.
  * @param state serialized state of the space ship
  * @param nStars number of stars
@@ -51,7 +51,7 @@ namespace Backend {
  */
         StateTuple decodeState(int state, int nStars);
 
-/**
+        /**
  * Calculate the stage cost of the action at the state.
  * @param state serialized state of the space ship
  * @param action control action
@@ -59,7 +59,7 @@ namespace Backend {
  */
         float calculateStageCost(StateTuple &state, int action);
 
-/**
+        /**
  * Calculate the expected cost of the action at the state.
  * @tparam SparseMatrixType template type for the sparse policy matrix
  * @param j vector with the optimal cost per state
@@ -73,11 +73,9 @@ namespace Backend {
  * @return expected cost
  */
         template<typename SparseMatrixType>
-        float
-        calculateExpectedCost(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, StateTuple &stateTuple,
-                              int state, int action, float alpha, int maxU);
+        float calculateExpectedCost(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, StateTuple &stateTuple, int state, int action, float alpha, int maxU);
 
-/**
+        /**
  * Update optimal cost and policy for the the block.
  * @tparam SparseMatrixType template type for the sparse policy matrix
  * @param iBlock index indicating the batch of states to update
@@ -91,11 +89,9 @@ namespace Backend {
  * @return epsilon local value of the block update
  */
         template<typename SparseMatrixType>
-        float
-        updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                    Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
+        float updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
 
-/**
+        /**
  * asyncValueIteration Asynchronous implementation of the value iteration algorithm.
  * @tparam SparseMatrixType template type for the sparse policy matrix
  * @param j vector with the optimal cost per state
@@ -109,11 +105,9 @@ namespace Backend {
  * @return epsilon global value when stop criterion was met
  */
         template<typename SparseMatrixType>
-        float asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                                  Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                                  float epsThreshold, int nIteration, int firstState, int lastState);
+        float asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU, float epsThreshold, int nIteration, int firstState, int lastState);
 
-/**
+        /**
  * Synchronous implementation of the value iteration algorithm.
  * @tparam SparseMatrixType template type for the sparse policy matrix
  * @param j vector with the optimal cost per state
@@ -130,10 +124,8 @@ namespace Backend {
  * @return epsilon global value when stop criterion was met
  */
         template<typename SparseMatrixType>
-        float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p,
-                                 Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU,
-                                 float epsThreshold, int nIteration, int firstState, int lastState);
+        float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU, float epsThreshold, int nIteration, int firstState, int lastState);
     };
-}
+}// namespace Backend
 
 #endif
