@@ -4,23 +4,26 @@
 title SCHEME 3
 start
 :<size:18><i><b>LOAD DATA</b></i></size>;
-repeat
 fork
     :rank_0/
+    repeat
     :MPI_Bcast(J)|
     :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Recv(J)|
+    :eps;
+    :MPI_Bcast(eps)|
+    repeat while (eps < eps_thresh) is (No) not (Yes)
+    :MPI_Gatherv(Pi)|
 fork again
     :rank_N/
+    repeat
     :MPI_Bcast(J)|    
     :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Ssend(J)|
-end fork
-:rank_0/
-repeat while (eps < eps_thresh) is (No) not (Yes)
-fork
-:rank_#/
-:MPI_Gatherv(Pi)|
+    :wait;
+    :MPI_Bcast(eps)|
+    repeat while (eps < eps_thresh) is (No) not (Yes)
+    :MPI_Gatherv(Pi)|
 end fork
 stop
 
