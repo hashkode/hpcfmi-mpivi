@@ -1,0 +1,15 @@
+@startuml
+'left to right direction
+' Horizontal lines: -->, <--, <-->'
+title LOAD DATA
+start
+fork
+    :rank_0/
+    :read data;
+fork again
+    :rank_N/
+    :read data;
+end fork
+stop
+
+@enduml

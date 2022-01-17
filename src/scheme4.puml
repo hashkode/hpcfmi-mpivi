@@ -1,0 +1,32 @@
+@startuml
+'left to right direction
+' Horizontal lines: -->, <--, <-->'
+title SCHEME 4
+start
+:<size:18><i><b>LOAD DATA</b></i></size>;
+fork
+    :rank_0/
+    repeat
+    :MPI_Bcast(J)|
+    :<size:15><i><b>Value Iteration</b></i></size>;
+    :MPI_Igatherv(J)|
+    :MPI_Wait|
+    :eps;
+    :MPI_Bcast(eps)|
+    repeat while (eps < eps_thresh) is (No) not (Yes)
+    :MPI_Gatherv(Pi)|
+fork again
+    :rank_N/
+    repeat
+    :MPI_Bcast(J)|
+    :<size:15><i><b>Value Iteration</b></i></size>;
+    :MPI_Igatherv(J)|
+    :MPI_Wait|
+    : ;
+    :MPI_Bcast(eps)|
+repeat while (eps < eps_thresh) is (No) not (Yes)
+:MPI_Gatherv(Pi)|
+end fork
+stop
+
+@enduml
