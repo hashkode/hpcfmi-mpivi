@@ -20,7 +20,7 @@ fork again
     :MPI_Bcast(J)|    
     :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Ssend(J)|
-    :wait;
+    : ;
     :MPI_Bcast(eps)|
     repeat while (eps < eps_thresh) is (No) not (Yes)
     :MPI_Gatherv(Pi)|

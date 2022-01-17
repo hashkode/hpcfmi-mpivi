@@ -22,7 +22,7 @@ fork again
     :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Igatherv(J)|
     :MPI_Wait|
-    :wait;
+    : ;
     :MPI_Bcast(eps)|
 repeat while (eps < eps_thresh) is (No) not (Yes)
 :MPI_Gatherv(Pi)|
