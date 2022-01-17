@@ -1,9 +1,11 @@
 @startuml
 'left to right direction
 ' Horizontal lines: -->, <--, <-->'
-title SCHEME 1
+title SCHEME 5
 start
-:<size:18><i><b>LOAD DATA</b></i></size>;
+    :rank_0/
+    :<size:15><i><b>read data</b></i></size>;
+:<size:15><b>MPI_Bcast(data)</b></size>|
 fork
     :rank_0/
 repeat
