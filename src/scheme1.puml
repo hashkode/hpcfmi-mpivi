@@ -11,6 +11,7 @@ repeat
     :MPI_Allgatherv(J)|
     :MPI_Allreduce(eps)|
 repeat while (eps < eps_thresh) is (No) not (Yes)
+:MPI_Gatherv(Pi)|
 fork again
     :rank_N/
 repeat
@@ -18,8 +19,8 @@ repeat
     :MPI_Allgatherv(J)|
     :MPI_Allreduce(eps)|
 repeat while (eps < eps_thresh) is (No) not (Yes)
-end fork
 :MPI_Gatherv(Pi)|
+end fork
 stop
 
 @enduml

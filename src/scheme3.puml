@@ -3,26 +3,25 @@
 ' Horizontal lines: -->, <--, <-->'
 title SCHEME 3
 start
-fork
 :<size:18><i><b>LOAD DATA</b></i></size>;
-end fork
 repeat
+fork
     :rank_0/
     :MPI_Bcast(J)|
-fork
-    :rank_0/
     :<size:15><i><b>Value Iteration</b></i></size>;
     :MPI_Recv(J)|
 fork again
     :rank_N/
+    :MPI_Bcast(J)|    
     :<size:15><i><b>Value Iteration</b></i></size>;
-    :MPI_Isend(J)|
+    :MPI_Ssend(J)|
 end fork
 :rank_0/
-:MPI_Testall|
 repeat while (eps < eps_thresh) is (No) not (Yes)
+fork
+:rank_#/
 :MPI_Gatherv(Pi)|
-
+end fork
 stop
 
 @enduml

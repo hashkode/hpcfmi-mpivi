@@ -10,16 +10,20 @@ repeat
 fork
     :rank_0/
 :<size:15><i><b>Value Iteration</b></i></size>;
+:MPI_Igatherv(J)|
+:MPI_Wait|
 fork again
     :rank_N/
 :<size:15><i><b>Value Iteration</b></i></size>;
+:MPI_Igatherv(J)|
+:MPI_Wait|
 end fork
 :rank_0/
-:MPI_Igatherv(J)|
-:MPI_Test|
 repeat while (eps < eps_thresh) is (No) not (Yes)
+fork
+:rank_#/
 :MPI_Gatherv(Pi)|
-
+end fork
 stop
 
 @enduml
