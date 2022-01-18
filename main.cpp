@@ -21,26 +21,42 @@ int main(int argc, char *argv[]) {
     MpiViUtility::MpiParameters mpiParameters{};
     MpiViUtility::ViParameters viParameters{};
 
-    // commandline argument checks
-    if (mpiParameters.worldRank == 0) {
-        if (argc != 2) {
-            std::cout << "You entered the wrong number of arguments: " << argc << " arguments instead of 2." << std::endl;
-            std::cout << "Intended use is: mpirun <options> mpi-vi <configurationpath>" << std::endl;
-            for (int i = 0; i < argc; ++i) { std::cout << argv[i] << "\n"; }
-            //throw std::invalid_argument("Invalid number of arguments.");
-        }
-    }
+    bool useDefault = false;
+    std::string defaultConfigurationFile = "../automation/jobs/default.yaml";
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &mpiParameters.worldSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &mpiParameters.worldRank);
 
-    if (true) {// replace with <mpiParameters.worldRank == 0> if BCast for complete structs is implemented
+    // commandline argument checks
+    if (mpiParameters.worldRank == 0) {
+        try {
+            if (argc != 2) {
+                std::cout << "You entered the wrong number of arguments: " << argc << " instead of 2." << std::endl;
+                std::cout << "Intended use is:\n1, default:\tmpirun <options> mpi-vi -d" << std::endl;
+                std::cout << "2, configured:\tmpirun <options> mpi-vi <configurationpath>" << std::endl;
+                std::cout << "You entered the following arguments:" << std::endl;
+                for (int i = 0; i < argc; ++i) { std::cout << std::to_string(i) + ": " << argv[i] << std::endl; }
+                throw std::invalid_argument("Invalid number of arguments.");
+            }
+        } catch (std::invalid_argument &error) {
+            std::cout << "Proceeding with default configuration file: " << defaultConfigurationFile << std::endl;
+            useDefault = true;
+        }
+    }
+
+    MPI_Bcast(&useDefault, 1, MPI_CXX_BOOL, 0, MPI_COMM_WORLD);
+
+    if (true) {// TODO: replace with <mpiParameters.worldRank == 0> if BCast for complete structs is implemented
         // get username for individual path
         const char *user = std::getenv("USER");
         mpiParameters.username = user;
 
-        mpiParameters.configurationFile = argv[1];
+        if (useDefault || argv[1] == std::string("-d")) {
+            mpiParameters.configurationFile = defaultConfigurationFile;
+        } else {
+            mpiParameters.configurationFile = argv[1];
+        }
         if (!std::filesystem::exists(mpiParameters.configurationFile)) { throw std::invalid_argument("The specified configuration file does not exist."); }
         MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters);
         MpiViUtility::loadParameters(viParameters, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "params.txt");
