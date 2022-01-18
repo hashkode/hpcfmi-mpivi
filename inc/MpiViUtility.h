@@ -6,6 +6,7 @@
 #define MPI_VI_MPIVIUTILITY_H
 
 #include <string>
+#include <vector>
 
 //TODO: remove if not needed
 #define GET_VARIABLE_NAME(Variable) (#Variable)
@@ -16,6 +17,10 @@
 
 #ifndef GIT_USER_EMAIL
 #define GIT_USER_EMAIL "?"
+#endif
+
+#ifndef GIT_BRANCH
+#define GIT_BRANCH "?"
 #endif
 
 
@@ -54,12 +59,16 @@ public:
         unsigned int comInterval;
         unsigned int maxIterations;
         unsigned int conditionThreshold;
+        std::string username;
+        std::string basePath;
+        std::string dataSubPath;
+        std::string configurationFile;
     };
 
     struct LogParameters {
         std::string filePath;
         std::string startDatetime;
-        std::string nameConfiguration;
+        std::string target;
         unsigned int runtime;
         unsigned int runtimeVi;
         unsigned long maxRSS;
@@ -72,7 +81,11 @@ public:
 
     static void loadParameters(MpiViUtility::ViParameters &viParameters, const std::string &path, const std::string &filename);
 
-    static void loadConfiguration(std::string configurationFile, ViParameters &viParameters, MpiParameters &mpiParameters, LogParameters &logParameters, std::string &basePath, std::string &dataSubPath);
+    static void loadConfiguration(ViParameters &viParameters, MpiParameters &mpiParameters, LogParameters &logParameters);
+
+    static void loadNpy(std::vector<int> &data, const std::string &path, const std::string &filename);
+
+    static void loadNpy(std::vector<float> &data, const std::string &path, const std::string &filename);
 
     static std::string datetime();
 

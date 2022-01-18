@@ -12,11 +12,11 @@
 class MpiViSchema {
 protected:
     std::string name;
+
 public:
-    virtual void ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, std::vector<int> &pi, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) = 0;
+    virtual void ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) = 0;
 
     virtual std::string GetName() = 0;
 };
-
 
 #endif//MPI_VI_MPIVISCHEMA_H

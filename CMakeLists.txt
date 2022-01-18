@@ -67,6 +67,10 @@ execute_process(
         OUTPUT_VARIABLE GIT_BRANCH
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+        "-DGIT_BRANCH=\"${GIT_BRANCH}\"")
+
+
 # Get the latest commit hash
 execute_process(
         COMMAND git describe --always --dirty --match '>barfoo<'

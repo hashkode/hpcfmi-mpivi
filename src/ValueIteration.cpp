@@ -1,6 +1,7 @@
 #include "ValueIteration.h"
 #include "verbose.h"
 
+#include "omp.h"
 #include <iostream>
 
 namespace Backend {
@@ -104,6 +105,7 @@ namespace Backend {
         unsigned int iterations = 0;
         unsigned int conditionCount = 0;
 
+#pragma omp parallel
         omp_set_num_threads(viParameters.numThreads);
 
         while (conditionCount < viParameters.conditionThreshold && iterations < viParameters.maxIterations) {
@@ -111,7 +113,6 @@ namespace Backend {
 
             iterations++;
 
-#pragma omp parallel
 #pragma omp for schedule(guided, 1)
             for (unsigned int iBlock = 0; iBlock < nBlock; iBlock++) { epsGlobal = std::max(epsGlobal, updateBlock(viParameters.firstState + iBlock * blockSize, blockSize, j, p, pi, viParameters)); }
 

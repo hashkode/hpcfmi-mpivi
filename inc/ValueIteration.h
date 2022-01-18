@@ -5,7 +5,6 @@
 #define EIGEN_USE_LAPACKE
 
 #include "Eigen/Sparse"
-#include "omp.h"
 
 #include "MpiViUtility.h"
 

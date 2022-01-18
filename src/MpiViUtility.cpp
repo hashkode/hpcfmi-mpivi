@@ -5,12 +5,13 @@
 #include "MpiViUtility.h"
 
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include <filesystem>
 #include <sys/resource.h>
 
+#include "npy.hpp"
 #include "yaml-cpp/yaml.h"
 
 #include "verbose.h"
@@ -52,8 +53,8 @@ void MpiViUtility::loadParameters(MpiViUtility::ViParameters &viParameters, cons
 #endif
 }
 
-void MpiViUtility::loadConfiguration(std::string configurationFile, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters, std::string &basePath, std::string &dataSubPath){
-    YAML::Node config = YAML::LoadFile(configurationFile);
+void MpiViUtility::loadConfiguration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
+    YAML::Node config = YAML::LoadFile(mpiParameters.configurationFile);
     try {
         YAML::Node parentNode = config;
         if (parentNode.IsMap()) {
@@ -103,14 +104,14 @@ void MpiViUtility::loadConfiguration(std::string configurationFile, MpiViUtility
                                 }
                             }
                         } else {
-                            if (sub1Key.as<std::string>() == "name") {
-                                logParameters.nameConfiguration = sub1Value.as<std::string>();
+                            if (sub1Key.as<std::string>() == "target") {
+                                logParameters.target = sub1Value.as<std::string>();
                             } else if (sub1Key.as<std::string>() == "resultsPath") {
                                 logParameters.filePath = sub1Value.as<std::string>();
                             } else if (sub1Key.as<std::string>() == "basePath") {
-                                basePath = sub1Value.as<std::string>();
+                                mpiParameters.basePath = sub1Value.as<std::string>();
                             } else if (sub1Key.as<std::string>() == "dataSubPath") {
-                                dataSubPath = sub1Value.as<std::string>();
+                                mpiParameters.dataSubPath = sub1Value.as<std::string>();
                             }
                         }
                     }
@@ -118,6 +119,24 @@ void MpiViUtility::loadConfiguration(std::string configurationFile, MpiViUtility
             }
         }
     } catch (YAML::RepresentationException &exception) { throw std::invalid_argument("The specified configuration file is malformed: " + exception.msg); }
+}
+
+void MpiViUtility::loadNpy(std::vector<int> &data, const std::string &path, const std::string &filename) {
+    std::vector<unsigned long> shape;
+    bool fortranOrder;
+
+    std::string ss = path + filename;
+
+    npy::LoadArrayFromNumpy(ss, shape, fortranOrder, data);
+}
+
+void MpiViUtility::loadNpy(std::vector<float> &data, const std::string &path, const std::string &filename) {
+    std::vector<unsigned long> shape;
+    bool fortranOrder;
+
+    std::string ss = path + filename;
+
+    npy::LoadArrayFromNumpy(ss, shape, fortranOrder, data);
 }
 
 std::string MpiViUtility::datetime() {
@@ -135,7 +154,8 @@ std::string MpiViUtility::datetime() {
 }
 
 void MpiViUtility::saveResults(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
-    std::string filenameMeasurements = logParameters.filePath + std::string(GIT_COMMIT_HASH) + "_" + logParameters.nameConfiguration + "_" + std::string(GIT_USER_EMAIL) + ".csv";
+    std::filesystem::create_directories(logParameters.filePath + std::string(GIT_BRANCH) + "/");
+    std::string filenameMeasurements = logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + logParameters.target + "_" + std::string(GIT_USER_EMAIL) + ".csv";
 
     if (!std::filesystem::exists(filenameMeasurements)) {
         std::ofstream outfileMeasurements(filenameMeasurements);
