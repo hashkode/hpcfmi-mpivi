@@ -105,6 +105,8 @@ void MpiViUtility::loadConfiguration(MpiViUtility::ViParameters &viParameters, M
                         } else {
                             if (sub1Key.as<std::string>() == "target") {
                                 logParameters.target = sub1Value.as<std::string>();
+                            } else if (sub1Key.as<std::string>() == "base") {
+                                mpiParameters.base = sub1Value.as<std::string>();
                             } else if (sub1Key.as<std::string>() == "resultsPath") {
                                 logParameters.filePath = sub1Value.as<std::string>();
                             } else if (sub1Key.as<std::string>() == "basePath") {
@@ -160,6 +162,7 @@ void MpiViUtility::saveResults(const MpiViUtility::MpiParameters &mpiParameters,
         std::ofstream outfileMeasurements(filenameMeasurements);
         std::string header = "datetime,";
         header += "schema,";
+        header += "world_size,";
         header += "com_intervall,";
         header += "runtime_ms,";
         header += "runtime_vi_ms,";
@@ -182,6 +185,7 @@ void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiV
 
     std::string line = logParameters.startDatetime + ",";
     line += mpiParameters.nameSchema + ",";
+    line += std::to_string(mpiParameters.worldSize) + ",";
     line += std::to_string(mpiParameters.comInterval) + ",";
     line += std::to_string(logParameters.runtime) + ",";
     line += std::to_string(logParameters.runtimeVi) + ",";

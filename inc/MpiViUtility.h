@@ -63,6 +63,7 @@ public:
         std::string basePath;
         std::string dataSubPath;
         std::string configurationFile;
+        std::string base;
     };
 
     struct LogParameters {

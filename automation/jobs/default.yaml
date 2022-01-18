@@ -1,4 +1,5 @@
 configuration:
+  base: root
   target: local
   resultsPath: ../automation/results/
   basePath: /var/tmp/

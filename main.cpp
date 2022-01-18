@@ -59,6 +59,24 @@ int main(int argc, char *argv[]) {
         }
         if (!std::filesystem::exists(mpiParameters.configurationFile)) { throw std::invalid_argument("The specified configuration file does not exist."); }
         MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters);
+        // TODO: replace poor man's configuration inheritance with recursive implementation
+        if (mpiParameters.base != "root") {
+            std::string configLvl2 = mpiParameters.configurationFile;
+            mpiParameters.configurationFile = "../automation/jobs/" + mpiParameters.base;
+            MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters);
+
+            if (mpiParameters.base != "root") {
+                std::string configLvl1 = mpiParameters.configurationFile;
+                mpiParameters.configurationFile = "../automation/jobs/" + mpiParameters.base;
+                MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters);
+
+                mpiParameters.configurationFile = configLvl1;
+                MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters);
+            }
+
+            mpiParameters.configurationFile = configLvl2;
+            MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters);
+        }
         MpiViUtility::loadParameters(viParameters, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "params.txt");
     }
 

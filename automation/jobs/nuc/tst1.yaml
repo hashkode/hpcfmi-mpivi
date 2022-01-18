@@ -1,0 +1,5 @@
+configuration:
+  base: nuc/default.yaml
+  target: nuc
+  mpiParameters:
+    maxIterations: 50
