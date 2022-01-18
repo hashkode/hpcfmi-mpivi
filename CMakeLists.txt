@@ -47,11 +47,11 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
 # All additional source files for debugging, e.g. if the debugging code is located in different files
-file(GLOB SRC_FILES main.cpp src/*.cpp)
-add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_executable(${PROJECT_NAME} main.cpp)
 
 # Link against MPI Libraries
-target_link_libraries(${PROJECT_NAME} ${MPI_LIBRARIES} -lpthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${MPI_LIBRARIES} -lpthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE yaml-cpp)
 
 # To make use of the our library add a subdirectory call to build and install it
 # -> no need to care about the library when using an IDE to "open" this CMakeLists.txt

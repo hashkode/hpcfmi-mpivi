@@ -11,6 +11,7 @@ if ! dpkg -l | grep doxygen -c >>/dev/null; then sudo apt-get install doxygen; f
 if ! dpkg -l | grep liblapack-dev -c >>/dev/null; then sudo apt-get install liblapack-dev; fi
 if ! dpkg -l | grep liblapacke-dev -c >>/dev/null; then sudo apt-get install liblapacke-dev; fi
 if ! dpkg -l | grep graphviz -c >>/dev/null; then sudo apt-get install graphviz; fi
+if ! dpkg -l | grep python3-pip -c >>/dev/null; then sudo apt-get install python3-pip; fi
 ### openmpi
 if ! dpkg -l | grep openmpi-bin -c >>/dev/null; then sudo apt-get install openmpi-bin; fi
 if ! dpkg -l | grep openmpi-common -c >>/dev/null; then sudo apt-get install openmpi-common; fi
