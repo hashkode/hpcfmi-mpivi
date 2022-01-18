@@ -1,0 +1,29 @@
+@startuml
+'left to right direction
+' Horizontal lines: -->, <--, <-->'
+title SCHEME 2
+start
+    :rank_0/
+    :<size:15><i><b>read data</b></i></size>;
+fork
+    :rank_0/
+    :MPI_Scatterv(data)|
+repeat
+    :<size:15><i><b>Value Iteration</b></i></size>;
+    :MPI_Allgatherv(J)|
+    :MPI_Allreduce(eps)|
+repeat while (eps < eps_thresh) is (No) not (Yes)
+:MPI_Gatherv(Pi)|
+fork again
+    :rank_N/
+    :MPI_Scatterv(data)|
+repeat
+    :<size:15><i><b>Value Iteration</b></i></size>;
+    :MPI_Allgatherv(J)|
+    :MPI_Allreduce(eps)|
+repeat while (eps < eps_thresh) is (No) not (Yes)
+:MPI_Gatherv(Pi)|
+end fork
+stop
+
+@enduml
