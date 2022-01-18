@@ -6,7 +6,6 @@
 #define MPI_VI_MPIVIUTILITY_H
 
 #include <string>
-#include <vector>
 
 //TODO: remove if not needed
 #define GET_VARIABLE_NAME(Variable) (#Variable)
@@ -72,6 +71,8 @@ public:
     };
 
     static void loadParameters(MpiViUtility::ViParameters &viParameters, const std::string &path, const std::string &filename);
+
+    static void loadConfiguration(std::string configurationFile, ViParameters &viParameters, MpiParameters &mpiParameters, LogParameters &logParameters, std::string &basePath, std::string &dataSubPath);
 
     static std::string datetime();
 

@@ -5,6 +5,7 @@
 #ifndef MPI_VI_MPIVISCHEMA_H
 #define MPI_VI_MPIVISCHEMA_H
 
+#include <vector>
 
 #include "MpiViUtility.h"
 

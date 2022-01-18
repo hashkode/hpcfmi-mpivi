@@ -8,12 +8,10 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include <vector>
-
 #include <filesystem>
-#include <iostream>
-#include <mpi.h>
 #include <sys/resource.h>
+
+#include "yaml-cpp/yaml.h"
 
 #include "verbose.h"
 
@@ -52,6 +50,74 @@ void MpiViUtility::loadParameters(MpiViUtility::ViParameters &viParameters, cons
         std::cout << "P indptr Size " << viParameters.indptr << std::endl;
     }
 #endif
+}
+
+void MpiViUtility::loadConfiguration(std::string configurationFile, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters, std::string &basePath, std::string &dataSubPath){
+    YAML::Node config = YAML::LoadFile(configurationFile);
+    try {
+        YAML::Node parentNode = config;
+        if (parentNode.IsMap()) {
+            YAML::iterator itLvl0 = parentNode.begin();
+            YAML::Node key = itLvl0->first;
+            YAML::Node value = itLvl0->second;
+            if (key.as<std::string>() == "configuration") {
+                if (value.IsMap()) {
+                    for (auto itLvl1 = value.begin(); itLvl1 != value.end(); ++itLvl1) {
+                        YAML::Node sub1Key = itLvl1->first;
+                        YAML::Node sub1Value = itLvl1->second;
+
+                        if (sub1Value.IsMap()) {
+                            if (sub1Key.as<std::string>() == "mpiParameters") {
+                                for (auto itLvl2 = sub1Value.begin(); itLvl2 != sub1Value.end(); ++itLvl2) {
+                                    YAML::Node sub2Key = itLvl2->first;
+                                    YAML::Node sub2Value = itLvl2->second;
+
+                                    if (sub2Key.as<std::string>() == "schema") {
+                                        mpiParameters.nameSchema = sub2Value.as<std::string>();
+                                    } else if (sub2Key.as<std::string>() == "comInterval") {
+                                        mpiParameters.comInterval = sub2Value.as<unsigned int>();
+                                    } else if (sub2Key.as<std::string>() == "maxIterations") {
+                                        mpiParameters.maxIterations = sub2Value.as<unsigned int>();
+                                    } else if (sub2Key.as<std::string>() == "conditionThreshold") {
+                                        mpiParameters.conditionThreshold = sub2Value.as<unsigned int>();
+                                    }
+                                }
+                            } else if (sub1Key.as<std::string>() == "viParameters") {
+                                for (auto itLvl2 = sub1Value.begin(); itLvl2 != sub1Value.end(); ++itLvl2) {
+                                    YAML::Node sub2Key = itLvl2->first;
+                                    YAML::Node sub2Value = itLvl2->second;
+
+                                    if (sub2Key.as<std::string>() == "doAsync") {
+                                        viParameters.doAsync = sub2Value.as<bool>();
+                                    } else if (sub2Key.as<std::string>() == "alpha") {
+                                        viParameters.alpha = sub2Value.as<float>();
+                                    } else if (sub2Key.as<std::string>() == "eps") {
+                                        viParameters.eps = sub2Value.as<float>();
+                                    } else if (sub2Key.as<std::string>() == "maxIterations") {
+                                        viParameters.maxIterations = sub2Value.as<unsigned int>();
+                                    } else if (sub2Key.as<std::string>() == "conditionThreshold") {
+                                        viParameters.conditionThreshold = sub2Value.as<unsigned int>();
+                                    } else if (sub2Key.as<std::string>() == "numThreads") {
+                                        viParameters.numThreads = sub2Value.as<int>();
+                                    }
+                                }
+                            }
+                        } else {
+                            if (sub1Key.as<std::string>() == "name") {
+                                logParameters.nameConfiguration = sub1Value.as<std::string>();
+                            } else if (sub1Key.as<std::string>() == "resultsPath") {
+                                logParameters.filePath = sub1Value.as<std::string>();
+                            } else if (sub1Key.as<std::string>() == "basePath") {
+                                basePath = sub1Value.as<std::string>();
+                            } else if (sub1Key.as<std::string>() == "dataSubPath") {
+                                dataSubPath = sub1Value.as<std::string>();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } catch (YAML::RepresentationException &exception) { throw std::invalid_argument("The specified configuration file is malformed: " + exception.msg); }
 }
 
 std::string MpiViUtility::datetime() {
