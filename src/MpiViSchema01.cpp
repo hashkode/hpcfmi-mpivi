@@ -2,11 +2,13 @@
 
 #include <mpi.h>
 
+#include "MpiViSchema.h"
+#include "MpiViSchema01.h"
 #include "MpiViUtility.h"
+#include "ValueIteration.h"
 #include "verbose.h"
 
-MpiViSchema01::MpiViSchema01() { name = std::string(__func__); }
-
+MpiViSchema01::MpiViSchema01() { MpiViSchema01::name = std::string(__func__); }
 void MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIndices, int *pIndptr, std::vector<int> &pi, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
     auto valueIteration = Backend::ValueIteration();
 
@@ -15,8 +17,8 @@ void MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIn
     viParameters.lastState = (mpiParameters.worldSize - 1 == mpiParameters.worldRank) ? viParameters.NS - 1 : (viParameters.NS / mpiParameters.worldSize) * (mpiParameters.worldRank + 1) - 1;
 
 #ifdef VERBOSE_DEBUG
-    std::cout << "pNnz: " << pNnz << ", world_size: " << mpiParameters.worldSize << ", world_rank: " << mpiParameters.worldRank << std::endl;
-    std::cout << "firstState: " << firstState << ", lastState: " << lastState << std::endl;
+    std::cout << "world_size: " << mpiParameters.worldSize << ", world_rank: " << mpiParameters.worldRank << std::endl;
+    std::cout << "firstState: " << viParameters.firstState << ", lastState: " << viParameters.lastState << std::endl;
 #endif
 
     std::vector<int> nStatesPerProcess, stateOffset;
@@ -41,8 +43,8 @@ void MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIn
 #endif
 
     float epsGlobal = 0;
-    int iStep = 0;
-    int conditionCount = 0;
+    unsigned int iStep = 0;
+    unsigned int conditionCount = 0;
 
     while (conditionCount < mpiParameters.conditionThreshold && iStep < mpiParameters.maxIterations) {
         iStep++;
@@ -70,5 +72,4 @@ void MpiViSchema01::ValueIteration(std::vector<float> &j, float *pData, int *pIn
     logParameters.epsGlobal = epsGlobal;
     logParameters.steps = iStep;
 }
-
 std::string MpiViSchema01::GetName() { return this->name; }

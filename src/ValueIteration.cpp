@@ -5,25 +5,25 @@
 
 namespace Backend {
     float ValueIteration::valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, int *pi, MpiViUtility::ViParameters &viParameters) {
-        int nState = viParameters.NS;
-        int nRow = viParameters.NS;
-        int nCol = viParameters.NS * viParameters.max_controls;
+        unsigned int nState = viParameters.NS;
+        unsigned int nRow = viParameters.NS;
+        unsigned int nCol = viParameters.NS * viParameters.max_controls;
 
         Eigen::Map<Eigen::VectorXf> _j(j, nState);
         Eigen::Map<Eigen::VectorXi> _pi(pi, nState);
         Eigen::Map<Eigen::SparseMatrix<float>> _p(nRow, nCol, viParameters.NS, pIndptr, pIndices, pData);
 
         if (viParameters.doAsync) {
-            return asyncValueIteration(_j, _p, _pi, viParameters.alpha, viParameters.fuel_capacity, viParameters.number_stars, viParameters.max_controls, viParameters.eps, viParameters.maxIterations, viParameters.firstState, viParameters.lastState);
+            return asyncValueIteration(_j, _p, _pi, viParameters);
         } else {
-            return syncValueIteration(_j, _p, _pi, viParameters.alpha, viParameters.fuel_capacity, viParameters.number_stars, viParameters.max_controls, viParameters.eps, viParameters.maxIterations, viParameters.firstState, viParameters.lastState);
+            return syncValueIteration(_j, _p, _pi, viParameters);
         }
     }
 
-    inline StateTuple ValueIteration::decodeState(int state, int nStars) {
+    inline StateTuple ValueIteration::decodeState(unsigned int state, unsigned int nStars) {
         StateTuple stateTuple{
-                .fuel = (int) (state / (nStars * nStars)),
-                .desStar = (int) ((state % (nStars * nStars)) / nStars),
+                .fuel = state / (nStars * nStars),
+                .desStar = (state % (nStars * nStars)) / nStars,
                 .curStar = (state % (nStars * nStars)) % nStars,
         };
 
@@ -65,19 +65,19 @@ namespace Backend {
     }
 
     template<typename SparseMatrixType>
-    inline float ValueIteration::updateBlock(const int blockStart, const int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, const float alpha, const int maxF, const int nStars, const int maxU) {
-        int endBlock = std::min(blockStart + blockSize, (maxF * nStars * nStars)) - 1;
+    inline float ValueIteration::updateBlock(const unsigned int blockStart, const unsigned int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, MpiViUtility::ViParameters &viParameters) {
+        unsigned int endBlock = std::min(blockStart + blockSize, (viParameters.NS)) - 1;
         float epsLocal = -1;
 
-        for (int state = blockStart; state <= endBlock; state++) {
+        for (unsigned int state = blockStart; state <= endBlock; state++) {
             float jTmp = std::numeric_limits<float>::max();
             int uTmp = 0;
             bool costUpdate = false;
-            StateTuple stateTuple = decodeState(state, nStars);
+            StateTuple stateTuple = decodeState(state, viParameters.NS);
 
             // search minimum of j
-            for (int u_i = 0; u_i < maxU; u_i++) {
-                float J_i = calculateExpectedCost(j, p, stateTuple, state, u_i, alpha, maxU);
+            for (unsigned int u_i = 0; u_i < viParameters.max_controls; u_i++) {
+                float J_i = calculateExpectedCost(j, p, stateTuple, state, u_i, viParameters.alpha, viParameters.max_controls);
 
                 if (J_i < jTmp && J_i != NAN) {
                     jTmp = J_i;
@@ -96,25 +96,26 @@ namespace Backend {
     }
 
     template<typename SparseMatrixType>
-    inline float ValueIteration::asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, const float alpha, const int maxF, const int nStars, const int maxU, const float epsThreshold, const int nIteration, const int firstState, const int lastState) {
-        int nState = lastState - firstState;
-        int nBlock = 100;
-        int blockSize = nState / nBlock + 1;
+    inline float ValueIteration::asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, MpiViUtility::ViParameters &viParameters) {
+        unsigned int nState = viParameters.lastState - viParameters.firstState;
+        unsigned int nBlock = 100;
+        unsigned int blockSize = nState / nBlock + 1;
         float epsGlobal = -1;
-        int iterations = 0;
-        int conditionCount = 0;
-        int conditionThreshold = 5;
+        unsigned int iterations = 0;
+        unsigned int conditionCount = 0;
 
-        while (conditionCount < conditionThreshold && iterations < nIteration) {
+        omp_set_num_threads(viParameters.numThreads);
+
+        while (conditionCount < viParameters.conditionThreshold && iterations < viParameters.maxIterations) {
             epsGlobal = -1;
 
             iterations++;
 
 #pragma omp parallel
 #pragma omp for schedule(guided, 1)
-            for (int iBlock = 0; iBlock < nBlock; iBlock++) { epsGlobal = std::max(epsGlobal, updateBlock(firstState + iBlock * blockSize, blockSize, j, p, pi, alpha, maxF, nStars, maxU)); }
+            for (unsigned int iBlock = 0; iBlock < nBlock; iBlock++) { epsGlobal = std::max(epsGlobal, updateBlock(viParameters.firstState + iBlock * blockSize, blockSize, j, p, pi, viParameters)); }
 
-            if (epsGlobal < epsThreshold) {
+            if (epsGlobal < viParameters.eps) {
                 conditionCount++;
             } else {
                 conditionCount = 0;
@@ -127,25 +128,24 @@ namespace Backend {
     }
 
     template<typename SparseMatrixType>
-    inline float ValueIteration::syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, const float alpha, const int maxF, const int nStars, const int maxU, const float epsThreshold, const int nIteration, const int firstState, const int lastState) {
+    inline float ValueIteration::syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, MpiViUtility::ViParameters &viParameters) {
         float epsGlobal = -1;
-        int iterations = 0;
-        int conditionCount = 0;
-        int conditionThreshold = 5;
+        unsigned int iterations = 0;
+        unsigned int conditionCount = 0;
 
-        while (conditionCount < conditionThreshold && iterations < nIteration) {
+        while (conditionCount < viParameters.conditionThreshold && iterations < viParameters.maxIterations) {
             Eigen::VectorXf jOld = j;
 
             iterations++;
-            for (int state = firstState; state <= lastState; state++) {
+            for (unsigned int state = viParameters.firstState; state <= viParameters.lastState; state++) {
                 float jTmp = std::numeric_limits<float>::max();
                 int uTmp = 0;
-                StateTuple stateTuple = decodeState(state, nStars);
+                StateTuple stateTuple = decodeState(state, viParameters.number_stars);
                 bool costUpdate = false;
 
                 // search minimum of j
-                for (int u_i = 0; u_i < maxU; u_i++) {
-                    float j_i = calculateExpectedCost(j, p, stateTuple, state, u_i, alpha, maxU);
+                for (unsigned int u_i = 0; u_i < viParameters.max_controls; u_i++) {
+                    float j_i = calculateExpectedCost(j, p, stateTuple, state, u_i, viParameters.alpha, viParameters.max_controls);
 
                     if (j_i < jTmp && j_i != NAN) {
                         jTmp = j_i;
@@ -162,7 +162,7 @@ namespace Backend {
 
             epsGlobal = (j - jOld).template lpNorm<Eigen::Infinity>();
 
-            if (epsGlobal < epsThreshold) {
+            if (epsGlobal < viParameters.eps) {
                 conditionCount++;
             } else {
                 conditionCount = 0;

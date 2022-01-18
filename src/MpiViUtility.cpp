@@ -11,7 +11,11 @@
 #include <vector>
 
 #include <filesystem>
+#include <iostream>
+#include <mpi.h>
 #include <sys/resource.h>
+
+#include "verbose.h"
 
 void MpiViUtility::loadParameters(MpiViUtility::ViParameters &viParameters, const std::string &path, const std::string &filename) {
     std::stringstream ss;
@@ -31,6 +35,23 @@ void MpiViUtility::loadParameters(MpiViUtility::ViParameters &viParameters, cons
     ifs >> viParameters.data;
     ifs >> viParameters.indices;
     ifs >> viParameters.indptr;
+
+#ifdef VERBOSE_INFO
+    int worldRank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &worldRank);
+    if (worldRank == 0) {
+        std::cout << "Confusion " << viParameters.confusion_distance << std::endl;
+        std::cout << "Fuel " << viParameters.fuel_capacity << std::endl;
+        std::cout << "MaxU " << viParameters.max_controls << std::endl;
+        std::cout << "N stars " << viParameters.number_stars << std::endl;
+        std::cout << "NS " << viParameters.NS << std::endl;
+        std::cout << "P Cols" << viParameters.cols << std::endl;
+        std::cout << "P Rows" << viParameters.rows << std::endl;
+        std::cout << "P data Size " << viParameters.data << std::endl;
+        std::cout << "P indices Size " << viParameters.indices << std::endl;
+        std::cout << "P indptr Size " << viParameters.indptr << std::endl;
+    }
+#endif
 }
 
 std::string MpiViUtility::datetime() {
@@ -48,7 +69,7 @@ std::string MpiViUtility::datetime() {
 }
 
 void MpiViUtility::saveResults(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
-    std::string filenameMeasurements = logParameters.filePath + std::string(GIT_COMMIT_HASH) + "_" + mpiParameters.mpiViConfiguration + "_" + std::string(GIT_USER_EMAIL) + ".csv";
+    std::string filenameMeasurements = logParameters.filePath + std::string(GIT_COMMIT_HASH) + "_" + logParameters.nameConfiguration + "_" + std::string(GIT_USER_EMAIL) + ".csv";
 
     if (!std::filesystem::exists(filenameMeasurements)) {
         std::ofstream outfileMeasurements(filenameMeasurements);
@@ -75,7 +96,7 @@ void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiV
     std::ofstream outfileMeasurements(filenameMeasurements, std::ios_base::app);
 
     std::string line = logParameters.startDatetime + ",";
-    line += logParameters.nameSchemaClass + ",";
+    line += mpiParameters.nameSchema + ",";
     line += std::to_string(mpiParameters.comInterval) + ",";
     line += std::to_string(logParameters.runtime) + ",";
     line += std::to_string(logParameters.runtimeVi) + ",";

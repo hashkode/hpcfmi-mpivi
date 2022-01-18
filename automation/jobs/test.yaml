@@ -1,0 +1,17 @@
+configuration:
+  name: MpiViSchema01_local
+  resultsPath: ../automation/results/
+  basePath: /var/tmp/
+  dataSubPath: /data/data_small/
+  mpiParameters:
+    schema: MpiViSchema01
+    comInterval: 1
+    maxIterations: 150
+    conditionThreshold: 5
+  viParameters:
+    doAsync: false
+    alpha: 0.99
+    eps: 1e-6
+    maxIterations: 10
+    conditionThreshold: 5
+    numThreads: 2

@@ -41,29 +41,31 @@ public:
         bool doAsync;
         float alpha;
         float eps;
-        int maxIterations;
-        int firstState;
-        int lastState;
+        unsigned int maxIterations;
+        unsigned int firstState;
+        unsigned int lastState;
+        unsigned int conditionThreshold;
+        int numThreads;
     };
 
     struct MpiParameters {
-        std::string mpiViConfiguration;
+        std::string nameSchema;
         int worldSize;
         int worldRank;
-        int comInterval;
-        int maxIterations;
-        int conditionThreshold;
+        unsigned int comInterval;
+        unsigned int maxIterations;
+        unsigned int conditionThreshold;
     };
 
     struct LogParameters {
         std::string filePath;
         std::string startDatetime;
-        std::string nameSchemaClass;
+        std::string nameConfiguration;
         unsigned int runtime;
         unsigned int runtimeVi;
-        long maxRSS;
+        unsigned long maxRSS;
         float epsGlobal;
-        int steps;
+        unsigned int steps;
         float jDiffMaxNorm;
         float jDiffL2Norm;
         float jDiffMSE;

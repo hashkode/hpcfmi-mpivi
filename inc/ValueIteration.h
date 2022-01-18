@@ -17,9 +17,9 @@ namespace Backend {
  * This type defines a struct to hold the decomposed state information for easier access.
  */
     typedef struct {
-        int fuel;
-        int desStar;
-        int curStar;
+        unsigned int fuel;
+        unsigned int desStar;
+        unsigned int curStar;
     } StateTuple;
 
     class ValueIteration {
@@ -49,7 +49,7 @@ namespace Backend {
  * @param nStars number of stars
  * @return deserialized state
  */
-        StateTuple decodeState(int state, int nStars);
+        static StateTuple decodeState(unsigned int state, unsigned int nStars);
 
         /**
  * Calculate the stage cost of the action at the state.
@@ -57,7 +57,7 @@ namespace Backend {
  * @param action control action
  * @return stage cost
  */
-        float calculateStageCost(StateTuple &state, int action);
+        static float calculateStageCost(StateTuple &state, int action);
 
         /**
  * Calculate the expected cost of the action at the state.
@@ -89,7 +89,7 @@ namespace Backend {
  * @return epsilon local value of the block update
  */
         template<typename SparseMatrixType>
-        float updateBlock(int iBlock, int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU);
+        float updateBlock(unsigned int iBlock, unsigned int blockSize, Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, MpiViUtility::ViParameters &viParameters);
 
         /**
  * asyncValueIteration Asynchronous implementation of the value iteration algorithm.
@@ -105,7 +105,7 @@ namespace Backend {
  * @return epsilon global value when stop criterion was met
  */
         template<typename SparseMatrixType>
-        float asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU, float epsThreshold, int nIteration, int firstState, int lastState);
+        float asyncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, MpiViUtility::ViParameters &viParameters);
 
         /**
  * Synchronous implementation of the value iteration algorithm.
@@ -124,7 +124,7 @@ namespace Backend {
  * @return epsilon global value when stop criterion was met
  */
         template<typename SparseMatrixType>
-        float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, float alpha, int maxF, int nStars, int maxU, float epsThreshold, int nIteration, int firstState, int lastState);
+        float syncValueIteration(Eigen::Map<Eigen::VectorXf> &j, Eigen::Map<SparseMatrixType> &p, Eigen::Map<Eigen::VectorXi> pi, MpiViUtility::ViParameters &viParameters);
     };
 }// namespace Backend
 

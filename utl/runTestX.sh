@@ -5,5 +5,5 @@ cd ../build
 
 for i in `seq 1 $max`
 do
-    mpirun ./mpi-vi
+    mpirun -np 6 ./mpi-vi "../automation/jobs/test.yaml"
 done
