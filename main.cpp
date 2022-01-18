@@ -8,7 +8,6 @@
 #include <mpi.h>
 #include <string>
 
-#include "Eigen/Sparse"
 #include "npy.hpp"
 
 #include "MpiViSchema01.h"

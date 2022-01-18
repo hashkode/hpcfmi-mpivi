@@ -6,7 +6,6 @@
 
 #include <cstdlib>
 #include <filesystem>
-#include <fstream>
 #include <sstream>
 #include <stdexcept>
 #include <sys/resource.h>

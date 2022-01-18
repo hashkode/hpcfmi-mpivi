@@ -116,6 +116,6 @@ rm checksum*
 ### run binary
 cd "$(dirname "$0")"
 cd ../build
-mpirun -np 6 ./mpi-vi "../automation/jobs/test.yaml"
+mpirun -np 2 ./mpi-vi "../automation/jobs/test.yaml"
 
 # me="$(whoami)" for username
