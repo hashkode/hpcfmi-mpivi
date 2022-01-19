@@ -4,6 +4,7 @@
 
 #include "MpiViUtility.h"
 
+#include <chrono>
 #include <cstdlib>
 #include <filesystem>
 #include <sstream>
@@ -52,7 +53,7 @@ void MpiViUtility::loadParameters(MpiViUtility::ViParameters &viParameters, cons
 #endif
 }
 
-void MpiViUtility::loadConfiguration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
+void MpiViUtility::parseConfiguration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
     YAML::Node config = YAML::LoadFile(mpiParameters.configurationFile);
     try {
         YAML::Node parentNode = config;
@@ -154,7 +155,7 @@ std::string MpiViUtility::datetime() {
     return buffer;
 }
 
-void MpiViUtility::saveResults(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
+void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
     std::filesystem::create_directories(mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/");
     std::string filenameMeasurements = mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + logParameters.target + "_" + std::string(GIT_USER_EMAIL) + ".csv";
 
@@ -203,7 +204,7 @@ void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiV
 long MpiViUtility::getMaxRSSUsage() {
     // adapted from: https://stackoverflow.com/a/1933854
     errno = 0;
-    struct rusage memory;
+    struct rusage memory {};
     getrusage(RUSAGE_SELF, &memory);
 
     if (errno == EFAULT) {
@@ -217,10 +218,10 @@ long MpiViUtility::getMaxRSSUsage() {
 
 void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters) {
     const int nitems=19;
-    int          blocklengths[19] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-    MPI_Datatype types[19] = {MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL,MPI_FLOAT, MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_INT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED};
+    int blocklengths[19] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    MPI_Datatype types[19] = {MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL, MPI_FLOAT, MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_INT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED};
     MPI_Datatype MPI_Parameterstruct;
-    MPI_Aint     offsets[19];
+    MPI_Aint offsets[19];
 
     offsets[0] = offsetof(MpiViUtility::MPI_Parameter_struct, confusion_distance);
     offsets[1] = offsetof(MpiViUtility::MPI_Parameter_struct, fuel_capacity);
@@ -305,6 +306,83 @@ void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, Mpi
 void MpiViUtility::bcast_string(std::string &string, MpiViUtility::MpiParameters &mpiParameters) {
     int count = string.size();
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    if(mpiParameters.worldRank != 0) string.resize(count);
-    MPI_Bcast((void*)(string.data()), count, MPI_CHAR, 0, MPI_COMM_WORLD);
+    if (mpiParameters.worldRank != 0) string.resize(count);
+    MPI_Bcast((void *) (string.data()), count, MPI_CHAR, 0, MPI_COMM_WORLD);
+}
+
+void MpiViUtility::loadConfiguration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters, const int *argc, char *argv[]) {
+    bool useDefault = false;
+
+    // commandline argument checks
+    if (mpiParameters.worldRank == 0) {
+        try {
+            if (*argc == 2) {
+                if (argv[1] == std::string("-d")) {
+                    useDefault = true;
+                } else if (!std::filesystem::exists(argv[1])) {
+                    std::cout << "The specified configuration file does not exist." << std::endl;
+                    throw std::invalid_argument("Invalid number of arguments.");
+                }
+            } else if (*argc != 2 || (argv[1] != std::string("-d") && !std::filesystem::exists(argv[1]))) {
+                std::cout << "You entered wrong arguments." << std::endl;
+                throw std::invalid_argument("Invalid number of arguments.");
+            }
+        } catch (std::invalid_argument &error) {
+            std::cout << ">>> Intended use is:\n1, default:\tmpirun <options> mpi-vi -d" << std::endl;
+            std::cout << "2, configured:\tmpirun <options> mpi-vi <configurationpath>" << std::endl;
+            std::cout << ">>> You entered the following arguments:" << std::endl;
+
+            for (int i = 0; i < *argc; ++i) { std::cout << std::to_string(i) + ": " << argv[i] << std::endl; }
+
+            useDefault = true;
+        }
+
+        // get username for individual path
+        const char *user = std::getenv("USER");
+        mpiParameters.username = user;
+
+        if (useDefault) {
+            // default configuration file
+            mpiParameters.configurationFile = "../automation/jobs/default.yaml";
+            std::cout << ">>> Proceeding with default configuration file: " << mpiParameters.configurationFile << std::endl;
+        } else {
+            mpiParameters.configurationFile = argv[1];
+        }
+
+        MpiViUtility::parseConfiguration(viParameters, mpiParameters, logParameters);
+        // TODO: replace poor man's configuration inheritance with recursive implementation
+        if (mpiParameters.base != "root") {
+            std::string configLvl2 = mpiParameters.configurationFile;
+            mpiParameters.configurationFile = "../automation/jobs/" + mpiParameters.base;
+            MpiViUtility::parseConfiguration(viParameters, mpiParameters, logParameters);
+
+            if (mpiParameters.base != "root") {
+                std::string configLvl1 = mpiParameters.configurationFile;
+                mpiParameters.configurationFile = "../automation/jobs/" + mpiParameters.base;
+                MpiViUtility::parseConfiguration(viParameters, mpiParameters, logParameters);
+
+                mpiParameters.configurationFile = configLvl1;
+                MpiViUtility::parseConfiguration(viParameters, mpiParameters, logParameters);
+            }
+
+            mpiParameters.configurationFile = configLvl2;
+            MpiViUtility::parseConfiguration(viParameters, mpiParameters, logParameters);
+        }
+        MpiViUtility::loadParameters(viParameters, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "params.txt");
+    }
+}
+
+void MpiViUtility::saveResults(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
+    // measurement and logging
+    if (mpiParameters.worldRank == 0) {
+        logParameters.maxRSS = MpiViUtility::getMaxRSSUsage();
+
+        logParameters.tEnd = std::chrono::system_clock::now();
+        logParameters.runtime = (unsigned int) std::chrono::duration_cast<std::chrono::milliseconds>(logParameters.tEnd - logParameters.tStart).count();
+
+        MpiViUtility::saveResultsToFile(mpiParameters, logParameters);
+
+        std::cout << "epsGlobal: " << logParameters.epsGlobal << ", max norm (J - J*): " << logParameters.jDiffMaxNorm << ", l2 norm (J - J*): " << logParameters.jDiffL2Norm << ", MSE (J - J*): " << logParameters.jDiffMSE << std::endl;
+        std::cout << "converged at: " << logParameters.steps << ", runtime: " << logParameters.runtime << "ms, MpiVi took: " << logParameters.runtimeVi << "ms, with maxRSSU: " << logParameters.maxRSS << "kb" << std::endl;
+    }
 }
