@@ -19,7 +19,7 @@ if ! dpkg -l | grep libopenmpi-dev -c >>/dev/null; then sudo apt-get install lib
 
 ## pip packages
 echo ">> installing python packages with pip"
-pip install pytest cffi numpy scipy matplotlib
+pip install pytest cffi numpy scipy matplotlib pandas seaborn
 
 # init routine
 echo "> running init routine"
