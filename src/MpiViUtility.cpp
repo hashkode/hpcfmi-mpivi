@@ -214,3 +214,97 @@ long MpiViUtility::getMaxRSSUsage() {
 
     return memory.ru_maxrss;
 }
+
+void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters) {
+    const int nitems=19;
+    int          blocklengths[19] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+    MPI_Datatype types[19] = {MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL,MPI_FLOAT, MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_INT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED};
+    MPI_Datatype MPI_Parameterstruct;
+    MPI_Aint     offsets[19];
+
+    offsets[0] = offsetof(MpiViUtility::MPI_Parameter_struct, confusion_distance);
+    offsets[1] = offsetof(MpiViUtility::MPI_Parameter_struct, fuel_capacity);
+    offsets[2] = offsetof(MpiViUtility::MPI_Parameter_struct, max_controls);
+    offsets[3] = offsetof(MpiViUtility::MPI_Parameter_struct, number_stars);
+    offsets[4] = offsetof(MpiViUtility::MPI_Parameter_struct, NS);
+    offsets[5] = offsetof(MpiViUtility::MPI_Parameter_struct, cols);
+    offsets[6] = offsetof(MpiViUtility::MPI_Parameter_struct, rows);
+    offsets[7] = offsetof(MpiViUtility::MPI_Parameter_struct, data);
+    offsets[8] = offsetof(MpiViUtility::MPI_Parameter_struct, indices);
+    offsets[9] = offsetof(MpiViUtility::MPI_Parameter_struct, indptr);
+    offsets[10] = offsetof(MpiViUtility::MPI_Parameter_struct, doAsync);
+    offsets[11] = offsetof(MpiViUtility::MPI_Parameter_struct, alpha);
+    offsets[12] = offsetof(MpiViUtility::MPI_Parameter_struct, eps);
+    offsets[13] = offsetof(MpiViUtility::MPI_Parameter_struct, vi_maxIterations);
+    offsets[14] = offsetof(MpiViUtility::MPI_Parameter_struct, vi_conditionThreshold);
+    offsets[15] = offsetof(MpiViUtility::MPI_Parameter_struct, numThreads);
+    offsets[16] = offsetof(MpiViUtility::MPI_Parameter_struct, comInterval);
+    offsets[17] = offsetof(MpiViUtility::MPI_Parameter_struct, mpi_maxIterations);
+    offsets[18] = offsetof(MpiViUtility::MPI_Parameter_struct, mpi_conditionThreshold);
+
+    MPI_Type_create_struct(nitems, blocklengths, offsets, types, &MPI_Parameterstruct);
+    MPI_Type_commit(&MPI_Parameterstruct);
+
+    MpiViUtility::MPI_Parameter_struct mpi_param_struct;
+    if(mpiParameters.worldRank == 0)
+    {
+        mpi_param_struct.confusion_distance = viParameters.confusion_distance;
+        mpi_param_struct.fuel_capacity = viParameters.fuel_capacity;
+        mpi_param_struct.max_controls = viParameters.max_controls;
+        mpi_param_struct.number_stars = viParameters.number_stars;
+        mpi_param_struct.NS = viParameters.NS;
+        mpi_param_struct.cols = viParameters.cols;
+        mpi_param_struct.rows = viParameters.rows;
+        mpi_param_struct.data = viParameters.data;
+        mpi_param_struct.indices = viParameters.indices;
+        mpi_param_struct.indptr = viParameters.indptr;
+        mpi_param_struct.doAsync = viParameters.doAsync;
+        mpi_param_struct.alpha = viParameters.alpha;
+        mpi_param_struct.eps = viParameters.eps;
+        mpi_param_struct.vi_maxIterations = viParameters.maxIterations;
+        mpi_param_struct.vi_conditionThreshold = viParameters.conditionThreshold;
+        mpi_param_struct.numThreads = viParameters.numThreads;
+        mpi_param_struct.comInterval = mpiParameters.comInterval;
+        mpi_param_struct.mpi_maxIterations = mpiParameters.maxIterations;
+        mpi_param_struct.mpi_conditionThreshold = mpiParameters.conditionThreshold;
+    }
+
+    MPI_Bcast(&mpi_param_struct, 1, MPI_Parameterstruct, 0, MPI_COMM_WORLD);
+
+    if(mpiParameters.worldRank != 0)
+    {
+         viParameters.confusion_distance = mpi_param_struct.confusion_distance;
+         viParameters.fuel_capacity = mpi_param_struct.fuel_capacity;
+         viParameters.max_controls = mpi_param_struct.max_controls;
+         viParameters.number_stars = mpi_param_struct.number_stars;
+         viParameters.NS = mpi_param_struct.NS;
+         viParameters.cols = mpi_param_struct.cols;
+         viParameters.rows = mpi_param_struct.rows;
+         viParameters.data = mpi_param_struct.data;
+         viParameters.indices = mpi_param_struct.indices;
+         viParameters.indptr = mpi_param_struct.indptr;
+         viParameters.doAsync = mpi_param_struct.doAsync;
+         viParameters.alpha = mpi_param_struct.alpha ;
+         viParameters.eps = mpi_param_struct.eps ;
+         viParameters.maxIterations = mpi_param_struct.vi_maxIterations;
+         viParameters.conditionThreshold = mpi_param_struct.vi_conditionThreshold;
+         viParameters.numThreads = mpi_param_struct.numThreads;
+         mpiParameters.comInterval = mpi_param_struct.comInterval;
+         mpiParameters.maxIterations = mpi_param_struct.mpi_maxIterations;
+         mpiParameters.conditionThreshold = mpi_param_struct.mpi_conditionThreshold;
+    }
+    MPI_Type_free(&MPI_Parameterstruct);
+
+    bcast_string(mpiParameters.nameSchema, mpiParameters);
+    bcast_string(mpiParameters.username, mpiParameters);
+    bcast_string(mpiParameters.basePath, mpiParameters);
+    bcast_string(mpiParameters.dataSubPath, mpiParameters);
+    bcast_string(mpiParameters.configurationFile, mpiParameters);
+}
+
+void MpiViUtility::bcast_string(std::string &string, MpiViUtility::MpiParameters &mpiParameters) {
+    int count = string.size();
+    MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    if(mpiParameters.worldRank != 0) string.resize(count);
+    MPI_Bcast((void*)(string.data()), count, MPI_CHAR, 0, MPI_COMM_WORLD);
+}

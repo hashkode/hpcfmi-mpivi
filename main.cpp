@@ -11,6 +11,7 @@
 #include "npy.hpp"
 
 #include "MpiViSchema01.h"
+#include "MpiViSchema02.h"
 #include "MpiViUtility.h"
 #include "verbose.h"
 
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]) {
 
     MPI_Bcast(&useDefault, 1, MPI_CXX_BOOL, 0, MPI_COMM_WORLD);
 
-    if (true) {// TODO: replace with <mpiParameters.worldRank == 0> if BCast for complete structs is implemented
+    if (mpiParameters.worldRank == 0) {// replace with <mpiParameters.worldRank == 0> if BCast for complete structs is implemented
         // get username for individual path
         const char *user = std::getenv("USER");
         mpiParameters.username = user;
@@ -79,16 +80,10 @@ int main(int argc, char *argv[]) {
         }
         MpiViUtility::loadParameters(viParameters, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "params.txt");
     }
-
-    int schemaKey;
-
-    if (mpiParameters.worldRank == 0) {
-        if (mpiParameters.nameSchema == "MpiViSchema01") { schemaKey = 1; }
-    }
-    MPI_Bcast(&schemaKey, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MpiViUtility::sync_Parameters(viParameters, mpiParameters);
 
     // mpi vi execution
-    if (schemaKey == 1) {
+    if (mpiParameters.nameSchema == "MpiViSchema01") {
         MpiViSchema01 schema;
         schema.ValueIteration(viParameters, mpiParameters, logParameters);
     } else {
