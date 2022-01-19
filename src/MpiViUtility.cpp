@@ -155,8 +155,8 @@ std::string MpiViUtility::datetime() {
 }
 
 void MpiViUtility::saveResults(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
-    std::filesystem::create_directories(logParameters.filePath + std::string(GIT_BRANCH) + "/");
-    std::string filenameMeasurements = logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + logParameters.target + "_" + std::string(GIT_USER_EMAIL) + ".csv";
+    std::filesystem::create_directories(mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/");
+    std::string filenameMeasurements = mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + logParameters.target + "_" + std::string(GIT_USER_EMAIL) + ".csv";
 
     if (!std::filesystem::exists(filenameMeasurements)) {
         std::ofstream outfileMeasurements(filenameMeasurements);

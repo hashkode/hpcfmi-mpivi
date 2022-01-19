@@ -15,18 +15,24 @@ clean:
 
 # Get rid of everything that might be left for whatever reason, then compile from scratch
 # Not elegant but failsafe
-compile: clean
+rebuild: clean
 	doxygen Doxyfile
 	mkdir -p build/
 	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release ..
 	$(MAKE) -C build/
 
-test: compile
-	cd build/
-	$(MAKE) -C utl/ test
+preTest: rebuild
+	$(MAKE) -C utl/ preTest
 
-testX: test
-	./utl/runTestX.sh $(filter-out $@, $(MAKECMDGOALS))
+postTest:
+	$(MAKE) -C utl/ postTest
+
+test:
+	$(MAKE) testX "1"
+
+testX: preTest
+	$(MAKE) -C utl/ testX nRuns=$(filter-out $@, $(MAKECMDGOALS))
+	$(MAKE) postTest
 
 report:
 	$(MAKE) -C rep/ report.pdf

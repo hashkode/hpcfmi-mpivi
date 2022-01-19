@@ -1,5 +1,11 @@
 init:
 	./init.sh
 
-test:
-	./test.sh
+preTest:
+	./preTest.sh
+
+postTest:
+	./postTest.sh
+
+testX:
+	./runTestX.sh $(nRuns)

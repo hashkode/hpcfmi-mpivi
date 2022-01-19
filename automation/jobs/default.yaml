@@ -1,7 +1,7 @@
 configuration:
   base: root
   target: local
-  resultsPath: ../automation/results/
+  resultsPath: /results/
   basePath: /var/tmp/
   dataSubPath: /data/data_small/
   mpiParameters:
