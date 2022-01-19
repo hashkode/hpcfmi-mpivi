@@ -65,36 +65,32 @@ void MpiViSchema03::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
     float epsGlobalOld = 0;
     unsigned int iStep = 0;
     unsigned int conditionCount = 0;
-    Eigen::Map<Eigen::VectorXf> jStarEigen(jStar.data(),viParameters.NS);
+    Eigen::Map<Eigen::VectorXf> jStarEigen(jStar.data(), viParameters.NS);
 
 
-    while (conditionCount < mpiParameters.conditionThreshold && iStep <1000 ) {
+    while (conditionCount < mpiParameters.conditionThreshold && iStep < mpiParameters.maxIterations) {
         iStep++;
-        MPI_Bcast(j.data(),nStatesPerProcess[mpiParameters.worldRank],MPI_FLOAT,0,MPI_COMM_WORLD);
+        MPI_Bcast(j.data(), nStatesPerProcess[mpiParameters.worldRank], MPI_FLOAT, 0, MPI_COMM_WORLD);
         valueIteration.valueIteration(j.data(), data.data(), indices.data(), indptr.data(), pi.data(), viParameters);
         if (iStep % mpiParameters.comInterval == 0) {
-            if (mpiParameters.worldRank!=0)
-            {
-                MPI_Ssend(j.data()+viParameters.firstState,nStatesPerProcess[mpiParameters.worldRank], MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
-            }
-            else
-            {
-                for (int i = 1; i < mpiParameters.worldSize ; ++i){
+            if (mpiParameters.worldRank != 0) {
+                MPI_Ssend(j.data() + viParameters.firstState, nStatesPerProcess[mpiParameters.worldRank], MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
+            } else {
+                for (int i = 1; i < mpiParameters.worldSize; ++i) {
                     int firstStateSender = (viParameters.NS / mpiParameters.worldSize) * i;
-                    MPI_Recv(&j[firstStateSender],nStatesPerProcess[i],MPI_FLOAT,i, 0, MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+                    MPI_Recv(&j[firstStateSender], nStatesPerProcess[i], MPI_FLOAT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 }
                 Eigen::Map<Eigen::VectorXf> _jEigen(j.data(), viParameters.NS);
                 epsGlobal = (_jEigen - jStarEigen).template lpNorm<Eigen::Infinity>();
             }
-            MPI_Bcast(&epsGlobal,1,MPI_FLOAT,0,MPI_COMM_WORLD);
-            float epsdelta=epsGlobalOld-epsGlobal;
-            if (epsdelta< viParameters.eps) {
+            MPI_Bcast(&epsGlobal, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
+            float epsdelta = epsGlobalOld - epsGlobal;
+            if (epsdelta < viParameters.eps) {
                 conditionCount++;
             } else {
                 conditionCount = 0;
             }
-             epsGlobalOld=epsGlobal;
-
+            epsGlobalOld = epsGlobal;
         }
     }
 
