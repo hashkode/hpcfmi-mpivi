@@ -10,6 +10,7 @@
 
 #include "MpiViSchema01.h"
 #include "MpiViSchema02.h"
+#include "MpiViSchema03.h"
 #include "MpiViUtility.h"
 #include "verbose.h"
 
