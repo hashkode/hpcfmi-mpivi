@@ -1,3 +1,6 @@
 [submodule "lib/libnpy"]
 	path = lib/libnpy
 	url = https://github.com/llohse/libnpy.git
+[submodule "lib/yaml-cpp"]
+	path = lib/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
