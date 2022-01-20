@@ -1,45 +1,51 @@
 # MPI applied to Value Iteration, HPCfMI WS20/21, Group 3
-Participants
+Tobias Krug, Tobias Klama, Till Hülder
+
+This project is part of the course High Performance Computing for Machine Intelligence. It is used to evaluate different Open MPi communication schemes.
 
 ## Measurement objectives
-
 Possible measurements:
-- Prio A:
   - execution time (total, per block)
   - iterations until convergence
-- Prio B:
   - memory usage (RAM)
-- Prio C:
-  - I/O consumption
+
 
 Possible variatiation points:
-- Prio A:
-  - MPI schemes (minimum 2)
+  - MPI schemes 
   - MPI synchronization intervall (cycles)
   - MPI processor count
-- Prio B:
-  - computing hardware (HPC class 1, HPC class 2, HPC class mixed, RPi cluster, NUC cluster)
+  - computing hardware (HPC class 1, HPC class 2, RPi cluster, NUC cluster)
   - asynchronous vs. synchronous VI with OpenMP
-- Prio C:
-  - J split algorithm
-  - baremetal vs. cluster/kubernetes
+  - 
+## Scheme 
+  The following schemes can be executed:
+
+  <img src="./rep/puml/gen/scheme1/scheme1.svg">
+  <img src="./rep/puml/gen/scheme2/scheme2.svg">
+  <img src="./rep/puml/gen/scheme3/scheme3.svg">
+
+ The dataloading ist done in the following :
+
+  <img src="./rep/puml/gen/scheme_load_data/scheme_load_data.svg">
+
 
 ## Using the project
+The project can be executed using the make commands listed below.
 
 # Procedure
-
 **init**
 Downloads the dataset and prepares it for cpp.
 **test**
 Checks integrity of data in /var/tmp/user/ and the downloaded data.
-
 In /automation/jobs/ lay yaml files with the desired parameters/configuration.
 
 # Makefile
 
 - **clean**:
   - Cleans repository and removes build files.
-- **compile**:  --> here and at **test** specify which scheme(s)? default all schemes?
+- **rebuild: clean**: 
+  - Get rid of everything that might be left and then compile from scratch
+- **compile**: 
   - **clean**
   - doxygen
   - builds project
@@ -48,10 +54,32 @@ In /automation/jobs/ lay yaml files with the desired parameters/configuration.
   - checks and installs neccessary packages
   - downloads data-set from strato server
   - prepares data-set according to _preparedata.py_
-- **test**:
-  - **compile**
-  - checks and updates data in local directory according to downloaded one from **init**
-  - runs executable
+- **build:**
+  - build Project
+- **preTest:**
+   - Synchronize data set from home drive to /var/tmp/
+- **postTest**:
+   - Synchronize esults directory to server
+- **prepareTarget**:
+   - Prepare Target for execution
+- **testTarget**:
+  - Run test 
+- **prepareHpcClassA**:
+  - Prepare HPC CLass A (hpc01 - hpc04) for execution
+- **testHpcClassA**:
+  - Run test PC CLass A (hpc01 - hpc04) with parameter number of runs and number of processors on target
+- **_testHpcClassATarget**:
+  - Run test PC CLass A (hpc01 - hpc04) with parameter number of runs and number of processors
+- **prepareHpcClassB**:
+  - Prepare HPC CLass B (hpc06 - hpc15) for execution
+- **testHpcClassB**:
+  - Run test PC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors on target
+- **_testHpcClassBTarget**:
+  - Run test PC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors
+- **prepareNuc**:
+  - Prepare Nuc for execution
+- **testNuc:**
+  - Run test on Nuc
 - **report**:
   - makes latex report
 - **pack**:
@@ -59,11 +87,8 @@ In /automation/jobs/ lay yaml files with the desired parameters/configuration.
   - packs project
 - **unpack**:
   - unpacks project
-- **send**:
-  - send packed project to specified host
 - **all**:
-  - tbd
-
+  -  dummy to prevent running make without explicit target
 
 ### Running tests
 #### Preconditions
@@ -97,3 +122,9 @@ if ! dpkg -l | grep libopenmpi-dev -c >>/dev/null; then sudo apt-get install lib
 echo ">> installing python packages with pip"
 pip3 install pytest cffi numpy scipy matplotlib pandas seaborn
 ```
+### Visualization
+the reading of the measurement data can be done via the  /gruppe-3-hauptprojekt/automation/results/HEAD/readVisual.py file. Here are different visualization tools available. This can look like the following.
+
+<img src="./rep/img/Runtime_World_Read_me.svg">
+<img src="./rep/img/scatterplot.svg">
+<img src="./rep/img/boxcom.svg">
