@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     MpiViUtility::loadConfiguration(viParameters, mpiParameters, logParameters, &argc, argv);
 
-    MpiViUtility::sync_Parameters(viParameters, mpiParameters);
+    MpiViUtility::syncParameters(viParameters, mpiParameters);
 
     // mpi vi execution
     if (mpiParameters.nameSchema == "MpiViSchema01") {

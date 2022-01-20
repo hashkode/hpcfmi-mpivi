@@ -177,7 +177,7 @@ public:
      * @param viParameters controls the Value Iteration parameter>
      * @param mpiParameters controls the Open MPI parameter
      */
-    static void sync_Parameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters);
+    static void syncParameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters);
     /**
      * Get and load configuratuion
      * @param viParameters controls the Value Iteration parameter

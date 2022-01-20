@@ -1,5 +1,0 @@
-configuration:
-  base: default.yaml
-  target: local
-  mpiParameters:
-    schema: MpiViSchema02

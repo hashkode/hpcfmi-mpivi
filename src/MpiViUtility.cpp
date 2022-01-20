@@ -181,7 +181,6 @@ void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParam
 }
 
 void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
-
     std::ofstream outfileMeasurements(filenameMeasurements, std::ios_base::app);
 
     std::string line = logParameters.startDatetime + ",";
@@ -216,8 +215,8 @@ long MpiViUtility::getMaxRSSUsage() {
     return memory.ru_maxrss;
 }
 
-void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters) {
-    const int nitems=19;
+void MpiViUtility::syncParameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters) {
+    const int nItems =19;
     int blocklengths[19] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     MPI_Datatype types[19] = {MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL, MPI_FLOAT, MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_INT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED};
     MPI_Datatype MPI_Parameterstruct;
@@ -243,7 +242,7 @@ void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, Mpi
     offsets[17] = offsetof(MpiViUtility::MPI_Parameter_struct, mpi_maxIterations);
     offsets[18] = offsetof(MpiViUtility::MPI_Parameter_struct, mpi_conditionThreshold);
 
-    MPI_Type_create_struct(nitems, blocklengths, offsets, types, &MPI_Parameterstruct);
+    MPI_Type_create_struct(nItems, blocklengths, offsets, types, &MPI_Parameterstruct);
     MPI_Type_commit(&MPI_Parameterstruct);
 
     MpiViUtility::MPI_Parameter_struct mpiParameterStruct;
@@ -304,10 +303,10 @@ void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, Mpi
 }
 
 void MpiViUtility::bcast_string(std::string &string, MpiViUtility::MpiParameters &mpiParameters) {
-    int count = string.size();
-    MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    if (mpiParameters.worldRank != 0) string.resize(count);
-    MPI_Bcast((void *) (string.data()), count, MPI_CHAR, 0, MPI_COMM_WORLD);
+    int stringLength = string.size();
+    MPI_Bcast(&stringLength, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    if (mpiParameters.worldRank != 0) string.resize(stringLength);
+    MPI_Bcast((void *) (string.data()), stringLength, MPI_CHAR, 0, MPI_COMM_WORLD);
 }
 
 void MpiViUtility::loadConfiguration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters, const int *argc, char *argv[]) {
