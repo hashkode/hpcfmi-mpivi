@@ -15,8 +15,7 @@ def convert_data_for_cpp(directory):
 
   # Each dataset gets subdirectory with the files for the c++ code
   directory = Path(directory)
-  directory_cpp = directory #/ "cpp/"	# no need for params.txt to be in separate subfolder -> save it in normal folder for easier handling in script
-#  directory_cpp.mkdir(exist_ok=True)
+  directory_cpp = directory
 
   def load_sparse_matrix(directory, name):
     """

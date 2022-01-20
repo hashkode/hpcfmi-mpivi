@@ -1,4 +1,4 @@
-#include "MpiViSchema01.h"
+#include "MpiViSchema03.h"
 
 #include <chrono>
 #include <mpi.h>
@@ -7,9 +7,9 @@
 #include "ValueIteration.h"
 #include "verbose.h"
 
-MpiViSchema01::MpiViSchema01() { MpiViSchema01::name = std::string(__func__); }
+MpiViSchema03::MpiViSchema03() { MpiViSchema03::name = std::string(__func__); }
 
-void MpiViSchema01::ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
+void MpiViSchema03::ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
     //init
     const char *user = std::getenv("USER");
     mpiParameters.username = user;
@@ -72,10 +72,24 @@ void MpiViSchema01::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         if (epsStep > epsGlobal) { epsGlobal = epsStep; };
 
         if (iStep % mpiParameters.comInterval == 0) {
-            MPI_Allgatherv(j.data() + viParameters.firstState, nStatesPerProcess[mpiParameters.worldRank], MPI_FLOAT, j.data(), nStatesPerProcess.data(), stateOffset.data(), MPI_FLOAT, MPI_COMM_WORLD);
+            if (mpiParameters.worldRank != 0) {
+                MPI_Ssend(j.data() + viParameters.firstState, nStatesPerProcess[mpiParameters.worldRank], MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
+            } else {
+                for (int iSource = 1; iSource < mpiParameters.worldSize; ++iSource) { MPI_Recv(j.data() + stateOffset[iSource], nStatesPerProcess[iSource], MPI_FLOAT, iSource, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); }
+            }
 
-            MPI_Allreduce(&epsGlobal, &epsGlobal, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
+            MPI_Bcast(j.data(), viParameters.NS, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
+            if (mpiParameters.worldRank != 0) {
+                MPI_Ssend(&epsGlobal, 1, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
+            } else {
+                std::vector<float> eps = {epsGlobal};
+                eps.resize(mpiParameters.worldSize);
+                for (int iSource = 1; iSource < mpiParameters.worldSize; ++iSource) { MPI_Recv(eps.data() + iSource, 1, MPI_FLOAT, iSource, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE); }
+                epsGlobal = *std::max_element(eps.begin(), eps.end());
+            }
+
+            MPI_Bcast(&epsGlobal, 1, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
             if (epsGlobal < viParameters.eps) {
                 conditionCount++;
@@ -98,5 +112,4 @@ void MpiViSchema01::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         calculateMetrics(j, viParameters, mpiParameters, logParameters);
     }
 }
-
-std::string MpiViSchema01::GetName() { return this->name; }
+std::string MpiViSchema03::GetName() { return this->name; }

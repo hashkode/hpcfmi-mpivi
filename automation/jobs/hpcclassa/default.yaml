@@ -1,0 +1,5 @@
+configuration:
+  base: default.yaml
+  target: hpcclassa
+  mpiParameters:
+    maxIterations: 5000

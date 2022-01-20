@@ -1,0 +1,4 @@
+hpc01.clients.eikon.tum.de slots=2 max-slots=2
+hpc02.clients.eikon.tum.de slots=2 max-slots=2
+hpc03.clients.eikon.tum.de slots=2 max-slots=2
+hpc04.clients.eikon.tum.de slots=2 max-slots=2
