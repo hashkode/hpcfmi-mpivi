@@ -1,52 +1,113 @@
-TARNAME = hpcmi-gw.tar.gz
-HOST = hpc12
+# enable multicore make, taken from: https://stackoverflow.com/a/51149133
+NPROCS = $(shell grep -c 'processor' /proc/cpuinfo)
+MAKEFLAGS += -j$(NPROCS)
+
+tarname = hpcmi-gw.tar.gz
+nucRoot = marco
+nucNode1 = polo
+
+hpcClARoot = hpc01
+hpcClANode1 = hpc02
+hpcClANode2 = hpc03
+hpcClANode3 = hpc04
+
+.SILENT: clean
 
 all:
 	@echo "This is a dummy to prevent running make without explicit target!"
 
 clean:
-	$(MAKE) -C rep/ clean
 	rm -rf doc
+	rm -rf cmake-build-debug
 	rm -rf build* debug* release*
 	rm -f CMakeLists.txt.user
-	@# Is created when opening the CMake Project with Visual Studio, blows up the size 
+	@# Is created when opening the CMake Project with Visual Studio, blows up the size
 	@# of the directories for sharing the code due to VS database
 	rm -rf .vs/
+	$(MAKE) -C rep/ clean
 
 # Get rid of everything that might be left for whatever reason, then compile from scratch
 # Not elegant but failsafe
 rebuild: clean
-	doxygen Doxyfile
+	doxygen Doxyfile >/dev/null
 	mkdir -p build/
-	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release ..
-	$(MAKE) -C build/
+	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release .. >/dev/null
+	$(MAKE) -C build/ >/dev/null
 
-preTest: rebuild
+.PHONY: build
+build:
+	$(MAKE) -C utl/ build
+
+preTest:
 	$(MAKE) -C utl/ preTest
 
 postTest:
 	$(MAKE) -C utl/ postTest
 
 test:
-	$(MAKE) testX "1"
+	$(MAKE) testX nruns=1
 
-testX: preTest
-	$(MAKE) -C utl/ testX nRuns=$(filter-out $@, $(MAKECMDGOALS))
+testX: preTest build
+	$(MAKE) -C utl/ testX nruns=$(filter-out $@, $(MAKECMDGOALS))
 	$(MAKE) postTest
+
+prepareTarget:
+	$(MAKE) -C utl/ prepareTarget host=$(host) runtype=$(runtype)
+
+testTarget:
+	$(MAKE) -C utl/ testTarget root=$(root) nruns=$(nruns) nproc=$(nproc) maketarget=$(maketarget)
+
+#test-hpc-class1:
+#	$(MAKE) prepareTarget host=hpc04 runtype=init
+#	$(MAKE) prepareTarget host=hpc03 runtype=init
+#	$(MAKE) prepareTarget host=hpc02 runtype=init
+#	$(MAKE) prepareTarget host=hpc01 runtype=rebuild
+#	#make init auf allen ranks
+#	#make preTest auf allen ranks
+#	#make rebuild auf einem rank einer gruppe (hier einer)
+
+prepareHpcClassA: clean
+	# preferred: pure make approach
+	$(MAKE) prepareTarget host=$(hpcClANode1) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClANode2) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClANode3) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClARoot) runtype=rebuild
+	# alternative: bash script would allow parallel execution, useless here due to NAS home directory
+	# $(MAKE) -C utl/ prepareHpcClass1 root=$(hpcCl1Root) node1=$(hpcCl1Node1) ...
+
+testHpcClassA:
+	$(MAKE) testTarget root=$(hpcClARoot) nruns=$(nruns) nproc=$(nproc) maketarget=_testHpcClassATarget
+
+_testHpcClassATarget:
+	$(MAKE) -C utl/ _testHpcClassATarget nruns=$(nruns) nproc=$(nproc)
+
+prepareNuc: clean
+	# preferred: bash script allows fully parallel execution of make targets
+	$(MAKE) -C utl/ prepareNuc root=$(nucRoot) node1=$(nucNode1)
+	# alternative: pure make approach
+	# $(MAKE) prepareTarget host=$(nucRoot) runtype=rebuild
+	# $(MAKE) prepareTarget host=$(nucNode1) runtype=rebuild
+
+testNuc:
+	$(MAKE) testTarget root=$(nucRoot) nruns=$(nruns) nproc=$(nproc) maketarget=_testNucTarget
+	#$(MAKE) _testNucTarget root=$(nucRoot) nruns=$(nruns) nproc=$(nproc)
+
+_testNucTarget:
+	$(MAKE) -C utl/ _testNucTarget nruns=$(nruns) nproc=$(nproc)
 
 report:
 	$(MAKE) -C rep/ report.pdf
 
 pack: clean
-	rm -f $(TARNAME)
-	tar -czf $(TARNAME) backend/ cpp_backend/ tests/ Makefile main.py
+	tar -czf $(tarname) * .git .clang-format .gitignore .gitmodules .mailmap
 
 unpack:
-	tar -xzf $(TARNAME)
-
-send: pack
-	scp $(TARNAME) $(HOST):~/Projects/hpcmi/
+	tar -xzf $(tarname)
 
 init:
 	git submodule update --init --recursive
 	$(MAKE) -C utl/ init
+
+setupToolchain:
+	$(MAKE) -C utl/ setupToolchain
+

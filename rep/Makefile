@@ -1,5 +1,7 @@
+.SILENT: clean
+
 # Adapted from: https://tex.stackexchange.com/a/596785
-# Generate your PDF
+# Generate PDF
 %.pdf: %.tex
 	@echo '.........: pdflatex running pass 1...'
 	pdflatex $< -o $@ 2>&1 | tee errors.err
