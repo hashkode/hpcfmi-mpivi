@@ -154,8 +154,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
     for (int iStateOffset: stateOffset) { std::cout << iStateOffset << ", "; }
     std::cout << std::endl;
 #endif
-    std::vector<float> _j;
-    _j.resize(viParameters.NS * 2);
+
     float epsGlobal = 0;
     unsigned int iStep = 0;
     unsigned int conditionCount = 0;
