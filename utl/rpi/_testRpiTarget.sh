@@ -9,7 +9,7 @@ echo $(hostname)
 
 for i in `seq 1 ${_nruns}`
 do
-    mpirun -np ${_nproc} -hostfile ../utl/RPI/RPI.host ./mpi-vi ../automation/jobs/RPI/default.yaml
+    mpirun -np ${_nproc} -hostfile ../utl/rpi/rpi.host ./mpi-vi ../automation/jobs/rpi/default.yaml
 done
 
 cd ../
