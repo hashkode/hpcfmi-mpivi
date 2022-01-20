@@ -187,24 +187,28 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
 #endif
 
     std::vector<int> nStatesPerProcess, stateOffset;
+    nStatesPerProcess.resize(mpiParameters.worldSize);
+    stateOffset.resize(mpiParameters.worldSize);
     for (int iProcessor = 0; iProcessor < mpiParameters.worldSize; ++iProcessor) {
         int states = 0;
         if(iProcessor == mpiParameters.worldSize-1)
         {
-            states = (indptrOffsets[mpiParameters.worldRank + 1] - indptrOffsets[mpiParameters.worldRank])/viParameters.max_controls;
-            nStatesPerProcess.push_back(states);
+            states = (indptrOffsets[iProcessor + 1] - indptrOffsets[iProcessor])/viParameters.max_controls;
+            nStatesPerProcess[iProcessor]=states;
         } else {
-            states = (indptrOffsets[mpiParameters.worldRank + 1] - indptrOffsets[mpiParameters.worldRank])/viParameters.max_controls;
-            nStatesPerProcess.push_back(states);
+            states = (indptrOffsets[iProcessor + 1] - indptrOffsets[iProcessor])/viParameters.max_controls;
+            nStatesPerProcess[iProcessor]=states;
         }
 
-        if (iProcessor == 0) stateOffset.push_back(0);
+        if (iProcessor == 0) stateOffset[0] = 0;
         else
-            stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1] - 1);
+            stateOffset[iProcessor] = (stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1] - 1);
     }
     std::cout << "nStatesPerProcess " <<  nStatesPerProcess[mpiParameters.worldRank] << " and stateOffset " << stateOffset[mpiParameters.worldRank] << std::endl;
     viParameters.firstState = stateOffset[mpiParameters.worldRank];
     viParameters.lastState = (mpiParameters.worldSize - 1 == mpiParameters.worldRank) ? viParameters.NS - 1 : stateOffset[mpiParameters.worldRank + 1];
+
+    std::cout << "nStatesPerProcess " <<  nStatesPerProcess[mpiParameters.worldRank] << " and stateOffset " << stateOffset[mpiParameters.worldRank] << std::endl;
 
     std::cout << "rank " << mpiParameters.worldRank << " and firstState " << viParameters.firstState << " and lastState " << viParameters.lastState <<std::endl;
 
@@ -217,7 +221,8 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
     for (int iStateOffset: stateOffset) { std::cout << iStateOffset << ", "; }
     std::cout << std::endl;
 #endif
-
+    std::vector<float> _j;
+    _j.resize(viParameters.NS*2);
     float epsGlobal = 0;
     unsigned int iStep = 0;
     unsigned int conditionCount = 0;
@@ -230,6 +235,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         if (epsStep > epsGlobal) { epsGlobal = epsStep; };
 
         if (iStep % mpiParameters.comInterval == 0) {
+
             MPI_Allgatherv(&j[viParameters.firstState], nStatesPerProcess[mpiParameters.worldRank], MPI_FLOAT, j.data(), nStatesPerProcess.data(), stateOffset.data(), MPI_FLOAT, MPI_COMM_WORLD);
 
             MPI_Allreduce(&epsGlobal, &epsGlobal, 1, MPI_FLOAT, MPI_MAX, MPI_COMM_WORLD);
