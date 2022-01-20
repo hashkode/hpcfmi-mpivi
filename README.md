@@ -23,3 +23,7 @@ Possible variatiation points:
 - Prio C:
   - J split algorithm
   - baremetal vs. cluster/kubernetes
+
+PlantUML diagram of used scheme 2:
+
+<img src="./rep/puml/gen/scheme2/scheme2.svg">
