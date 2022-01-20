@@ -34,7 +34,7 @@ _testHpcClassBTarget:
 _testNucTarget:
 	./nuc/_testNucTarget.sh $(nruns) $(nproc)
 	
-_testNucTarget:
+_testRPITarget:
 	./RPI/_testRPITarget.sh $(nruns) $(nproc)
 
 .PHONY: build
