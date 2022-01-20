@@ -129,6 +129,20 @@ testNuc:
 _testNucTarget:
 	$(MAKE) -C utl/ _testNucTarget nruns=$(nruns) nproc=$(nproc)
 
+prepareRPI: clean
+	# preferred: bash script allows fully parallel execution of make targets
+	$(MAKE) -C utl/ prepareRPI root=$(RPIRoot) node2=$(RPINode2) node3=$(RPINode3) node4=$(RPINode4)
+	# alternative: pure make approach
+	# $(MAKE) prepareTarget host=$(RPIRoot) runtype=rebuild
+	# $(MAKE) prepareTarget host=$(RPINode1) runtype=rebuild
+
+testRPI:
+	$(MAKE) testTarget root=$(RPIRoot) nruns=$(nruns) nproc=$(nproc) maketarget=_testRPITarget
+	#$(MAKE) _testNucTarget root=$(RPIRoot) nruns=$(nruns) nproc=$(nproc)
+
+_testRPITarget:
+	$(MAKE) -C utl/ _testRPITarget nruns=$(nruns) nproc=$(nproc)
+
 report:
 	$(MAKE) -C rep/ report.pdf
 

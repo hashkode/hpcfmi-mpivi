@@ -18,6 +18,9 @@ prepareTarget:
 
 prepareNuc:
 	./nuc/prepareNuc.sh $(root) $(node1)
+	
+prepareRPI:
+	./RPI/prepareRPI.sh $(root) $(node2) $(node3) $(node4)
 
 testTarget:
 	./testTarget.sh $(root) $(nruns) $(nproc) $(maketarget)
@@ -30,6 +33,9 @@ _testHpcClassBTarget:
 
 _testNucTarget:
 	./nuc/_testNucTarget.sh $(nruns) $(nproc)
+	
+_testNucTarget:
+	./RPI/_testRPITarget.sh $(nruns) $(nproc)
 
 .PHONY: build
 build:
