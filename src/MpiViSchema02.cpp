@@ -73,7 +73,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         MPI_Scatterv(indices.data(), dataBlockSizes.data(), dataOffsets.data(), MPI_INT, localIndices.data(), dataBlockSizes[mpiParameters.worldRank], MPI_INT, 0, MPI_COMM_WORLD);
 
         int length = 0;
-        for (int i = 1; i <= mpiParameters.worldSize; i++) { length += indptrBlockSizes[i]; }
+        for (int i = 1; i < mpiParameters.worldSize; i++) { length += indptrBlockSizes[i]; }
         std::vector<int> appendVector;
         appendVector.resize(length);
         std::fill(appendVector.begin(), appendVector.end(), localData.size());
@@ -103,7 +103,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
             localIndptr.insert(localIndptr.begin(), appendVector.begin(), appendVector.end());
 
             length = 0;
-            for (int i = mpiParameters.worldRank + 1; i <= mpiParameters.worldSize; i++) { length += indptrBlockSizes[i]; }
+            for (int i = mpiParameters.worldRank + 1; i < mpiParameters.worldSize; i++) { length += indptrBlockSizes[i]; }
             appendVector.clear();
             appendVector.resize(length);
             std::fill(appendVector.begin(), appendVector.end(), localData.size());
