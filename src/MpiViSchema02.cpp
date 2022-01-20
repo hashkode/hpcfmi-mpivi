@@ -139,12 +139,12 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
 
         if (iProcessor == 0) stateOffset[0] = 0;
         else
-            stateOffset[iProcessor] = (stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1] - 1);
+            stateOffset[iProcessor] = (stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1]);
     }
 
     viParameters.firstState = stateOffset[mpiParameters.worldRank];
     viParameters.lastState = (mpiParameters.worldSize - 1 == mpiParameters.worldRank) ? viParameters.NS - 1 : stateOffset[mpiParameters.worldRank + 1];
-
+    
 #ifdef VERBOSE_DEBUG
     std::cout << "nStatesPerProcess:" << std::endl;
     for (int iStatesPerProcess: nStatesPerProcess) { std::cout << iStatesPerProcess << ", "; }
