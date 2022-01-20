@@ -217,7 +217,7 @@ long MpiViUtility::getMaxRSSUsage() {
 }
 
 void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters) {
-    const int nitems=19;
+    const int nitems = 19;
     int blocklengths[19] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     MPI_Datatype types[19] = {MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL, MPI_FLOAT, MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_INT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED};
     MPI_Datatype MPI_Parameterstruct;
