@@ -20,7 +20,7 @@ prepareNuc:
 	./nuc/prepareNuc.sh $(root) $(node1)
 	
 prepareRPI:
-	./RPI/prepareRPI.sh $(root) $(node1) $(node2) $(node3)
+	./rpi/prepareRpi.sh $(root) $(node1) $(node2) $(node3)
 
 testTarget:
 	./testTarget.sh $(root) $(nruns) $(nproc) $(maketarget)

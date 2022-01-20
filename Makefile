@@ -7,10 +7,10 @@ tarname = hpcmi-gw.tar.gz
 nucRoot = marco
 nucNode1 = polo
 
-rpiRoot = node1
-rpiNode1 = node2
-rpiNode2 = node3
-rpiNode3 = node4
+rpiRoot = rpinode1
+rpiNode1 = rpinode2
+rpiNode2 = rpinode3
+rpiNode3 = rpinode4
 
 hpcClARoot = hpc01
 hpcClANode1 = hpc02
