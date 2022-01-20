@@ -252,51 +252,53 @@ void MpiViUtility::sync_Parameters(MpiViUtility::ViParameters &viParameters, Mpi
     MPI_Type_create_struct(nitems, blocklengths, offsets, types, &MPI_Parameterstruct);
     MPI_Type_commit(&MPI_Parameterstruct);
 
-    MpiViUtility::MPI_Parameter_struct mpi_param_struct;
-    if (mpiParameters.worldRank == 0) {
-        mpi_param_struct.confusion_distance = viParameters.confusion_distance;
-        mpi_param_struct.fuel_capacity = viParameters.fuel_capacity;
-        mpi_param_struct.max_controls = viParameters.max_controls;
-        mpi_param_struct.number_stars = viParameters.number_stars;
-        mpi_param_struct.NS = viParameters.NS;
-        mpi_param_struct.cols = viParameters.cols;
-        mpi_param_struct.rows = viParameters.rows;
-        mpi_param_struct.data = viParameters.data;
-        mpi_param_struct.indices = viParameters.indices;
-        mpi_param_struct.indptr = viParameters.indptr;
-        mpi_param_struct.doAsync = viParameters.doAsync;
-        mpi_param_struct.alpha = viParameters.alpha;
-        mpi_param_struct.eps = viParameters.eps;
-        mpi_param_struct.vi_maxIterations = viParameters.maxIterations;
-        mpi_param_struct.vi_conditionThreshold = viParameters.conditionThreshold;
-        mpi_param_struct.numThreads = viParameters.numThreads;
-        mpi_param_struct.comInterval = mpiParameters.comInterval;
-        mpi_param_struct.mpi_maxIterations = mpiParameters.maxIterations;
-        mpi_param_struct.mpi_conditionThreshold = mpiParameters.conditionThreshold;
+    MpiViUtility::MPI_Parameter_struct mpiParameterStruct;
+    if(mpiParameters.worldRank == 0)
+    {
+        mpiParameterStruct.confusion_distance = viParameters.confusion_distance;
+        mpiParameterStruct.fuel_capacity = viParameters.fuel_capacity;
+        mpiParameterStruct.max_controls = viParameters.max_controls;
+        mpiParameterStruct.number_stars = viParameters.number_stars;
+        mpiParameterStruct.NS = viParameters.NS;
+        mpiParameterStruct.cols = viParameters.cols;
+        mpiParameterStruct.rows = viParameters.rows;
+        mpiParameterStruct.data = viParameters.data;
+        mpiParameterStruct.indices = viParameters.indices;
+        mpiParameterStruct.indptr = viParameters.indptr;
+        mpiParameterStruct.doAsync = viParameters.doAsync;
+        mpiParameterStruct.alpha = viParameters.alpha;
+        mpiParameterStruct.eps = viParameters.eps;
+        mpiParameterStruct.vi_maxIterations = viParameters.maxIterations;
+        mpiParameterStruct.vi_conditionThreshold = viParameters.conditionThreshold;
+        mpiParameterStruct.numThreads = viParameters.numThreads;
+        mpiParameterStruct.comInterval = mpiParameters.comInterval;
+        mpiParameterStruct.mpi_maxIterations = mpiParameters.maxIterations;
+        mpiParameterStruct.mpi_conditionThreshold = mpiParameters.conditionThreshold;
     }
 
-    MPI_Bcast(&mpi_param_struct, 1, MPI_Parameterstruct, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&mpiParameterStruct, 1, MPI_Parameterstruct, 0, MPI_COMM_WORLD);
 
-    if (mpiParameters.worldRank != 0) {
-        viParameters.confusion_distance = mpi_param_struct.confusion_distance;
-        viParameters.fuel_capacity = mpi_param_struct.fuel_capacity;
-        viParameters.max_controls = mpi_param_struct.max_controls;
-        viParameters.number_stars = mpi_param_struct.number_stars;
-        viParameters.NS = mpi_param_struct.NS;
-        viParameters.cols = mpi_param_struct.cols;
-        viParameters.rows = mpi_param_struct.rows;
-        viParameters.data = mpi_param_struct.data;
-        viParameters.indices = mpi_param_struct.indices;
-        viParameters.indptr = mpi_param_struct.indptr;
-        viParameters.doAsync = mpi_param_struct.doAsync;
-        viParameters.alpha = mpi_param_struct.alpha;
-        viParameters.eps = mpi_param_struct.eps;
-        viParameters.maxIterations = mpi_param_struct.vi_maxIterations;
-        viParameters.conditionThreshold = mpi_param_struct.vi_conditionThreshold;
-        viParameters.numThreads = mpi_param_struct.numThreads;
-        mpiParameters.comInterval = mpi_param_struct.comInterval;
-        mpiParameters.maxIterations = mpi_param_struct.mpi_maxIterations;
-        mpiParameters.conditionThreshold = mpi_param_struct.mpi_conditionThreshold;
+    if(mpiParameters.worldRank != 0)
+    {
+         viParameters.confusion_distance = mpiParameterStruct.confusion_distance;
+         viParameters.fuel_capacity = mpiParameterStruct.fuel_capacity;
+         viParameters.max_controls = mpiParameterStruct.max_controls;
+         viParameters.number_stars = mpiParameterStruct.number_stars;
+         viParameters.NS = mpiParameterStruct.NS;
+         viParameters.cols = mpiParameterStruct.cols;
+         viParameters.rows = mpiParameterStruct.rows;
+         viParameters.data = mpiParameterStruct.data;
+         viParameters.indices = mpiParameterStruct.indices;
+         viParameters.indptr = mpiParameterStruct.indptr;
+         viParameters.doAsync = mpiParameterStruct.doAsync;
+         viParameters.alpha = mpiParameterStruct.alpha ;
+         viParameters.eps = mpiParameterStruct.eps ;
+         viParameters.maxIterations = mpiParameterStruct.vi_maxIterations;
+         viParameters.conditionThreshold = mpiParameterStruct.vi_conditionThreshold;
+         viParameters.numThreads = mpiParameterStruct.numThreads;
+         mpiParameters.comInterval = mpiParameterStruct.comInterval;
+         mpiParameters.maxIterations = mpiParameterStruct.mpi_maxIterations;
+         mpiParameters.conditionThreshold = mpiParameterStruct.mpi_conditionThreshold;
     }
     MPI_Type_free(&MPI_Parameterstruct);
 
