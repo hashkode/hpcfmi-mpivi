@@ -2,22 +2,24 @@
 cd "$(dirname "$0")"
 
 ssh-keyscan -t rsa rsync.hidrive.strato.com >> ~/.ssh/known_hosts
+rsync --dry-run -e "ssh -i sshkey" hpcfmi@rsync.hidrive.strato.com:users/hpcfmi/results/ ~ -azr -q
 
-ssh-keyscan -t rsa hpc01 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc02 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc03 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc04 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc05 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc06 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc07 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc08 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc09 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc10 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc11 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc12 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc13 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc14 >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa hpc15 >> ~/.ssh/known_hosts
+ssh hpc01 "hostname"
+ssh hpc02 "hostname"
+ssh hpc03 "hostname"
+ssh hpc04 "hostname"
+ssh hpc05 "hostname"
+ssh hpc06 "hostname"
+ssh hpc07 "hostname"
+ssh hpc08 "hostname"
+ssh hpc09 "hostname"
+ssh hpc10 "hostname"
+ssh hpc11 "hostname"
+ssh hpc12 "hostname"
+ssh hpc13 "hostname"
+ssh hpc14 "hostname"
+ssh hcp15 "hostname"
 
-ssh-keyscan -t rsa marco >> ~/.ssh/known_hosts
-ssh-keyscan -t rsa polo >> ~/.ssh/known_hosts
+# get nuc keys
+# ssh marco "hostname"
+# ssh polo "hostname"

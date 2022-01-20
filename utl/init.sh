@@ -30,7 +30,6 @@ chmod 400 sshkey
 
 # download data
 echo ">> fetch data set"
-ssh-keyscan -t rsa rsync.hidrive.strato.com >> ~/.ssh/known_hosts
 rsync -e "ssh -i sshkey" hpcfmi@rsync.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path -azrc -q
 
 # extract data
