@@ -1,5 +1,5 @@
 configuration:
   base: default.yaml
-  target: nuc
+  target: local
   mpiParameters:
-    maxIterations: 5000
+    schema: MpiViSchema02
