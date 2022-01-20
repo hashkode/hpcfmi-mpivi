@@ -3,11 +3,11 @@ configuration:
   target: local
   resultsPath: /results/
   basePath: /var/tmp/
-  dataSubPath: /data/data_debug/
+  dataSubPath: /data/data_small/
   mpiParameters:
     schema: MpiViSchema02
     comInterval: 1
-    maxIterations: 10000
+    maxIterations: 1000
     conditionThreshold: 5
   viParameters:
     doAsync: false
