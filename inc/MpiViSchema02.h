@@ -1,12 +1,12 @@
-#ifndef _FirstSchema_H_
-#define _FirstSchema_H_
+#ifndef _Schema02_H_
+#define _Schema02_H_
 
 #include "MpiViSchema.h"
 #include "MpiViUtility.h"
 
-class MpiViSchema01 : public MpiViSchema {
+class MpiViSchema02 : public MpiViSchema {
 public:
-    MpiViSchema01();
+    MpiViSchema02();
 
     void ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) override;
 

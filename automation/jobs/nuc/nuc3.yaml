@@ -1,0 +1,4 @@
+configuration:
+  base: nuc/default.yaml
+  mpiParameters:
+    schema: MpiViSchema03

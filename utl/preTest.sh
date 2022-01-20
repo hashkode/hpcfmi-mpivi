@@ -1,11 +1,17 @@
 #!/bin/bash
 
-### compare md5 check sums from /home/<user> dir and /var/temp/<user>
-# copy missing/wrong files
+cd "$(dirname "$0")"
 
 # home_path is the directory with given data, var_path is the directory where the program will later look for data
 home_path="/home/$(whoami)/data/"
 var_path="/var/tmp/$(whoami)/data"
+results_path="/var/tmp/$(whoami)/results"
+
+### sync results directory from server
+rsync -avzre "ssh -i sshkey" hpcfmi@rsync.hidrive.strato.com:users/hpcfmi/results/ $results_path
+
+### compare md5 check sums from /home/<user> dir and /var/temp/<user>
+# copy missing/wrong files
 
 # check if data directory is already existing
 if [ -d "$var_path" ]
@@ -18,7 +24,7 @@ then
   # calculate and compare checksums
     md5sum $home_path/$tmp/* > checksum_${tmp}_home.chk
     md5sum $var_path/$tmp/* > checksum_${tmp}_temp.chk
-  
+
     if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
     then
       # check if number of files is the same since this is not checked above
@@ -43,15 +49,15 @@ then
     echo "dataset $tmp is deleted --> copying from home"
     mkdir -p $var_path/$tmp
     cp -R $home_path/$tmp/* $var_path/$tmp
-  fi 
-  
+  fi
+
 # data_small
   tmp="data_small"
   if [ -d "$var_path/$tmp" ]
   then
     md5sum $home_path/$tmp/* > checksum_${tmp}_home.chk
     md5sum $var_path/$tmp/* > checksum_${tmp}_temp.chk
-  
+
     if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
     then
       DIFF=$(diff -r $home_path/$tmp $var_path/$tmp)
@@ -73,14 +79,14 @@ then
     mkdir -p $var_path/$tmp
     cp -R $home_path/$tmp/* $var_path/$tmp
   fi
-  
+
 # data_normal
   tmp="data_normal"
   if [ -d "$var_path/$tmp" ]
   then
     md5sum $home_path/$tmp/* > checksum_${tmp}_home.chk
     md5sum $var_path/$tmp/* > checksum_${tmp}_temp.chk
-  
+
     if md5sum --status -c checksum_${tmp}_home.chk checksum_${tmp}_temp.chk
     then
       DIFF=$(diff -r $home_path/$tmp $var_path/$tmp)
@@ -101,7 +107,7 @@ then
     echo "dataset $tmp is deleted --> copying from home"
     mkdir -p $var_path/$tmp
     cp -R $home_path/$tmp/* $var_path/$tmp
-  fi 
+  fi
 # data directory not existing -> copy complete dataset
 else
   echo "no dataset in /var/temp/ --> copying files ..."
@@ -112,10 +118,3 @@ fi
 
 # remove checksum files -> not needed anymore
 rm checksum*
-
-### run binary
-cd "$(dirname "$0")"
-cd ../build
-mpirun ./mpi-vi
-
-# me="$(whoami)" for username

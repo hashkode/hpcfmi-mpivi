@@ -15,5 +15,7 @@ find_package(LAPACKE REQUIRED)
 # - modules we need (mainly the optional requirements for eigen such as blas or lapack)
 target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
-        ${CMAKE_CURRENT_LIST_DIR}/libnpy/include # TODO: hacky, introduce cmake file for cnpy?
+        ${CMAKE_CURRENT_LIST_DIR}/libnpy/include # TODO: hacky, introduce cmake file for libnpy?
         ${LAPACKE_INCLUDE_DIRS_DEP}) # = include directories of lapacke and dependencies
+
+add_subdirectory(yaml-cpp)
