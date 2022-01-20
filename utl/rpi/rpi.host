@@ -1,0 +1,4 @@
+rpinode1 slots=4 max-slots=4
+rpinode2 slots=4 max-slots=4
+rpinode3 slots=4 max-slots=4
+rpinode4 slots=4 max-slots=4

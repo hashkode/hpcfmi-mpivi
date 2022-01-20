@@ -1,6 +1,9 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
+# permission adjustment for sshkey
+chmod 400 sshkey
+
 ssh-keyscan -t rsa rsync.hidrive.strato.com >> ~/.ssh/known_hosts
 rsync --dry-run -e "ssh -i sshkey" hpcfmi@rsync.hidrive.strato.com:users/hpcfmi/results/ ~ -azr -q
 

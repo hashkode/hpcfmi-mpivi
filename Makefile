@@ -3,8 +3,14 @@ NPROCS = $(shell grep -c 'processor' /proc/cpuinfo)
 MAKEFLAGS += -j$(NPROCS)
 
 tarname = hpcmi-gw.tar.gz
+
 nucRoot = marco
 nucNode1 = polo
+
+rpiRoot = rpinode1
+rpiNode1 = rpinode2
+rpiNode2 = rpinode3
+rpiNode3 = rpinode4
 
 hpcClARoot = hpc01
 hpcClANode1 = hpc02
@@ -128,6 +134,20 @@ testNuc:
 
 _testNucTarget:
 	$(MAKE) -C utl/ _testNucTarget nruns=$(nruns) nproc=$(nproc)
+
+prepareRpi: clean
+	# preferred: bash script allows fully parallel execution of make targets
+	$(MAKE) -C utl/ prepareRPI root=$(rpiRoot) node1=$(rpiNode1) node2=$(rpiNode2) node3=$(rpiNode3)
+	# alternative: pure make approach
+	# $(MAKE) prepareTarget host=$(RPIRoot) runtype=rebuild
+	# $(MAKE) prepareTarget host=$(RPINode1) runtype=rebuild
+
+testRpi:
+	$(MAKE) testTarget root=$(rpiRoot) nruns=$(nruns) nproc=$(nproc) maketarget=_testRpiTarget
+	#$(MAKE) _testNucTarget root=$(RPIRoot) nruns=$(nruns) nproc=$(nproc)
+
+_testRpiTarget:
+	$(MAKE) -C utl/ _testRpiTarget nruns=$(nruns) nproc=$(nproc)
 
 report:
 	$(MAKE) -C rep/ report.pdf

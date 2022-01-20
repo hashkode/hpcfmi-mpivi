@@ -35,7 +35,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         indptrblockSize = indptrblockSize - indptrblockSize % viParameters.max_controls;
         std::fill(indptrBlockSizes.begin(), indptrBlockSizes.end(), indptrblockSize);
 
-        if (mpiParameters.worldSize * indptrblockSize != (indptr.size() - 1)) { indptrBlockSizes[mpiParameters.worldSize - 1] = indptr.size() - ((mpiParameters.worldSize - 1) * indptrblockSize); }
+        if (mpiParameters.worldSize * indptrblockSize != (int) (indptr.size() - 1)) { indptrBlockSizes[mpiParameters.worldSize - 1] = indptr.size() - ((mpiParameters.worldSize - 1) * indptrblockSize); }
         indptrOffsets[0] = 0;
         for (int i = 1; i < mpiParameters.worldSize; i++) { indptrOffsets[i] = indptrOffsets[i - 1] + indptrBlockSizes[i - 1]; }
         indptrOffsets[mpiParameters.worldSize] = indptr.size() - 1;
@@ -144,7 +144,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
 
     viParameters.firstState = stateOffset[mpiParameters.worldRank];
     viParameters.lastState = (mpiParameters.worldSize - 1 == mpiParameters.worldRank) ? viParameters.NS - 1 : stateOffset[mpiParameters.worldRank + 1];
-    
+
 #ifdef VERBOSE_DEBUG
     std::cout << "nStatesPerProcess:" << std::endl;
     for (int iStatesPerProcess: nStatesPerProcess) { std::cout << iStatesPerProcess << ", "; }
