@@ -20,7 +20,7 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
     std::vector<int> indptrOffsets, indptrBlockSizes;
     std::vector<int> dataOffsets, dataBlockSizes;
     indptrBlockSizes.resize(mpiParameters.worldSize);
-    indptrOffsets.resize(mpiParameters.worldSize);
+    indptrOffsets.resize(mpiParameters.worldSize+1);
     dataBlockSizes.resize(mpiParameters.worldSize);
     dataOffsets.resize(mpiParameters.worldSize);
 
@@ -86,9 +86,10 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
 
     MPI_Bcast(&indptrBlockSizes[0], mpiParameters.worldSize, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&dataBlockSizes[0], mpiParameters.worldSize, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&indptrOffsets[0], mpiParameters.worldSize+1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    std::cout << "rank " << mpiParameters.worldRank << ", size indpt BS " << indptrBlockSizes.size() << "val " << indptrBlockSizes[0] << std::endl;
-    std::cout << "rank " << mpiParameters.worldRank << ", size data BS " << dataBlockSizes.size() << "val " << dataBlockSizes[0] << std::endl;
+    std::cout << "rank " << mpiParameters.worldRank << ", size indpt BS " << indptrBlockSizes.size() << ", val " << indptrBlockSizes[mpiParameters.worldRank] << std::endl;
+    std::cout << "rank " << mpiParameters.worldRank << ", size data BS " << dataBlockSizes.size() << ", val " << dataBlockSizes[mpiParameters.worldRank] << std::endl;
 
     std::vector<int> localIndices, localIndptr;
     std::vector<float> localData;
@@ -103,24 +104,30 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         MPI_Scatterv(data.data(), dataBlockSizes.data(), dataOffsets.data(), MPI_FLOAT, localData.data(), dataBlockSizes[mpiParameters.worldRank], MPI_FLOAT, 0, MPI_COMM_WORLD);
         MPI_Scatterv(indices.data(), dataBlockSizes.data(), dataOffsets.data(), MPI_INT, localIndices.data(), dataBlockSizes[mpiParameters.worldRank], MPI_INT, 0, MPI_COMM_WORLD);
 
-        viParameters.firstState = indptrOffsets[mpiParameters.worldRank];
-        viParameters.lastState = indptrOffsets[mpiParameters.worldRank + 1] - 1;
         int length = 0;
         for (int i = 1; i <= mpiParameters.worldSize; i++) { length += indptrBlockSizes[i]; }
         std::vector<int> append_vector;
         append_vector.resize(length);
-        //std::fill(append_vector.begin(), append_vector.end(), localData.size());
+        std::fill(append_vector.begin(), append_vector.end(), localData.size());
         localIndptr.insert(localIndptr.end(), append_vector.begin(), append_vector.end());
     } else {
-
+        //localIndptr.resize(indptrBlockSizes[mpiParameters.worldRank]);
+        //localData.resize(dataBlockSizes[mpiParameters.worldRank]);
+        //localIndices.resize(dataBlockSizes[mpiParameters.worldRank]);
         MPI_Scatterv(NULL, NULL, NULL, MPI_INT, localIndptr.data(), indptrBlockSizes[mpiParameters.worldRank], MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Scatterv(NULL, NULL, NULL, MPI_FLOAT, localData.data(), dataBlockSizes[mpiParameters.worldRank], MPI_FLOAT, 0, MPI_COMM_WORLD);
         MPI_Scatterv(NULL, NULL, NULL, MPI_INT, localIndices.data(), dataBlockSizes[mpiParameters.worldRank], MPI_INT, 0, MPI_COMM_WORLD);
-
-        if (mpiParameters.worldRank != mpiParameters.worldSize) {
-            viParameters.firstState = indptrOffsets[mpiParameters.worldRank];
-            viParameters.lastState = indptrOffsets[mpiParameters.worldRank + 1] - 1;
-
+///*
+        if (mpiParameters.worldRank == (mpiParameters.worldSize-1)) {
+            int length = 0;
+            for (int i = 0; i < mpiParameters.worldRank; i++) { length += indptrBlockSizes[i]; }
+            std::vector<int> append_vector;
+            append_vector.resize(length);
+            std::fill(append_vector.begin(), append_vector.end(), 0);
+            Eigen::Map<Eigen::VectorXi> _localIndptr(localIndptr.data(), localIndptr.size());
+            _localIndptr = _localIndptr.array() - localIndptr[0];
+            localIndptr.insert(localIndptr.begin(), append_vector.begin(), append_vector.end());
+        } else {
             int length = 0;
             for (int i = 0; i < mpiParameters.worldRank; i++) { length += indptrBlockSizes[i]; }
             std::vector<int> append_vector;
@@ -136,43 +143,35 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
             append_vector.resize(length);
             std::fill(append_vector.begin(), append_vector.end(), localData.size());
             localIndptr.insert(localIndptr.end(), append_vector.begin(), append_vector.end());
-
-        } else {
-            viParameters.firstState = indptrOffsets[mpiParameters.worldRank];
-            int sum = 0;
-            for (int i = 0; i <= mpiParameters.worldSize; i++) { sum += indptrBlockSizes[i]; }
-            viParameters.lastState = sum;
-
-            int length = 0;
-            for (int i = 0; i < mpiParameters.worldSize; i++) { length += indptrBlockSizes[i]; }
-            std::vector<int> append_vector;
-            append_vector.resize(length);
-            std::fill(append_vector.begin(), append_vector.end(), 0);
-            Eigen::Map<Eigen::VectorXi> _localIndptr(localIndptr.data(), localIndptr.size());
-            _localIndptr = _localIndptr.array() - localIndptr[0];
-            localIndptr.insert(localIndptr.begin(), append_vector.begin(), append_vector.end());
-        }
+        }//*/
     }
-    std::cout << "local indptr at " << mpiParameters.worldRank << " : " << localIndptr.size() << std::endl;
 
+/*
     if (mpiParameters.worldRank == 1) {
-        for (int i = 0; i < mpiParameters.worldSize; i++) {
-            std::cout << "indptr in block " << i << " : " << std::endl;
-            for (int j = 0; j < indptrBlockSizes[i]; j++) { std::cout << localIndptr[j + indptrOffsets[i]] << ", "; }
-            std::cout << std::endl;
-        }std::cout << "indices in block " << 1 << " : " << std::endl;
+        std::cout << "first state in rank " << mpiParameters.worldRank << " : "<< viParameters.firstState <<  std::endl;
+        std::cout << "last state in rank " << mpiParameters.worldRank << " : "<< viParameters.lastState <<  std::endl;
+        std::cout << "size localindptr in rank " << mpiParameters.worldRank << " : "<< localIndptr.size() <<  std::endl;
+        std::cout << "size localindices in rank " << mpiParameters.worldRank << " : "<< localIndices.size() << std::endl;
+        std::cout << "size localData in rank " << mpiParameters.worldRank << " : "<< localData.size()  << std::endl;
+
+        std::cout << "localindptr in rank " << mpiParameters.worldRank << " : " << std::endl;
+        for (int j = 0; j < localIndptr.size(); j++) {
+            std::cout << localIndptr[j] << ", ";
+        }
+        std::cout << std::endl;
+        std::cout << "localindices in rank " << mpiParameters.worldRank << " : " << std::endl;
         for (int i = 0; i < localIndices.size(); i++) {
             std::cout << localIndices[i] << ", ";
-
-        }std::cout << std::endl;
-        for (int i = 0; i < mpiParameters.worldSize; i++) {
-            std::cout << "data in block " << i << " : " << std::endl;
-            for (int j = 0; j < dataBlockSizes[i]; j++) { std::cout << localData[j + dataOffsets[i]] << ", "; }
-            std::cout << std::endl;
         }
-    }
+        std::cout << std::endl;
+        std::cout << "localData in rank " << mpiParameters.worldRank << " : " << std::endl;
+        for (int i = 0; i < localData.size(); i++) {
+            std::cout << localData[i] << ", ";
+        }
+        std::cout << std::endl;
+    } //*/
 
-    std::cout << "were here" << std::endl;
+    std::cout << "were here " <<viParameters.NS<< std::endl;
     std::vector<float> j;
     j.reserve(viParameters.NS);
     std::vector<int> pi;
@@ -182,10 +181,6 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
     auto valueIteration = Backend::ValueIteration();
     auto tStartVi = std::chrono::system_clock::now();
 
-    // Split up states for each rank
-    //viParameters.firstState = (viParameters.NS / mpiParameters.worldSize) * mpiParameters.worldRank;
-    //viParameters.lastState = (mpiParameters.worldSize - 1 == mpiParameters.worldRank) ? viParameters.NS - 1 : (viParameters.NS / mpiParameters.worldSize) * (mpiParameters.worldRank + 1) - 1;
-
 #ifdef VERBOSE_DEBUG
     std::cout << "world_size: " << mpiParameters.worldSize << ", world_rank: " << mpiParameters.worldRank << std::endl;
     std::cout << "firstState: " << viParameters.firstState << ", lastState: " << viParameters.lastState << std::endl;
@@ -193,17 +188,25 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
 
     std::vector<int> nStatesPerProcess, stateOffset;
     for (int iProcessor = 0; iProcessor < mpiParameters.worldSize; ++iProcessor) {
-        if (iProcessor + 1 < mpiParameters.worldSize) nStatesPerProcess.push_back((indptrOffsets[mpiParameters.worldRank + 1] - 1) - indptrOffsets[mpiParameters.worldRank]);
-        else{
-            int sum = 0;
-            for (int i = 0; i <= mpiParameters.worldSize; i++) { sum += indptrBlockSizes[i]; }
-            nStatesPerProcess.push_back(sum - indptrOffsets[mpiParameters.worldRank]);
+        int states = 0;
+        if(iProcessor == mpiParameters.worldSize-1)
+        {
+            states = (indptrOffsets[mpiParameters.worldRank + 1] - indptrOffsets[mpiParameters.worldRank])/viParameters.max_controls;
+            nStatesPerProcess.push_back(states);
+        } else {
+            states = (indptrOffsets[mpiParameters.worldRank + 1] - indptrOffsets[mpiParameters.worldRank])/viParameters.max_controls;
+            nStatesPerProcess.push_back(states);
         }
 
         if (iProcessor == 0) stateOffset.push_back(0);
         else
-            stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1]);
+            stateOffset.push_back(stateOffset[iProcessor - 1] + nStatesPerProcess[iProcessor - 1] - 1);
     }
+    std::cout << "nStatesPerProcess " <<  nStatesPerProcess[mpiParameters.worldRank] << " and stateOffset " << stateOffset[mpiParameters.worldRank] << std::endl;
+    viParameters.firstState = stateOffset[mpiParameters.worldRank];
+    viParameters.lastState = (mpiParameters.worldSize - 1 == mpiParameters.worldRank) ? viParameters.NS - 1 : stateOffset[mpiParameters.worldRank + 1];
+
+    std::cout << "rank " << mpiParameters.worldRank << " and firstState " << viParameters.firstState << " and lastState " << viParameters.lastState <<std::endl;
 
 #ifdef VERBOSE_DEBUG
     std::cout << "nStatesPerProcess:" << std::endl;
