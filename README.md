@@ -24,6 +24,15 @@ Possible variatiation points:
   - J split algorithm
   - baremetal vs. cluster/kubernetes
 
+# Procedure
+
+**init**
+Downloads the dataset and prepares it for cpp.
+**test**
+Checks integrity of data in /var/tmp/user/ and the downloaded data.
+
+In /automation/jobs/ lay yaml files with the desired parameters/configuration.
+
 # Makefile
 
 - **clean**:
