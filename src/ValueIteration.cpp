@@ -106,7 +106,9 @@ namespace Backend {
         unsigned int conditionCount = 0;
 
 #pragma omp parallel
-        //omp_set_num_threads(viParameters.numThreads);
+#if CMAKE_BUILD_TYPE == Release
+        omp_set_num_threads(viParameters.numThreads);
+#endif
 
         while (conditionCount < viParameters.conditionThreshold && iterations < viParameters.maxIterations) {
             epsGlobal = -1;

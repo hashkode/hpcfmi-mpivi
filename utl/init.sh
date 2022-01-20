@@ -1,25 +1,5 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-# setup routine
-echo "> entering setup routine"
-## apt packages, apapted from https://stackoverflow.com/questions/10608004/auto-install-packages-from-inside-makefile
-echo ">> installing debian packages with apt"
-### misc.
-if ! dpkg -l | grep git -c >>/dev/null; then sudo apt-get install git; fi
-if ! dpkg -l | grep cmake -c >>/dev/null; then sudo apt-get install cmake; fi
-if ! dpkg -l | grep doxygen -c >>/dev/null; then sudo apt-get install doxygen; fi
-if ! dpkg -l | grep liblapack-dev -c >>/dev/null; then sudo apt-get install liblapack-dev; fi
-if ! dpkg -l | grep liblapacke-dev -c >>/dev/null; then sudo apt-get install liblapacke-dev; fi
-if ! dpkg -l | grep graphviz -c >>/dev/null; then sudo apt-get install graphviz; fi
-if ! dpkg -l | grep python3-pip -c >>/dev/null; then sudo apt-get install python3-pip; fi
-### openmpi
-if ! dpkg -l | grep openmpi-bin -c >>/dev/null; then sudo apt-get install openmpi-bin; fi
-if ! dpkg -l | grep openmpi-common -c >>/dev/null; then sudo apt-get install openmpi-common; fi
-if ! dpkg -l | grep libopenmpi-dev -c >>/dev/null; then sudo apt-get install libopenmpi-dev; fi
-
-## pip packages
-echo ">> installing python packages with pip"
-pip install pytest cffi numpy scipy matplotlib pandas seaborn
 
 # init routine
 echo "> running init routine"
@@ -32,25 +12,28 @@ then
   echo ">> data directory already created" 
   if [ -d "$home_path/data_debug" ]
   then
-    rm -r "$home_path/data_debug" ]
+    rm -rf "$home_path/data_debug" ]
   fi
   if [ -d "$home_path/data_small" ]
   then
-    rm -r "$home_path/data_small"
+    rm -rf "$home_path/data_small"
   fi
   if [ -d "$home_path/data_normal" ]
   then
-    rm -r "$home_path/data_normal"
+    rm -rf "$home_path/data_normal"
   fi
 else
   mkdir $home_path
 fi
 # permission adjustment for sshkey
 chmod 400 sshkey
+
 # download data
-scp -i sshkey hpcfmi@scp.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path
+echo ">> fetch data set"
+rsync -e "ssh -i sshkey" hpcfmi@rsync.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path -azrc -q
+
 # extract data
-tar -xvf $home_path/hpcmi-data.tar.gz -C $home_path
+tar -xvf $home_path/hpcmi-data.tar.gz -C $home_path >/dev/null
 mv $home_path/hpcmi-data/data_debug $home_path
 mv $home_path/hpcmi-data/data_small $home_path
 mv $home_path/hpcmi-data/data_normal $home_path

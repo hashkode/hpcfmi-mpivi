@@ -2,6 +2,7 @@
 
 cd "$(dirname "$0")"
 
+mkdir -p ../build
 cd ../build
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make

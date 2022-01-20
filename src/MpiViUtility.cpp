@@ -157,11 +157,14 @@ std::string MpiViUtility::datetime() {
 
 void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
     std::filesystem::create_directories(mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/");
-    std::string filenameMeasurements = mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + logParameters.target + "_" + std::string(GIT_USER_EMAIL) + ".csv";
+    std::string filenameMeasurements = mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + std::string(GIT_USER_EMAIL) + ".csv";
 
     if (!std::filesystem::exists(filenameMeasurements)) {
         std::ofstream outfileMeasurements(filenameMeasurements);
         std::string header = "datetime,";
+        header += "target,";
+        header += "configuration,";
+        header += "data_set,";
         header += "schema,";
         header += "world_size,";
         header += "com_intervall,";
@@ -185,6 +188,9 @@ void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiV
     std::ofstream outfileMeasurements(filenameMeasurements, std::ios_base::app);
 
     std::string line = logParameters.startDatetime + ",";
+    line += logParameters.target + ",";
+    line += mpiParameters.configurationFile + ",";
+    line += mpiParameters.dataSubPath + ",";
     line += mpiParameters.nameSchema + ",";
     line += std::to_string(mpiParameters.worldSize) + ",";
     line += std::to_string(mpiParameters.comInterval) + ",";
