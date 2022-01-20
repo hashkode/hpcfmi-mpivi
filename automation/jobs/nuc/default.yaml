@@ -2,5 +2,4 @@ configuration:
   base: default.yaml
   target: nuc
   mpiParameters:
-    comInterval: 5
-    maxIterations: 100
+    maxIterations: 5000

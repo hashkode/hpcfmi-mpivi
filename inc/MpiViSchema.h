@@ -16,7 +16,7 @@ public:
 
     virtual std::string GetName() = 0;
 
-    void calculateMetrics(std::vector<float> &j, std::vector<float> &jStar, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters);
+    void calculateMetrics(std::vector<float> &j, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters);
 };
 
 #endif//MPI_VI_MPIVISCHEMA_H

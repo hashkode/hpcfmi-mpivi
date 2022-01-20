@@ -35,8 +35,7 @@ int main(int argc, char *argv[]) {
     if (mpiParameters.nameSchema == "MpiViSchema01") {
         MpiViSchema01 schema;
         schema.ValueIteration(viParameters, mpiParameters, logParameters);
-    }
-    if (mpiParameters.nameSchema == "MpiViSchema03") {
+    } else if (mpiParameters.nameSchema == "MpiViSchema03") {
         MpiViSchema03 schema;
         schema.ValueIteration(viParameters, mpiParameters, logParameters);
     } else {

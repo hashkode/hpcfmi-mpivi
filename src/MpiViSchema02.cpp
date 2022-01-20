@@ -15,12 +15,11 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
     mpiParameters.username = user;
 
     std::vector<int> indices, indptr;
-    std::vector<float> data, jStar;
+    std::vector<float> data;
 
     MpiViUtility::loadNpy(data, std::string(mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath), std::string("P_data.npy"));
     MpiViUtility::loadNpy(indices, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "P_indices.npy");
     MpiViUtility::loadNpy(indptr, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "P_indptr.npy");
-    MpiViUtility::loadNpy(jStar, mpiParameters.basePath + mpiParameters.username + mpiParameters.dataSubPath, "J_star_alpha_0_99.npy");
 
     std::vector<float> j;
     j.reserve(viParameters.NS);
@@ -87,15 +86,17 @@ void MpiViSchema02::ValueIteration(MpiViUtility::ViParameters &viParameters, Mpi
         }
     }
 
-    MPI_Gatherv(&pi[viParameters.firstState], nStatesPerProcess[mpiParameters.worldRank], MPI_INT, pi.data(), nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gatherv(pi.data() + viParameters.firstState, nStatesPerProcess[mpiParameters.worldRank], MPI_INT, pi.data(), nStatesPerProcess.data(), stateOffset.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
-    auto tEndVi = std::chrono::system_clock::now();
+    if (mpiParameters.worldRank == 0) {
+        auto tEndVi = std::chrono::system_clock::now();
 
-    logParameters.runtimeVi = (unsigned int) std::chrono::duration_cast<std::chrono::milliseconds>(tEndVi - tStartVi).count();
-    logParameters.epsGlobal = epsGlobal;
-    logParameters.steps = iStep;
+        logParameters.runtimeVi = (unsigned int) std::chrono::duration_cast<std::chrono::milliseconds>(tEndVi - tStartVi).count();
+        logParameters.epsGlobal = epsGlobal;
+        logParameters.steps = iStep;
 
-    calculateMetrics(j, jStar, viParameters, mpiParameters, logParameters);
+        calculateMetrics(j, viParameters, mpiParameters, logParameters);
+    }
 }
 
 std::string MpiViSchema02::GetName() { return this->name; }
