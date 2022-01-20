@@ -163,6 +163,7 @@ void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParam
         std::ofstream outfileMeasurements(filenameMeasurements);
         std::string header = "datetime,";
         header += "target,";
+        header += "configuration,";
         header += "data_set,";
         header += "schema,";
         header += "world_size,";
@@ -188,6 +189,7 @@ void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiV
 
     std::string line = logParameters.startDatetime + ",";
     line += logParameters.target + ",";
+    line += mpiParameters.configurationFile + ",";
     line += mpiParameters.dataSubPath + ",";
     line += mpiParameters.nameSchema + ",";
     line += std::to_string(mpiParameters.worldSize) + ",";

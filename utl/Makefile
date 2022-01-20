@@ -25,6 +25,9 @@ testTarget:
 _testHpcClassATarget:
 	./hpcclassa/_testHpcClassATarget.sh $(nruns) $(nproc)
 
+_testHpcClassBTarget:
+	./hpcclassa/_testHpcClassBTarget.sh $(nruns) $(nproc)
+
 _testNucTarget:
 	./nuc/_testNucTarget.sh $(nruns) $(nproc)
 

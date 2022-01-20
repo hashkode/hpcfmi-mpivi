@@ -10,6 +10,18 @@ hpcClARoot = hpc01
 hpcClANode1 = hpc02
 hpcClANode2 = hpc03
 hpcClANode3 = hpc04
+hpcClANode4 = hpc05
+
+hpcClBRoot = hpc06
+hpcClBNode1 = hpc07
+hpcClBNode2 = hpc08
+hpcClBNode3 = hpc09
+hpcClBNode4 = hpc10
+hpcClBNode5 = hpc11
+hpcClBNode6 = hpc12
+hpcClBNode7 = hpc13
+hpcClBNode8 = hpc14
+hpcClBNode9 = hpc15
 
 .SILENT: clean
 
@@ -71,15 +83,37 @@ prepareHpcClassA: clean
 	$(MAKE) prepareTarget host=$(hpcClANode1) runtype=init
 	$(MAKE) prepareTarget host=$(hpcClANode2) runtype=init
 	$(MAKE) prepareTarget host=$(hpcClANode3) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClANode4) runtype=init
 	$(MAKE) prepareTarget host=$(hpcClARoot) runtype=rebuild
 	# alternative: bash script would allow parallel execution, useless here due to NAS home directory
-	# $(MAKE) -C utl/ prepareHpcClass1 root=$(hpcCl1Root) node1=$(hpcCl1Node1) ...
+	# $(MAKE) -C utl/ prepareHpcClassA root=$(hpcClARoot) node1=$(hpcClANode1) ...
 
 testHpcClassA:
 	$(MAKE) testTarget root=$(hpcClARoot) nruns=$(nruns) nproc=$(nproc) maketarget=_testHpcClassATarget
 
 _testHpcClassATarget:
 	$(MAKE) -C utl/ _testHpcClassATarget nruns=$(nruns) nproc=$(nproc)
+
+prepareHpcClassB: clean
+	# preferred: pure make approach
+	$(MAKE) prepareTarget host=$(hpcClBNode1) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode2) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode3) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode4) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode5) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode6) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode7) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode8) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBNode9) runtype=init
+	$(MAKE) prepareTarget host=$(hpcClBRoot) runtype=rebuild
+	# alternative: bash script would allow parallel execution, useless here due to NAS home directory
+	# $(MAKE) -C utl/ prepareHpcClassB root=$(hpcClBRoot) node1=$(hpcClBNode1) ...
+
+testHpcClassB:
+	$(MAKE) testTarget root=$(hpcClARoot) nruns=$(nruns) nproc=$(nproc) maketarget=_testHpcClassBTarget
+
+_testHpcClassBTarget:
+	$(MAKE) -C utl/ _testHpcClassBTarget nruns=$(nruns) nproc=$(nproc)
 
 prepareNuc: clean
 	# preferred: bash script allows fully parallel execution of make targets

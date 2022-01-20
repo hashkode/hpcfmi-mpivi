@@ -15,4 +15,10 @@ cd ../../
 make prepareTarget host=${_node1} runtype=init
 make prepareTarget host=${_node2} runtype=init
 make prepareTarget host=${_node3} runtype=init
+make prepareTarget host=${_node4} runtype=init
+make prepareTarget host=${_node5} runtype=init
+make prepareTarget host=${_node6} runtype=init
+make prepareTarget host=${_node7} runtype=init
+make prepareTarget host=${_node8} runtype=init
+make prepareTarget host=${_node9} runtype=init
 make prepareTarget host=${_root} runtype=rebuild

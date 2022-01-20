@@ -22,3 +22,6 @@ if ! dpkg -l | grep libopenmpi-dev -c >>/dev/null; then sudo apt-get install lib
 ## pip packages
 echo ">> installing python packages with pip"
 pip3 install pytest cffi numpy scipy matplotlib pandas seaborn
+
+## get host keys
+./getHostKeys.sh
