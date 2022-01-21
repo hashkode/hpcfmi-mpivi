@@ -1,4 +1,4 @@
 configuration:
-  base: RPI/default.yaml
+  base: hpcclassmixed/default.yaml
   mpiParameters:
     schema: MpiViSchema01

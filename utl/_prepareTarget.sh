@@ -20,8 +20,8 @@ echo -e "Preparing on host <"${_host}"> with user <"${_git_user}">"
 ssh ${_host} "cd;mkdir -p ${project_path}"
 rsync -e "ssh" ./ ${_host}:${project_path} -azr -q --exclude=.idea --delete
 
-if [ ${_runtype} == rebuild ]; then
-  ssh ${_host} "cd;cd ${project_path};make init fetchtype=fetch;make preTest;make rebuild"
+if [ ${_runtype} == build ]; then
+  ssh ${_host} "cd;cd ${project_path};make init fetchtype=fetch;make preTest;make build"
 fi
 
 if [ ${_runtype} == init ]; then

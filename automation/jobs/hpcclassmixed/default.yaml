@@ -1,5 +1,5 @@
 configuration:
   base: default.yaml
-  target: local
+  target: hpcclassmixed
   mpiParameters:
-    schema: MpiViSchema02
+    maxIterations: 5000
