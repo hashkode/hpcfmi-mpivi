@@ -9,33 +9,29 @@ Possible measurements:
   - iterations until convergence
   - memory usage (RAM)
 
-
 Possible variatiation points:
   - MPI schemes 
   - MPI synchronization intervall (cycles)
   - MPI processor count
   - computing hardware (HPC class 1, HPC class 2, RPi cluster, NUC cluster)
   - asynchronous vs. synchronous VI with OpenMP
-  - 
-## Scheme 
-  The following schemes can be executed:
 
-  <img src="./rep/puml/gen/scheme1/scheme1.svg">
-  <img src="./rep/puml/gen/scheme2/scheme2.svg">
-  <img src="./rep/puml/gen/scheme3/scheme3.svg">
+## Schemes
+As of now, three schemes are implemented and can be tested via configuration. The following sections introduces the communication layout and mechanisms of the layouts.
 
- The dataloading ist done in the following :
-
-  <img src="./rep/puml/gen/scheme_load_data/scheme_load_data.svg">
-
+| Schema:      | MpiViSchema01| MpiViSchema02| MpiViSchema03|
+|--------------|-------|-------|-------|
+| Key concept: | Distributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion | KDistributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J, exchange of J via accumulation at rank_0, synchronised calculation of epsGlobal as convergence criterion. |
+| PlantUML     | !["Scheme 1"](./rep/puml/gen/scheme1/scheme1.svg "Scheme 1") | !["Scheme 2"](./rep/puml/gen/scheme2/scheme2.svg "Scheme 2")   | !["Scheme 3"](./rep/puml/gen/scheme3/scheme3.svg "Scheme 3")  |
 
 ## Using the project
 The project can be executed using the make commands listed below.
 
 # Procedure
-**init**
+**prepare<>**
 Downloads the dataset and prepares it for cpp.
-**test**
+
+**test<>**
 Checks integrity of data in /var/tmp/user/ and the downloaded data.
 In /automation/jobs/ lay yaml files with the desired parameters/configuration.
 
@@ -59,27 +55,41 @@ In /automation/jobs/ lay yaml files with the desired parameters/configuration.
 - **preTest:**
    - Synchronize data set from home drive to /var/tmp/
 - **postTest**:
-   - Synchronize esults directory to server
-- **prepareTarget**:
+   - Synchronize results directory to server
+- **_prepareTarget**:
    - Prepare Target for execution
-- **testTarget**:
+- **_testTarget**:
   - Run test 
 - **prepareHpcClassA**:
-  - Prepare HPC CLass A (hpc01 - hpc04) for execution
+  - Prepare HPC CLass A (hpc01 - hpc05) for execution
 - **testHpcClassA**:
-  - Run test PC CLass A (hpc01 - hpc04) with parameter number of runs and number of processors on target
+  - Run test PC CLass A (hpc01 - hpc05) with parameter number of runs and number of processors on target
 - **_testHpcClassATarget**:
-  - Run test PC CLass A (hpc01 - hpc04) with parameter number of runs and number of processors
+  - Local script to test HPC CLass A (hpc01 - hpc05) with parameter number of runs and number of processors
 - **prepareHpcClassB**:
   - Prepare HPC CLass B (hpc06 - hpc15) for execution
 - **testHpcClassB**:
   - Run test PC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors on target
 - **_testHpcClassBTarget**:
-  - Run test PC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors
+  - Local script to test HPC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors
+ - **prepareHpcClassMixed**:
+  - Prepare HPC CLass Mixed (hpc01 - hpc15) for execution
+- **testHpcClassMixed**:
+  - Run test PC CLass Mixed (hpc01 - hpc15) with parameter number of runs and number of processors on target
+- **_testHpcClassMixedTarget**:
+  - Local script to test HPC CLass Mixed (hpc01 - hpc15) with parameter number of runs and number of processors
 - **prepareNuc**:
-  - Prepare Nuc for execution
+  - Prepare Nuc cluster for execution
 - **testNuc:**
-  - Run test on Nuc
+  - Run test on Nuc cluster
+- **_testNucTarget**:
+  - Local script to test Nuc cluster with parameter number of runs and number of processors
+- **prepareRpi**:
+  - Prepare Raspberry Pi cluster for execution
+- **testRpi:**
+  - Run test on Raspberry Pi cluster
+- **_testRpiTarget**:
+  - Local script to test Raspberry Pi cluster with parameter number of runs and number of processors
 - **report**:
   - makes latex report
 - **pack**:
@@ -125,6 +135,8 @@ pip3 install pytest cffi numpy scipy matplotlib pandas seaborn
 ### Visualization
 the reading of the measurement data can be done via the  /gruppe-3-hauptprojekt/automation/results/HEAD/readVisual.py file. Here are different visualization tools available. This can look like the following.
 
-<img src="./rep/img/Runtime_World_Read_me.svg">
-<img src="./rep/img/scatterplot.svg">
-<img src="./rep/img/boxcom.svg">
+![](./rep/img/Runtime_World_Read_me.svg "Runtime")
+
+![](./rep/img/scatterplot.svg "Scatterplot")
+
+![](./rep/img/boxcom.svg "boxcom")

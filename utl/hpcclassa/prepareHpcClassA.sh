@@ -12,7 +12,7 @@ _node8=$9
 _node9=${10}
 
 cd ../../
-make prepareTarget host=${_node1} runtype=init
-make prepareTarget host=${_node2} runtype=init
-make prepareTarget host=${_node3} runtype=init
-make prepareTarget host=${_root} runtype=rebuild
+make _prepareTarget host=${_node1} runtype=init
+make _prepareTarget host=${_node2} runtype=init
+make _prepareTarget host=${_node3} runtype=init
+make _prepareTarget host=${_root} runtype=build

@@ -4,4 +4,4 @@ _root=$1
 _node1=$2
 
 cd ../../
-make prepareTarget host=${_root} runtype=rebuild & make prepareTarget host=${_node1} runtype=rebuild
+make _prepareTarget host=${_root} runtype=build & make _prepareTarget host=${_node1} runtype=build

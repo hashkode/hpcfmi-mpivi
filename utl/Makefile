@@ -13,8 +13,8 @@ postTest:
 testX:
 	./testX.sh $(nruns)
 
-prepareTarget:
-	./prepareTarget.sh $(host) $(runtype)
+_prepareTarget:
+	./_prepareTarget.sh $(host) $(runtype)
 
 prepareNuc:
 	./nuc/prepareNuc.sh $(root) $(node1)
@@ -22,17 +22,20 @@ prepareNuc:
 prepareRPI:
 	./rpi/prepareRpi.sh $(root) $(node1) $(node2) $(node3)
 
-testTarget:
-	./testTarget.sh $(root) $(nruns) $(nproc) $(maketarget)
+_testTarget:
+	./_testTarget.sh $(root) $(nruns) $(nproca) $(nprocb) $(maketarget)
 
 _testHpcClassATarget:
-	./hpcclassa/_testHpcClassATarget.sh $(nruns) $(nproc)
+	./hpcclassa/_testHpcClassATarget.sh $(nruns) $(nproca) $(nprocb)
 
 _testHpcClassBTarget:
-	./hpcclassb/_testHpcClassBTarget.sh $(nruns) $(nproc)
+	./hpcclassb/_testHpcClassBTarget.sh $(nruns) $(nproca) $(nprocb)
+
+_testHpcClassMixedTarget:
+	./hpcclassmixed/_testHpcClassMixedTarget.sh $(nruns) $(nproca) $(nprocb)
 
 _testNucTarget:
-	./nuc/_testNucTarget.sh $(nruns) $(nproc)
+	./nuc/_testNucTarget.sh $(nruns) $(nproca) $(nprocb)
 	
 _testRpiTarget:
-	./rpi/_testRpiTarget.sh $(nruns) $(nproc)
+	./rpi/_testRpiTarget.sh $(nruns) $(nproca) $(nprocb)
