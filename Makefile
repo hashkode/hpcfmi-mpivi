@@ -47,7 +47,7 @@ clean:
 # Get rid of everything that might be left for whatever reason, then compile from scratch
 # Not elegant but failsafe
 rebuild: clean
-	doxygen Doxyfile >/dev/null
+	doxygen Doxyfile >/dev/null 2>&1
 	mkdir -p build/
 	cd build/ && cmake -DCMAKE_BUILD_TYPE=Release .. >/dev/null
 	$(MAKE) -C build/ >/dev/null

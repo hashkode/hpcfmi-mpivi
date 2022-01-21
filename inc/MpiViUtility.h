@@ -10,9 +10,6 @@
 #include <string>
 #include <vector>
 
-//TODO: remove if not needed
-#define GET_VARIABLE_NAME(Variable) (#Variable)
-
 #ifndef GIT_COMMIT_HASH
 #define GIT_COMMIT_HASH "?"
 #endif
