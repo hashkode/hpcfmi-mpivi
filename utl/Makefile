@@ -36,7 +36,3 @@ _testNucTarget:
 	
 _testRpiTarget:
 	./rpi/_testRpiTarget.sh $(nruns) $(nproc)
-
-.PHONY: build
-build:
-	./qbuild.sh
