@@ -66,7 +66,7 @@ test:
 	$(MAKE) testX nruns=1
 
 testX: preTest build
-	$(MAKE) -C utl/ testX nruns=$(filter-out $@, $(MAKECMDGOALS))
+	$(MAKE) -C utl/ testX nruns=$(nruns)
 	$(MAKE) postTest
 
 prepareTarget:

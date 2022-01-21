@@ -11,7 +11,7 @@ postTest:
 	./postTest.sh
 
 testX:
-	./testX.sh $(nRuns)
+	./testX.sh $(nruns)
 
 prepareTarget:
 	./prepareTarget.sh $(host) $(runtype)

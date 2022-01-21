@@ -9,7 +9,7 @@ echo $(hostname)
 
 for i in `seq 1 ${_nruns}`
 do
-    mpirun -np ${_nproc} -hostfile ../utl/rpi/rpi.host ./mpi-vi ../automation/jobs/rpi/default.yaml
+    mpirun -np ${_nproc} -hostfile ../utl/rpi/rpi.host -mca btl_tcp_if_include eth0 ./mpi-vi ../automation/jobs/rpi/default.yaml
 done
 
 cd ../

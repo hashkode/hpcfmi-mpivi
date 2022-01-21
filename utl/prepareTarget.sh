@@ -21,7 +21,7 @@ ssh ${_host} "cd;mkdir -p ${project_path}"
 rsync -e "ssh" ./ ${_host}:${project_path} -azr -q --exclude=.idea --delete
 
 if [ ${_runtype} == rebuild ]; then
-  ssh ${_host} "cd;cd ${project_path};make init fetchtype=fetch;make preTest;make rebuild"
+  ssh ${_host} "cd;cd ${project_path};make init fetchtype=fetch;make preTest;make build"
 fi
 
 if [ ${_runtype} == init ]; then
