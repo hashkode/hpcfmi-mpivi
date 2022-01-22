@@ -1,0 +1,11 @@
+datetime,target,configuration,data_set,schema,world_size,com_intervall,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+2022-01-22_17:26:40,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,3359,3048,34144,658868,32636,34144,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:26:44,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,3043,2761,33752,659068,32588,33752,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:26:47,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,3251,2967,34080,659404,32624,34080,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:26:51,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,3436,3155,34320,660112,32624,34320,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:26:55,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,3173,2889,34280,660932,32744,34280,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:52:11,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,8981,8671,34320,659980,32632,34320,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:52:20,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,4930,4638,34424,660988,32712,34424,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:52:26,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,5543,5261,34336,660032,32708,34336,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:52:32,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,5744,5465,34260,660396,32704,34260,265,0.000000,0.037109,0.996403,0.000010
+2022-01-22_17:52:39,hpcclassb,../automation/jobs/hpcclassb/default.yaml,/data/data_small/,MpiViSchema01,20,1,5992,5707,34380,661544,32880,34380,265,0.000000,0.037109,0.996403,0.000010

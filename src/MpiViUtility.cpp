@@ -167,7 +167,7 @@ void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParam
         header += "data_set,";
         header += "schema,";
         header += "world_size,";
-        header += "com_intervall,";
+        header += "com_interval,";
         header += "runtime_ms,";
         header += "runtime_vi_ms,";
         header += "rss_max_rank0_kb,";

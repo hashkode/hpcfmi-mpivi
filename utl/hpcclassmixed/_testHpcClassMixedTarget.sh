@@ -9,5 +9,7 @@ echo $(hostname)
 cd ../../build/
 for i in `seq 1 ${_nruns}`
 do
-    mpirun -np ${_nproca} -hostfile ../utl/hpcclassmixed/hpcclassa.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/default.yaml : -np ${_nprocb} -hostfile ../utl/hpcclassmixed/hpcclassb.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/default.yaml
+    mpirun -np ${_nproca} -hostfile ../utl/hpcclassmixed/hpcclassa.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/hpcclassmixed1.yaml : -np ${_nprocb} -hostfile ../utl/hpcclassmixed/hpcclassb.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/hpcclassmixed1.yaml
+    mpirun -np ${_nproca} -hostfile ../utl/hpcclassmixed/hpcclassa.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/hpcclassmixed2.yaml : -np ${_nprocb} -hostfile ../utl/hpcclassmixed/hpcclassb.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/hpcclassmixed2.yaml
+    mpirun -np ${_nproca} -hostfile ../utl/hpcclassmixed/hpcclassa.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/hpcclassmixed3.yaml : -np ${_nprocb} -hostfile ../utl/hpcclassmixed/hpcclassb.host --mca btl_tcp_if_include lan0 ./mpi-vi ../automation/jobs/hpcclassmixed/hpcclassmixed3.yaml
 done

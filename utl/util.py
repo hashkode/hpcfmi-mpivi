@@ -15,7 +15,6 @@ def convert_data_for_cpp(directory):
 
   # Each dataset gets subdirectory with the files for the c++ code
   directory = Path(directory)
-  directory_cpp = directory
 
   def load_sparse_matrix(directory, name):
     """
@@ -60,7 +59,7 @@ def convert_data_for_cpp(directory):
 
   params["P-info"] = write_sparse_binary("P")
 
-  with open(directory_cpp / "params.txt", "w") as the_file:
+  with open(directory / "params.txt", "w") as the_file:
     the_file.write(f"{params['confusion_distance']}\n")
     the_file.write(f"{params['fuel_capacity']}\n")
     the_file.write(f"{params['max_controls']}\n")

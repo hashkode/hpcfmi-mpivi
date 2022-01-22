@@ -9,5 +9,7 @@ echo $(hostname)
 cd ../../build/
 for i in `seq 1 ${_nruns}`
 do
-    mpirun -np ${_nproca} -hostfile ../utl/rpi/rpi.host -mca btl_tcp_if_include eth0 ./mpi-vi ../automation/jobs/rpi/default.yaml
+    mpirun -np ${_nproca} -hostfile ../utl/rpi/rpi.host -mca btl_tcp_if_include eth0 ./mpi-vi ../automation/jobs/rpi/rpi1.yaml
+    mpirun -np ${_nproca} -hostfile ../utl/rpi/rpi.host -mca btl_tcp_if_include eth0 ./mpi-vi ../automation/jobs/rpi/rpi2.yaml
+    mpirun -np ${_nproca} -hostfile ../utl/rpi/rpi.host -mca btl_tcp_if_include eth0 ./mpi-vi ../automation/jobs/rpi/rpi3.yaml
 done

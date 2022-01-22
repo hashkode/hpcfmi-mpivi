@@ -26,7 +26,7 @@
 class MpiViUtility {
 public:
     /**
-     * This type defines a struct that hold data for Value Iteration and MPI Parameter.
+     * A struct that is used for broadcasting of parameters from the configuration file loaded and parsed at rank0
      */
     struct MPI_Parameter_struct {
         // ViParameters for the MDP
@@ -57,7 +57,7 @@ public:
         unsigned int mpi_conditionThreshold;
     };
     /**
-     * This type defines a struct that hold Parameter for Value Iteration
+     * A struct that holds parameter to modify Value Iteration behaviour
      */
     struct ViParameters {
         // ViParameters for the MDP
@@ -85,7 +85,7 @@ public:
         int numThreads;
     };
     /**
-     * This type defines a struct that hold Parameter for Open MPI.
+     * A struct that holds parameter to modify Open MPI behaviour
      */
     struct MpiParameters {
         std::string nameSchema;
@@ -101,7 +101,7 @@ public:
         std::string base;
     };
     /**
-     * This type defines a struct that hold measure values.
+     * A struct to collect measurements and define the logging behaviour
      */
     struct LogParameters {
         std::string filePath;
@@ -122,28 +122,28 @@ public:
         float jDiffMSE;
     };
     /**
-     * Function for loading Parameters
-     * @param viParameters parameter for Value Iteration
-     * @param path path to files
-     * @param filename filename of parameters
+     * Function for loading a data set parameter file from disk
+     * @param viParameters Value Iteration parameters
+     * @param path path to data set
+     * @param filename filename of data set's parameters
      */
     static void loadParameters(MpiViUtility::ViParameters &viParameters, const std::string &path, const std::string &filename);
     /**
-     * Decomposes input struct into individual parameters
-     * @param viParameters controls the Value Iteration parameter
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * Parse a .yaml configuration for the project
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
      */
     static void parseConfiguration(ViParameters &viParameters, MpiParameters &mpiParameters, LogParameters &logParameters);
     /**
-     * Load numpy data
+     * Load numpy data files with integer data
      * @param data data to load
      * @param path path to files
      * @param filename filename of parameters
      */
     static void loadNpy(std::vector<int> &data, const std::string &path, const std::string &filename);
     /**
-     * Load numpy data
+     * Load numpy data files with float data
      * @param data data to load
      * @param path path to files
      * @param filename filename of parameters
@@ -155,49 +155,49 @@ public:
      */
     static std::string datetime();
     /**
-     * Define header and save to File
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * Determine .csv header of log file and create a log file
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
      */
     static void saveResultsToFile(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters);
     /**
-     * Writes the parameter in file
-     * @param filenameMeasurements generated filename of Mesurement
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * Append the measurements to an existing .csv file
+     * @param filenameMeasurements name of .csv file
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
      */
     static void appendCsv(const std::string &filenameMeasurements, const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters);
     /**
-     * Read out memory usage
-     * @return memory usage
+     * Read out the maxRSSU value of the process
+     * @return maximum RSSU value in kilobytes during process runtime
      */
     static long getMaxRSSUsage();
     /**
-     * Write Parameter in MPI struct
-     * @param viParameters controls the Value Iteration parameter>
-     * @param mpiParameters controls the Open MPI parameter
+     * Synchronize the parameters loaded from configuration from rank0 to all other processors
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters Open MPI parameter
      */
     static void syncParameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters);
     /**
-     * Get and load configuratuion
-     * @param viParameters controls the Value Iteration parameter
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
-     * @param argc argument count
-     * @param argv argument vector
+     * Load, parse and assign configuration to parameter structs
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
+     * @param argc command line argument count
+     * @param argv command line argument vector
      */
     static void loadConfiguration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters, const int *argc, char *argv[]);
     /**
-     * Broadcast string to other processors
-     * @param string  string to broadcast
-     * @param mpiParameters controls the Open MPI parameter
+     * Broadcast a string to other processors
+     * @param string string to broadcast
+     * @param mpiParameters Open MPI parameters
      */
     static void bcast_string(std::string &string, MpiViUtility::MpiParameters &mpiParameters);
     /**
-     * Get Results and save to file
-     * @param viParameters controls the Value Iteration parameter
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * Calculate measurement metrics and store them to a file
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
      */
     static void saveResults(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters);
 };

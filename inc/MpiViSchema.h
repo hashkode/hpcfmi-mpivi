@@ -10,29 +10,29 @@
 class MpiViSchema {
 protected:
     /**
-     * Holds the name of the Schema
+     * Holds the name of the class
      */
     std::string name;
 
 public:
     /**
-     * Settings for Value Iteration
-     * @param viParameters controls the Value Iteration parameter
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * Virtual method for value iteration with Open MPI, to be overridden by inheritors
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
      */
     virtual void ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) = 0;
     /**
-     * Function to get name of Schema
-     * @return name of Schema
+     * Function to get the name of the class
+     * @return name of the class
      */
     virtual std::string GetName() = 0;
     /**
      * Calculates metrics for the results based on the cost function
-     * @param j vector with the optimal cost per state
-     * @param viParameters controls the Value Iteration parameter
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * @param j variable with the optimal cost determined during value iteration
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters Open MPI parameters
+     * @param logParameters measurements and logging parameters
      */
     void calculateMetrics(std::vector<float> &j, MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters);
 };

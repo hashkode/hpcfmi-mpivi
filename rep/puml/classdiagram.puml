@@ -1,41 +1,47 @@
-	
-@startuml Class Model
-!define DARKBLUE 
-!includeurl https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
-class " Value Iteration" as Basis{
-    Eigen::Map<Eigen::VectorXf> &j
-    Eigen::Map<SparseMatrixType> &p
-    Eigen::Map<Eigen::VectorXi> pi
-    const float alpha
-    const int maxF
-    const int nStars
-    const int maxU
-    const float epsThreshold
+@startuml scheme-baseclass
+
+!procedure $DISPLAY_IN_ROWS($notes)
+    !while %strlen($notes)>0
+        !$pos = %strpos($notes,"\n")
+        !if $pos > 0
+            !$name = %substr($notes, 0, $pos)
+            !$notes = %substr($notes,$pos+2)
+        !else
+            !$name = $notes
+            !$notes = ""
+        !endif
+        $name
+    !endwhile
+!endprocedure
+
+abstract class MpiViSchema{
+    # std::string name;
   
-method asyncValueIteration()
-method syncValueIteration()
-method valueIteration()
-method updateBlock()
-method calculateStageCost()
-method decodeState()
-method calculateExpectedCost()
+    + $DISPLAY_IN_ROWS("virtual void ValueIteration(MpiViUtility::ViParameters &viParameters, \nMpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) = 0;")
+    + virtual std::string GetName() = 0;
+    + $DISPLAY_IN_ROWS("void calculateMetrics(std::vector<float> &j, MpiViUtility::ViParameters &viParameters, \nMpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters);")
 }
-class "Schema 1" as schema1{
-std::vector<int> comm_periods  
-method AsyncValueIterationSchema1()
-method getName()
+
+class MpiViSchema01{
+    + MpiViSchema01();
+    + $DISPLAY_IN_ROWS("void ValueIteration(MpiViUtility::ViParameters &viParameters, \nMpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) override;")
+    + std::string GetName() override;
 }
-class "Schema 2" as schema2{
-std::vector<int> comm_periods
-method AsyncValueIterationSchema2()
-method getName()
+
+class MpiViSchema02{
+    + MpiViSchema01();
+    + $DISPLAY_IN_ROWS("void ValueIteration(MpiViUtility::ViParameters &viParameters, \nMpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) override;")
+    + std::string GetName() override;
 }
-class "Schema 3" as schema3{
-std::vector<int> comm_periods
-method AsyncValueIterationSchema3()
-method getName()
+
+class MpiViSchema03{
+    + MpiViSchema01();
+    + $DISPLAY_IN_ROWS("void ValueIteration(MpiViUtility::ViParameters &viParameters, \nMpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) override;")
+    + std::string GetName() override;
 }
-Basis <|-- schema1
-Basis <|-- schema2
-Basis <|-- schema3
+
+MpiViSchema <|-- MpiViSchema01
+MpiViSchema <|-- MpiViSchema02
+MpiViSchema <|-- MpiViSchema03
+
 @enduml

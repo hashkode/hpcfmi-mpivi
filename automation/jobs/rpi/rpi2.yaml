@@ -1,0 +1,4 @@
+configuration:
+  base: rpi/default.yaml
+  mpiParameters:
+    schema: MpiViSchema01

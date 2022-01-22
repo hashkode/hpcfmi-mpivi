@@ -1,0 +1,5 @@
+datetime,target,configuration,data_set,schema,world_size,com_intervall,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+2022-01-22_13:25:38,rpi,../automation/jobs/rpi/default.yaml,/data/data_small/,MpiViSchema01,16,1,9269,8428,32808,506632,31424,32808,265,0.000000,0.037109,0.997373,0.000010
+2022-01-22_13:58:47,rpi,../automation/jobs/rpi/default.yaml,/data/data_small/,MpiViSchema01,16,1,8719,8472,32904,507492,31484,32904,265,0.000000,0.037109,0.997373,0.000010
+2022-01-22_14:15:50,rpi,../automation/jobs/rpi/default.yaml,/data/data_small/,MpiViSchema01,16,1,8869,8619,33120,508948,31576,33120,265,0.000000,0.037109,0.997373,0.000010
+2022-01-22_14:22:55,rpi,../automation/jobs/rpi/default.yaml,/data/data_small/,MpiViSchema01,16,1,8706,8459,32984,508756,31548,32984,265,0.000000,0.037109,0.997373,0.000010

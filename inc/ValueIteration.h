@@ -13,8 +13,8 @@
  */
 namespace Backend {
     /**
- * This type defines a struct to hold the decomposed state information for easier access.
- */
+     * A struct to hold the decomposed state information for easier access
+     */
     typedef struct {
         unsigned int fuel;
         unsigned int desStar;
@@ -30,7 +30,7 @@ namespace Backend {
          * @param pIndices pIndices pointer to the indices property of a sparse matrix with transition data
          * @param pIndptr pIndptr pointer to the indptr property of a sparse matrix with transition data
          * @param pi pi vector with the optimal policy per state - pointer to an array with the policy
-         * @param viParameters struct for Value Iteration Parameter
+         * @param viParameters Value Iteration parameters
          * @return epsilon global value when stop criterion was met
          */
         float valueIteration(float *j, float *pData, int *pIndices, int *pIndptr, int *pi, MpiViUtility::ViParameters &viParameters);
@@ -61,7 +61,6 @@ namespace Backend {
          * @param state serialized state of the space ship
          * @param action control action
          * @param alpha decay factor for value iteration
-         * @param n_stars number of stars
          * @param maxU number of possible control actions
          * @return expected cost
          */
@@ -76,7 +75,7 @@ namespace Backend {
          * @param j vector with the optimal cost per state
          * @param p Eigen sparse matrix with the the transition matrix
          * @param pi vector with the optimal policy per state
-         * @param viParameters struct for Value Iteration Parameter
+         * @param viParameters Value Iteration parameters
          * @return  epsilon local value of the block update
          */
 
@@ -90,7 +89,7 @@ namespace Backend {
          * @param j vector with the optimal cost per state
          * @param p Eigen sparse matrix with the the transition matrix
          * @param pi vector with the optimal policy per state
-         * @param viParameters struct for Value Iteration Parameter
+         * @param viParameters Iteration parameters
          * @return epsilon global value when stop criterion was met
          */
         template<typename SparseMatrixType>
@@ -102,7 +101,7 @@ namespace Backend {
          * @param j vector with the optimal cost per state
          * @param p Eigen sparse matrix with the the transition matrix
          * @param pi vector with the optimal policy per state
-         * @param viParameters struct for Value Iteration Parameter
+         * @param viParameters Value Iteration parameters
          * @return epsilon global value when stop criterion was met
          */
         template<typename SparseMatrixType>
