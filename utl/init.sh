@@ -32,6 +32,7 @@ chmod 400 sshkey
 
 # download data
 echo ">> fetch data set"
+mkdir -p ${var_path}
 rsync -e "ssh -i sshkey -o 'StrictHostKeyChecking no'" hpcfmi@rsync.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $var_path -azrc -q
 
 # extract data
