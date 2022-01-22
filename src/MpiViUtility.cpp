@@ -157,7 +157,7 @@ std::string MpiViUtility::datetime() {
 
 void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParameters, const MpiViUtility::LogParameters &logParameters) {
     std::filesystem::create_directories(mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/");
-    std::string filenameMeasurements = mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + std::string(GIT_USER_EMAIL) + ".csv";
+    std::string filenameMeasurements = mpiParameters.basePath + mpiParameters.username + logParameters.filePath + std::string(GIT_BRANCH) + "/" + std::string(GIT_COMMIT_HASH) + "_" + logParameters.target + "_" + std::string(GIT_USER_EMAIL) + ".csv";
 
     if (!std::filesystem::exists(filenameMeasurements)) {
         std::ofstream outfileMeasurements(filenameMeasurements);
@@ -170,7 +170,10 @@ void MpiViUtility::saveResultsToFile(const MpiViUtility::MpiParameters &mpiParam
         header += "com_intervall,";
         header += "runtime_ms,";
         header += "runtime_vi_ms,";
-        header += "rss_max_kb,";
+        header += "rss_max_rank0_kb,";
+        header += "rss_sum_all_kb,";
+        header += "rss_min_all_kb,";
+        header += "rss_max_all_kb,";
         header += "steps_total,";
         header += "eps_global,";
         header += "jdiff_maxnorm,";
@@ -195,7 +198,10 @@ void MpiViUtility::appendCsv(const std::string &filenameMeasurements, const MpiV
     line += std::to_string(mpiParameters.comInterval) + ",";
     line += std::to_string(logParameters.runtime) + ",";
     line += std::to_string(logParameters.runtimeVi) + ",";
-    line += std::to_string(logParameters.maxRSS) + ",";
+    line += std::to_string(logParameters.maxRssRank0) + ",";
+    line += std::to_string(logParameters.maxRssSum) + ",";
+    line += std::to_string(logParameters.maxRssMin) + ",";
+    line += std::to_string(logParameters.maxRssMax) + ",";
     line += std::to_string(logParameters.steps) + ",";
     line += std::to_string(logParameters.epsGlobal) + ",";
     line += std::to_string(logParameters.jDiffMaxNorm) + ",";
@@ -222,7 +228,7 @@ long MpiViUtility::getMaxRSSUsage() {
 }
 
 void MpiViUtility::syncParameters(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters) {
-    const int nItems =19;
+    const int nItems = 19;
     int blocklengths[19] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     MPI_Datatype types[19] = {MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL, MPI_FLOAT, MPI_FLOAT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_INT, MPI_UNSIGNED, MPI_UNSIGNED, MPI_UNSIGNED};
     MPI_Datatype MPI_Parameterstruct;
@@ -252,8 +258,7 @@ void MpiViUtility::syncParameters(MpiViUtility::ViParameters &viParameters, MpiV
     MPI_Type_commit(&MPI_Parameterstruct);
 
     MpiViUtility::MPI_Parameter_struct mpiParameterStruct;
-    if(mpiParameters.worldRank == 0)
-    {
+    if (mpiParameters.worldRank == 0) {
         mpiParameterStruct.confusion_distance = viParameters.confusion_distance;
         mpiParameterStruct.fuel_capacity = viParameters.fuel_capacity;
         mpiParameterStruct.max_controls = viParameters.max_controls;
@@ -277,27 +282,26 @@ void MpiViUtility::syncParameters(MpiViUtility::ViParameters &viParameters, MpiV
 
     MPI_Bcast(&mpiParameterStruct, 1, MPI_Parameterstruct, 0, MPI_COMM_WORLD);
 
-    if(mpiParameters.worldRank != 0)
-    {
-         viParameters.confusion_distance = mpiParameterStruct.confusion_distance;
-         viParameters.fuel_capacity = mpiParameterStruct.fuel_capacity;
-         viParameters.max_controls = mpiParameterStruct.max_controls;
-         viParameters.number_stars = mpiParameterStruct.number_stars;
-         viParameters.NS = mpiParameterStruct.NS;
-         viParameters.cols = mpiParameterStruct.cols;
-         viParameters.rows = mpiParameterStruct.rows;
-         viParameters.data = mpiParameterStruct.data;
-         viParameters.indices = mpiParameterStruct.indices;
-         viParameters.indptr = mpiParameterStruct.indptr;
-         viParameters.doAsync = mpiParameterStruct.doAsync;
-         viParameters.alpha = mpiParameterStruct.alpha ;
-         viParameters.eps = mpiParameterStruct.eps ;
-         viParameters.maxIterations = mpiParameterStruct.vi_maxIterations;
-         viParameters.conditionThreshold = mpiParameterStruct.vi_conditionThreshold;
-         viParameters.numThreads = mpiParameterStruct.numThreads;
-         mpiParameters.comInterval = mpiParameterStruct.comInterval;
-         mpiParameters.maxIterations = mpiParameterStruct.mpi_maxIterations;
-         mpiParameters.conditionThreshold = mpiParameterStruct.mpi_conditionThreshold;
+    if (mpiParameters.worldRank != 0) {
+        viParameters.confusion_distance = mpiParameterStruct.confusion_distance;
+        viParameters.fuel_capacity = mpiParameterStruct.fuel_capacity;
+        viParameters.max_controls = mpiParameterStruct.max_controls;
+        viParameters.number_stars = mpiParameterStruct.number_stars;
+        viParameters.NS = mpiParameterStruct.NS;
+        viParameters.cols = mpiParameterStruct.cols;
+        viParameters.rows = mpiParameterStruct.rows;
+        viParameters.data = mpiParameterStruct.data;
+        viParameters.indices = mpiParameterStruct.indices;
+        viParameters.indptr = mpiParameterStruct.indptr;
+        viParameters.doAsync = mpiParameterStruct.doAsync;
+        viParameters.alpha = mpiParameterStruct.alpha;
+        viParameters.eps = mpiParameterStruct.eps;
+        viParameters.maxIterations = mpiParameterStruct.vi_maxIterations;
+        viParameters.conditionThreshold = mpiParameterStruct.vi_conditionThreshold;
+        viParameters.numThreads = mpiParameterStruct.numThreads;
+        mpiParameters.comInterval = mpiParameterStruct.comInterval;
+        mpiParameters.maxIterations = mpiParameterStruct.mpi_maxIterations;
+        mpiParameters.conditionThreshold = mpiParameterStruct.mpi_conditionThreshold;
     }
     MPI_Type_free(&MPI_Parameterstruct);
 
@@ -379,8 +383,13 @@ void MpiViUtility::loadConfiguration(MpiViUtility::ViParameters &viParameters, M
 
 void MpiViUtility::saveResults(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
     // measurement and logging
+    unsigned long maxRssLocal = MpiViUtility::getMaxRSSUsage();
+    MPI_Allreduce(&maxRssLocal, &logParameters.maxRssSum, 1, MPI_UNSIGNED_LONG, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Allreduce(&maxRssLocal, &logParameters.maxRssMin, 1, MPI_UNSIGNED_LONG, MPI_MIN, MPI_COMM_WORLD);
+    MPI_Allreduce(&maxRssLocal, &logParameters.maxRssMax, 1, MPI_UNSIGNED_LONG, MPI_MAX, MPI_COMM_WORLD);
+
     if (mpiParameters.worldRank == 0) {
-        logParameters.maxRSS = MpiViUtility::getMaxRSSUsage();
+        logParameters.maxRssRank0 = MpiViUtility::getMaxRSSUsage();
 
         logParameters.tEnd = std::chrono::system_clock::now();
         logParameters.runtime = (unsigned int) std::chrono::duration_cast<std::chrono::milliseconds>(logParameters.tEnd - logParameters.tStart).count();
@@ -388,6 +397,6 @@ void MpiViUtility::saveResults(MpiViUtility::ViParameters &viParameters, MpiViUt
         MpiViUtility::saveResultsToFile(mpiParameters, logParameters);
 
         std::cout << "epsGlobal: " << logParameters.epsGlobal << ", max norm (J - J*): " << logParameters.jDiffMaxNorm << ", l2 norm (J - J*): " << logParameters.jDiffL2Norm << ", MSE (J - J*): " << logParameters.jDiffMSE << std::endl;
-        std::cout << "converged at: " << logParameters.steps << ", runtime: " << logParameters.runtime << "ms, MpiVi took: " << logParameters.runtimeVi << "ms, with maxRSSU: " << logParameters.maxRSS << "kb" << std::endl;
+        std::cout << "converged at: " << logParameters.steps << ", runtime: " << logParameters.runtime << "ms, MpiVi took: " << logParameters.runtimeVi << "ms, with maxRSSU@rank0: " << logParameters.maxRssRank0 << "kb" << std::endl;
     }
 }

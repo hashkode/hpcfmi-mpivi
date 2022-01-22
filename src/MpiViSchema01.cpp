@@ -11,9 +11,6 @@ MpiViSchema01::MpiViSchema01() { MpiViSchema01::name = std::string(__func__); }
 
 void MpiViSchema01::ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) {
     //init
-    const char *user = std::getenv("USER");
-    mpiParameters.username = user;
-
     std::vector<int> indices, indptr;
     std::vector<float> data;
 

@@ -11,7 +11,7 @@ _node7=$8
 _node8=$9
 _node9=${10}
 
-cd ../../
+cd ../
 make _prepareTarget host=${_node1} runtype=init
 make _prepareTarget host=${_node2} runtype=init
 make _prepareTarget host=${_node3} runtype=init
@@ -21,4 +21,4 @@ make _prepareTarget host=${_node6} runtype=init
 make _prepareTarget host=${_node7} runtype=init
 make _prepareTarget host=${_node8} runtype=init
 make _prepareTarget host=${_node9} runtype=init
-make _prepareTarget host=${_root} runtype=build
+make _prepareTarget host=${_root} runtype=rebuild

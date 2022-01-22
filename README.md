@@ -1,3 +1,5 @@
+[![C/C++ CI](https://github.com/hashkode/hpcfmi-mpivi/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/hashkode/hpcfmi-mpivi/actions/workflows/c-cpp.yml)
+
 # MPI applied to Value Iteration, HPCfMI WS20/21, Group 3
 Tobias Krug, Tobias Klama, Till Hülder
 
@@ -19,10 +21,10 @@ Possible variatiation points:
 ## Schemes
 As of now, three schemes are implemented and can be tested via configuration. The following sections introduces the communication layout and mechanisms of the layouts.
 
-| Schema:      | MpiViSchema01| MpiViSchema02| MpiViSchema03|
-|--------------|-------|-------|-------|
-| Key concept: | Distributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion | KDistributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J, exchange of J via accumulation at rank_0, synchronised calculation of epsGlobal as convergence criterion. |
-| PlantUML     | !["Scheme 1"](./rep/puml/gen/scheme1/scheme1.svg "Scheme 1") | !["Scheme 2"](./rep/puml/gen/scheme2/scheme2.svg "Scheme 2")   | !["Scheme 3"](./rep/puml/gen/scheme3/scheme3.svg "Scheme 3")  |
+| **Schema**      | MpiViSchema01                                                                                                              | MpiViSchema02| MpiViSchema03|
+|-----------------|----------------------------------------------------------------------------------------------------------------------------|-------|-------|
+| **Key concept** | Distributed calculation of J, exchange of J via broadcast, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J, exchange of J via accumulation at rank_0, synchronised calculation of epsGlobal as convergence criterion. |
+| **PlantUML**    | !["Scheme 1"](./rep/puml/gen/scheme1/scheme1.svg "Scheme 1")                                                               | !["Scheme 2"](./rep/puml/gen/scheme2/scheme2.svg "Scheme 2")   | !["Scheme 3"](./rep/puml/gen/scheme3/scheme3.svg "Scheme 3")  |
 
 ## Using the project
 The project can be executed using the make commands listed below.
@@ -72,7 +74,7 @@ In /automation/jobs/ lay yaml files with the desired parameters/configuration.
   - Run test PC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors on target
 - **_testHpcClassBTarget**:
   - Local script to test HPC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors
- - **prepareHpcClassMixed**:
+- **prepareHpcClassMixed**:
   - Prepare HPC CLass Mixed (hpc01 - hpc15) for execution
 - **testHpcClassMixed**:
   - Run test PC CLass Mixed (hpc01 - hpc15) with parameter number of runs and number of processors on target
