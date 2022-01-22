@@ -114,3 +114,7 @@ runNucTests:
 runRpiTests:
 	$(MAKE) -C utl/ _prepareRpi
 	$(MAKE) -C utl/ _testRpi nruns=1 nproc=16
+
+# Execute all Local standard tests
+runLocalTests: rebuild
+	$(MAKE) -C utl/ _testLocal nruns=1 nproca=4

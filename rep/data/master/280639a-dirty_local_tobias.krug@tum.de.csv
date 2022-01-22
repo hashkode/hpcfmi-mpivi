@@ -1,0 +1,6 @@
+datetime,target,configuration,data_set,schema,world_size,com_interval,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+2022-01-22_05:10:27,local,../automation/jobs/default.yaml,/data/data_small/,MpiViSchema01,2,1,2794,2554,30752,61092,30340,30752,256,0.000000,0.003906,0.177200,0.000000
+2022-01-22_05:10:30,local,../automation/jobs/default.yaml,/data/data_small/,MpiViSchema01,2,1,2800,2564,30672,61044,30372,30672,256,0.000000,0.003906,0.177200,0.000000
+2022-01-22_05:10:33,local,../automation/jobs/default.yaml,/data/data_small/,MpiViSchema01,2,1,2894,2660,30712,61176,30464,30712,256,0.000000,0.003906,0.177200,0.000000
+2022-01-22_05:10:36,local,../automation/jobs/default.yaml,/data/data_small/,MpiViSchema01,2,1,2814,2580,30656,61116,30460,30656,256,0.000000,0.003906,0.177200,0.000000
+2022-01-22_05:10:39,local,../automation/jobs/default.yaml,/data/data_small/,MpiViSchema01,2,1,2802,2567,30692,61180,30488,30692,256,0.000000,0.003906,0.177200,0.000000

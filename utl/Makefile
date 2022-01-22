@@ -150,3 +150,7 @@ _prepareRpi:
 _testRpi:
 	$(MAKE) _testTarget root=$(rpiRoot) nruns=$(nruns) nproca=$(nproc) nprocb=0 maketarget=_testRpiTarget
 
+_testLocal:
+	$(MAKE) _preTest
+	./local/_testLocalTarget.sh $(nruns) $(nproca)
+	$(MAKE) _postTest

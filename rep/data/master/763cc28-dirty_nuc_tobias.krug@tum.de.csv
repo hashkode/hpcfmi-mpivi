@@ -1,4 +1,4 @@
-datetime,target,configuration,data_set,schema,world_size,com_intervall,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+datetime,target,configuration,data_set,schema,world_size,com_interval,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
 2022-01-22_20:47:57,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7709,5417,33576,133552,33136,33576,264,0.000000,0.003906,0.177200,0.000000
 2022-01-22_20:48:05,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7947,5665,33284,133200,33112,33408,264,0.000000,0.003906,0.177200,0.000000
 2022-01-22_20:48:20,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7897,5613,33756,133716,33104,33756,264,0.000000,0.003906,0.177200,0.000000

@@ -1,0 +1,10 @@
+datetime,target,configuration,data_set,schema,world_size,com_interval,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+2022-01-22_23:09:37,nuc,../automation/jobs/nuc/nuc1.yaml,/data/data_small/,MpiViSchema01,3,1,7488,5196,33228,99252,32892,33228,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:09:46,nuc,../automation/jobs/nuc/nuc2.yaml,/data/data_small/,MpiViSchema02,3,1,7547,5182,45216,105896,28692,45216,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:09:59,nuc,../automation/jobs/nuc/nuc3.yaml,/data/data_small/,MpiViSchema03,3,1,8083,5772,33500,99512,32864,33500,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:17:31,nuc,../automation/jobs/nuc/nuc1.yaml,/data/data_small/,MpiViSchema01,3,1,7443,5175,33564,99400,32860,33564,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:17:39,nuc,../automation/jobs/nuc/nuc2.yaml,/data/data_small/,MpiViSchema02,3,1,7687,5316,45292,106052,28800,45292,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:17:54,nuc,../automation/jobs/nuc/nuc3.yaml,/data/data_small/,MpiViSchema03,3,1,7878,5597,33224,99208,32884,33224,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:19:18,nuc,../automation/jobs/nuc/nuc1.yaml,/data/data_small/,MpiViSchema01,3,1,7513,5212,33584,99556,32832,33584,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:19:26,nuc,../automation/jobs/nuc/nuc2.yaml,/data/data_small/,MpiViSchema02,3,1,7613,5252,45248,105620,28360,45248,261,0.000000,0.003906,0.177200,0.000000
+2022-01-22_23:19:41,nuc,../automation/jobs/nuc/nuc3.yaml,/data/data_small/,MpiViSchema03,3,1,8002,5711,33512,99168,32784,33512,261,0.000000,0.003906,0.177200,0.000000
