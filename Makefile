@@ -81,7 +81,7 @@ test:
 
 testX: build
 	./utl/testX.sh $(nruns)
-	$(MAKE) postTest
+	$(MAKE) -C utl/ _postTest
 
 documentation:
 	doxygen Doxyfile
