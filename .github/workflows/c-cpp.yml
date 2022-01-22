@@ -15,5 +15,5 @@ jobs:
       run: make init
     - name: make rebuild
       run: make rebuild
-    - name: make testX nruns=2
-      run: make testX nruns=2
+    - name: make test
+      run: make test
