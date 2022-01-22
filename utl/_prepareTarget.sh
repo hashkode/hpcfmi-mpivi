@@ -37,5 +37,5 @@ fi
 if [ ${_runtype} == init ]; then
   # synchronize data set
   ssh ${_host} -o 'StrictHostKeyChecking no' "mkdir -p ${target_var_path}"
-  rsync -e "ssh -o 'StrictHostKeyChecking no'" ${local_var_path} ${_host}:${target_var_path} -azr -q --delete
+  rsync -e "ssh -o 'StrictHostKeyChecking no'" ${local_var_path} ${_host}:${target_var_path} -azr -q --delete --exclude=hpcmi-data.tar.gz
 fi
