@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: set git user to dummy value
-      run: git config user.email c-cpp_ci
+      run: git config user.email ci@github
     - name: make setupToolchain
       run: sudo make setupToolchain
     - name: make init
