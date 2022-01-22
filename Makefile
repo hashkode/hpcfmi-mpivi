@@ -189,7 +189,7 @@ testNuc:
 # HPC Class Rpi
 prepareRpi: clean
 	# preferred: bash script allows fully parallel execution of make targets
-	$(MAKE) -C utl/ _prepareRPI root=$(rpiRoot) node1=$(rpiNode1) node2=$(rpiNode2) node3=$(rpiNode3)
+	$(MAKE) -C utl/ _prepareRpi root=$(rpiRoot) node1=$(rpiNode1) node2=$(rpiNode2) node3=$(rpiNode3)
 	# alternative: pure make approach
 	# $(MAKE) -C utl/ _prepareTarget host=$(RPIRoot) runtype=build
 	# $(MAKE) -C utl/ _prepareTarget host=$(RPINode1) runtype=build

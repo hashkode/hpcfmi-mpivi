@@ -9,7 +9,7 @@ _testTarget:
 _prepareNuc:
 	./nuc/prepareNuc.sh $(root) $(node1)
 
-_prepareRPI:
+_prepareRpi:
 	./rpi/prepareRpi.sh $(root) $(node1) $(node2) $(node3)
 
 # Shell scripted local test execution
