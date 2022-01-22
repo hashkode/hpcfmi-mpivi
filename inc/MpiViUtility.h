@@ -111,7 +111,10 @@ public:
         unsigned int runtimeVi;
         std::chrono::time_point<std::chrono::system_clock> tStart;
         std::chrono::time_point<std::chrono::system_clock> tEnd;
-        unsigned long maxRSS;
+        unsigned long maxRssRank0;
+        unsigned long maxRssSum;
+        unsigned long maxRssMin;
+        unsigned long maxRssMax;
         float epsGlobal;
         unsigned int steps;
         float jDiffMaxNorm;

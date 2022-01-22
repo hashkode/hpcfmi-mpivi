@@ -31,4 +31,4 @@ make _prepareTarget host=${_node11} runtype=init
 make _prepareTarget host=${_node12} runtype=init
 make _prepareTarget host=${_node13} runtype=init
 make _prepareTarget host=${_node14} runtype=init
-make _prepareTarget host=${_root} runtype=build
+make _prepareTarget host=${_root} runtype=rebuild

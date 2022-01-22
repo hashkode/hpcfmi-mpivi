@@ -1,12 +1,14 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 
-# init routine
+### init routine
 echo "> running init routine"
 
-# prepare files 
-home_path="/home/$(whoami)/data"
+# local paths
+home_path="/home/$(whoami)/data/"
+var_path="/var/tmp/$(whoami)/data/"
 
+# prepare data set directory
 if [ -d "$home_path" ]
 then
   echo ">> data directory already created" 
@@ -25,12 +27,13 @@ then
 else
   mkdir $home_path
 fi
+
 # permission adjustment for sshkey
 chmod 400 sshkey
 
 # download data
 echo ">> fetch data set"
-rsync -e "ssh -i sshkey" hpcfmi@rsync.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path -azrc -q
+rsync -e "ssh -i sshkey -o 'StrictHostKeyChecking no'" hpcfmi@rsync.hidrive.strato.com:hpcfmi/hpcmi-data.tar.gz $home_path -azrc -q
 
 # extract data
 tar -xvf $home_path/hpcmi-data.tar.gz -C $home_path >/dev/null
@@ -64,3 +67,7 @@ else
   echo "no normal dataset available in $home_path"
 fi
 
+### sync data set from home drive to tmp
+echo ">> sync data set to /var/tmp/"
+mkdir -p ${var_path}
+rsync -azrq ${home_path} ${var_path} --delete --exclude=hpcmi-data.tar.gz

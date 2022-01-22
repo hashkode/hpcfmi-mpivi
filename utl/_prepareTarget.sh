@@ -3,27 +3,39 @@ cd "$(dirname "$0")"
 _host=$1
 _runtype=$2
 
-_git_user=$(git config --get user.email)
+# inform about target host and active git user-email
+_git_user_email=$(git config --get user.email)
+echo -e "Preparing with <"${_runtype}"> on host <"${_host}"> with git user-email <"${_git_user_email}">"
 
-_target_user=$(ssh ${_host} 'whoami')
+# local paths
+local_var_path="/var/tmp/$(whoami)/data/"
 
-home_path="/home/${_target_user}/data/"
-var_path="/var/tmp/${_target_user}/data"
-results_path="/var/tmp/${_target_user}/results"
+# target paths
+target_user=$(ssh ${_host} 'whoami')
+target_var_path="/var/tmp/${target_user}/data/"
+target_project_path="/home/${target_user}/projects/hpcmi/mpi-vi/"
 
-project_path="/home/${_target_user}/projects/hpcmi/mpi-vi/"
-
-cd ..
-
-echo -e "Preparing on host <"${_host}"> with user <"${_git_user}">"
-
-ssh ${_host} "cd;mkdir -p ${project_path}"
-rsync -e "ssh" ./ ${_host}:${project_path} -azr -q --exclude=.idea --delete
-
+# run build on target
 if [ ${_runtype} == build ]; then
-  ssh ${_host} "cd;cd ${project_path};make init fetchtype=fetch;make preTest;make build"
+  # synchronize project files
+  ssh ${_host} "cd;mkdir -p ${target_project_path}"
+  rsync -e "ssh -o 'StrictHostKeyChecking no'" ../ ${_host}:${target_project_path} -azrc -q --exclude=.idea --delete
+
+  ssh ${_host} -o 'StrictHostKeyChecking no' "cd;cd ${target_project_path};make build"
 fi
 
+# run rebuild on target
+if [ ${_runtype} == rebuild ]; then
+  # synchronize project files
+  ssh ${_host} "cd;mkdir -p ${target_project_path}"
+  rsync -e "ssh -o 'StrictHostKeyChecking no'" ../ ${_host}:${target_project_path} -azr -q --exclude=.idea --delete
+
+  ssh ${_host} -o 'StrictHostKeyChecking no' "cd;cd ${target_project_path};make rebuild"
+fi
+
+# run init on target
 if [ ${_runtype} == init ]; then
-  ssh ${_host} "cd;cd ${project_path};make init fetchtype=fetch;make preTest"
+  # synchronize data set
+  ssh ${_host} -o 'StrictHostKeyChecking no' "mkdir -p ${target_var_path}"
+  rsync -e "ssh -o 'StrictHostKeyChecking no'" ${local_var_path} ${_host}:${target_var_path} -azr -q --delete
 fi
