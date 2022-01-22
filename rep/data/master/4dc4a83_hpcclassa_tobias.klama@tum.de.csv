@@ -1,0 +1,6 @@
+datetime,target,configuration,data_set,schema,world_size,com_intervall,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+2022-01-22_16:07:45,hpcclassa,../automation/jobs/hpcclassa/default.yaml,/data/data_small/,MpiViSchema01,10,1,35653,35162,33724,329908,32628,33724,270,0.000000,0.024414,0.494793,0.000002
+2022-01-22_16:08:22,hpcclassa,../automation/jobs/hpcclassa/default.yaml,/data/data_small/,MpiViSchema01,10,1,36983,36489,33796,329756,32684,33796,270,0.000000,0.024414,0.494793,0.000002
+2022-01-22_16:09:02,hpcclassa,../automation/jobs/hpcclassa/default.yaml,/data/data_small/,MpiViSchema01,10,1,36245,35822,33764,330328,32840,33764,270,0.000000,0.024414,0.494793,0.000002
+2022-01-22_16:09:40,hpcclassa,../automation/jobs/hpcclassa/default.yaml,/data/data_small/,MpiViSchema01,10,1,35700,35193,33948,330204,32692,33948,270,0.000000,0.024414,0.494793,0.000002
+2022-01-22_16:10:17,hpcclassa,../automation/jobs/hpcclassa/default.yaml,/data/data_small/,MpiViSchema01,10,1,36077,35621,33484,328904,32592,33484,270,0.000000,0.024414,0.494793,0.000002

@@ -1,17 +1,20 @@
-#ifndef _Schema02_H_
-#define _Schema02_H_
+#ifndef MPI_VI_MPISCHEMA02_H
+#define MPI_VI_MPISCHEMA02_H
 
 #include "MpiViSchema.h"
 #include "MpiViUtility.h"
 
 class MpiViSchema02 : public MpiViSchema {
 public:
+    /**
+     * Public constructor
+     */
     MpiViSchema02();
     /**
-     * Execute Value iteration after schema
-     * @param viParameters controls the Value Iteration parameter
-     * @param mpiParameters controls the Open MPI parameter
-     * @param logParameters controls the Login parameter
+     * Execute one cycle of value iteration
+     * @param viParameters Value Iteration parameters
+     * @param mpiParameters OpenMPI parameters
+     * @param logParameters measurements and logging parameters
      */
     void ValueIteration(MpiViUtility::ViParameters &viParameters, MpiViUtility::MpiParameters &mpiParameters, MpiViUtility::LogParameters &logParameters) override;
     /**
@@ -21,4 +24,4 @@ public:
     std::string GetName() override;
 };
 
-#endif
+#endif//MPI_VI_MPISCHEMA02_H

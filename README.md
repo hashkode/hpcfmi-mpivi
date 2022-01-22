@@ -3,142 +3,113 @@
 # MPI applied to Value Iteration, HPCfMI WS20/21, Group 3
 Tobias Krug, Tobias Klama, Till Hülder
 
-This project is part of the course High Performance Computing for Machine Intelligence. It is used to evaluate different Open MPi communication schemes.
+This project is part of the course High Performance Computing for Machine Intelligence. It is used to evaluate different Open MPI communication schemes. Each scheme implements a different way of yielding an optimal solution to a space navigation problem with asynchronous value iteration. (if more than one processor is involved)
 
-## Measurement objectives
-Possible measurements:
-  - execution time (total, per block)
-  - iterations until convergence
-  - memory usage (RAM)
+## MPI architecture
+To ease the implementation burden for new schemas, a schema base class is introduced. The actual schema implementations inherit from as depicted in the following UML diagram.
 
-Possible variatiation points:
-  - MPI schemes 
-  - MPI synchronization intervall (cycles)
-  - MPI processor count
-  - computing hardware (HPC class 1, HPC class 2, RPi cluster, NUC cluster)
-  - asynchronous vs. synchronous VI with OpenMP
+!["Scheme Base Class"](./rep/gen/puml/scheme-baseclass.svg "Scheme")
 
-## Schemes
-As of now, three schemes are implemented and can be tested via configuration. The following sections introduces the communication layout and mechanisms of the layouts.
+### Schemes
+As of now, three schemes are implemented and can be tested via configuration. The following sections introduces the communication layout and mechanisms of the layouts. All schemes operate on configuration specified as .yaml file, whose path has to be given as a command line parameter to the binary. Actual availability of the configuration file is only required on the root node running the rank0 processor. This one broadcasts the configuration after a successful loading and parsing to all other MPI nodoes. 
 
-| **Schema**      | MpiViSchema01                                                                                                              | MpiViSchema02| MpiViSchema03|
-|-----------------|----------------------------------------------------------------------------------------------------------------------------|-------|-------|
+| **Schema** | MpiViSchema01 | MpiViSchema02 | MpiViSchema03 |
+|---|---|---|---|
 | **Key concept** | Distributed calculation of J, exchange of J via broadcast, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J, exchange of J via accumulation at rank_0, synchronised calculation of epsGlobal as convergence criterion. |
-| **PlantUML**    | !["Scheme 1"](./rep/puml/gen/scheme1/scheme1.svg "Scheme 1")                                                               | !["Scheme 2"](./rep/puml/gen/scheme2/scheme2.svg "Scheme 2")   | !["Scheme 3"](./rep/puml/gen/scheme3/scheme3.svg "Scheme 3")  |
+| **PlantUML** | !["Scheme 1"](./rep/gen/puml/scheme1.svg "Scheme 1") | !["Scheme 2"](./rep/gen/puml/scheme2.svg "Scheme2") | !["Scheme 3"](./rep/gen/puml/scheme3.svg "Scheme 3") |
 
-## Using the project
-The project can be executed using the make commands listed below.
-
-# Procedure
-**prepare<>**
-Downloads the dataset and prepares it for cpp.
-
-**test<>**
-Checks integrity of data in /var/tmp/user/ and the downloaded data.
-In /automation/jobs/ lay yaml files with the desired parameters/configuration.
+Some schemes rely on local availability of the data sets, these schemes execute the following sub-scheme as shown above.
+!["Scheme Load Data"](./rep/gen/puml/scheme_load_data.svg "Scheme Load Data")
 
 # Makefile
+The project can be executed using the make commands listed below.
+## General make targets
+- all
+- setupToolchain
+  - Setup minimum target toolchain, install packages
+- setupHostToolchain
+  - Setup complete host toolchain, install packages, retrieve latest data set and prepare it for testing
+- init
+  - Initialize the data set on the host machine
+- clean
+  - Remove generated files, build output and related files
+- rebuild
+  - Run a clean build/rebuild of the project
+- build
+  - Run an incremental build of the project
+## Development make targets for local development and tests
+- test
+  - Execute a local test cycle with build and one iteration.
+- testX
+  - Execute a local test cycle with build and multiple iterations. Use as follows to tun 5 cycles:
+    ```bash
+    make testX nruns=5
+    ```
+- generateDoxygen
+  - Generate the Doxygen documentation for the project and used libraries.
+- documentation
+  - Generate the PlantUML and measurement graphics used in this readme and the report. Generate the report. Stash all generated files.
+- pack
+  - Prepare a tarball for easy sharing of the project.
+- unpack
+  - Unpack a project tarball retrieved from somewhere else.
+## Remote test make targets for all implemented targets
+- runAllHpcTests
+  - Execute all TUM HPC standard tests
+- runHpcATests
+  - Execute TUM HPC Class A standard tests
+- runHpcBTests
+  - Execute TUM HPC Class B standard tests
+- runHpcMixedTests
+  - Execute TUM HPC Class Mixed standard tests
+- runNucTests
+  - Execute all NUC standard tests
+- runRpiTests
+  - Execute all Raspberry Pi standard tests
 
-- **clean**:
-  - Cleans repository and removes build files.
-- **rebuild: clean**: 
-  - Get rid of everything that might be left and then compile from scratch
-- **compile**: 
-  - **clean**
-  - doxygen
-  - builds project
-- **init**:
-  - updates submodules
-  - checks and installs neccessary packages
-  - downloads data-set from strato server
-  - prepares data-set according to _preparedata.py_
-- **build:**
-  - build Project
-- **preTest:**
-   - Synchronize data set from home drive to /var/tmp/
-- **postTest**:
-   - Synchronize results directory to server
-- **_prepareTarget**:
-   - Prepare Target for execution
-- **_testTarget**:
-  - Run test 
-- **prepareHpcClassA**:
-  - Prepare HPC CLass A (hpc01 - hpc05) for execution
-- **testHpcClassA**:
-  - Run test PC CLass A (hpc01 - hpc05) with parameter number of runs and number of processors on target
-- **_testHpcClassATarget**:
-  - Local script to test HPC CLass A (hpc01 - hpc05) with parameter number of runs and number of processors
-- **prepareHpcClassB**:
-  - Prepare HPC CLass B (hpc06 - hpc15) for execution
-- **testHpcClassB**:
-  - Run test PC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors on target
-- **_testHpcClassBTarget**:
-  - Local script to test HPC CLass B (hpc06 - hpc15) with parameter number of runs and number of processors
-- **prepareHpcClassMixed**:
-  - Prepare HPC CLass Mixed (hpc01 - hpc15) for execution
-- **testHpcClassMixed**:
-  - Run test PC CLass Mixed (hpc01 - hpc15) with parameter number of runs and number of processors on target
-- **_testHpcClassMixedTarget**:
-  - Local script to test HPC CLass Mixed (hpc01 - hpc15) with parameter number of runs and number of processors
-- **prepareNuc**:
-  - Prepare Nuc cluster for execution
-- **testNuc:**
-  - Run test on Nuc cluster
-- **_testNucTarget**:
-  - Local script to test Nuc cluster with parameter number of runs and number of processors
-- **prepareRpi**:
-  - Prepare Raspberry Pi cluster for execution
-- **testRpi:**
-  - Run test on Raspberry Pi cluster
-- **_testRpiTarget**:
-  - Local script to test Raspberry Pi cluster with parameter number of runs and number of processors
-- **report**:
-  - makes latex report
-- **pack**:
-  - **clean**
-  - packs project
-- **unpack**:
-  - unpacks project
-- **all**:
-  -  dummy to prevent running make without explicit target
-
-### Running tests
-#### Preconditions
-This project assumes certain infrastructure to be available on the targets used for testing. First and foremost, that is make. To yield a working installation of the project, you have to options:
-1) make the complete project available in the target location, log-in via ssh and execute the following commands from the top-level directory of the project: 
+# Running tests
+## Preconditions
+This project assumes certain infrastructure to be available on the targets used for testing. First and foremost, that is make. To yield a working installation of the project, you have to execute two steps:
+1) On your host machine:
+  - make the complete project available
+  - execute the following commands from the top-level directory of the project: 
 ```bash
 sudo apt install make
-make setupToolchain
+sudo make setupHostToolchain
 ```
-2) log-in via ssh and execute the following block (check utl/init.sh for latest version):
+2) On all your target machines:
+  - make the complete project available on the target
+  - log-in via ssh and execute the following commands from the top-level directory of the project: 
 ```bash
-# setup routine
-echo "> entering setup routine"
-## apt packages, apapted from https://stackoverflow.com/questions/10608004/auto-install-packages-from-inside-makefile
-echo ">> installing debian packages with apt"
-### misc.
-if ! dpkg -l | grep git -c >>/dev/null; then sudo apt-get install git; fi
-if ! dpkg -l | grep make -c >>/dev/null; then sudo apt-get install make; fi
-if ! dpkg -l | grep cmake -c >>/dev/null; then sudo apt-get install cmake; fi
-if ! dpkg -l | grep doxygen -c >>/dev/null; then sudo apt-get install doxygen; fi
-if ! dpkg -l | grep liblapack-dev -c >>/dev/null; then sudo apt-get install liblapack-dev; fi
-if ! dpkg -l | grep liblapacke-dev -c >>/dev/null; then sudo apt-get install liblapacke-dev; fi
-if ! dpkg -l | grep graphviz -c >>/dev/null; then sudo apt-get install graphviz; fi
-if ! dpkg -l | grep python3-pip -c >>/dev/null; then sudo apt-get install python3-pip; fi
-### openmpi
-if ! dpkg -l | grep openmpi-bin -c >>/dev/null; then sudo apt-get install openmpi-bin; fi
-if ! dpkg -l | grep openmpi-common -c >>/dev/null; then sudo apt-get install openmpi-common; fi
-if ! dpkg -l | grep libopenmpi-dev -c >>/dev/null; then sudo apt-get install libopenmpi-dev; fi
-
-## pip packages
-echo ">> installing python packages with pip"
-pip3 install pytest cffi numpy scipy matplotlib pandas seaborn
+sudo apt install make
+sudo make setupToolchain
 ```
+
+## Measurement objectives
+### Measured parameters
+- execution time (total, vi)
+- iterations until convergence
+- memory usage (RAM) (max at rank0; sum, min, max of all nodes)
+- quality of VI solution (max norm, l2 norm, MSE)
+
+### Possible variation points
+- data set
+- MPI target (TUM HPC Class A, TUM HPC Class B, TUM HPC Class Mixed, NUC cluster, Raspberry Pi cluster)
+- MPI scheme
+- MPI parameters
+  - MPI synchronization intervall (cycles)
+  - MPI processor count (world_size)
+- VI parameters
+- asynchronous vs. synchronous VI with OpenMP
+
 ### Visualization
-the reading of the measurement data can be done via the  /gruppe-3-hauptprojekt/automation/results/HEAD/readVisual.py file. Here are different visualization tools available. This can look like the following.
+The below graphs visualize the collected measurement files and their analysis per target.
 
-![](./rep/img/Runtime_World_Read_me.svg "Runtime")
-
-![](./rep/img/scatterplot.svg "Scatterplot")
-
-![](./rep/img/boxcom.svg "boxcom")
+| Target:                 |HPC Class A|HPC Class B|HPC Class Mixed|NUC|RPi|Local|
+|-------------------------|---|---|---|---|---|---|
+| Runtime vs world_size   |![](./rep/gen/img/hpcclassa/boxplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassb/boxplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/boxplot_world_size.svg "Runtime")|![](./rep/gen/img/nuc/boxplot_world_size.svg "Runtime")|![](./rep/gen/img/rpi/boxplot_world_size.svg "Runtime")|![](./rep/gen/img/local/boxplot_world_size.svg "Runtime")|
+| Runtime vs world_size   |![](./rep/gen/img/hpcclassa/barplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassb/barplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/barplot_world_size.svg "Runtime")|![](./rep/gen/img/nuc/barplot_world_size.svg "Runtime")|![](./rep/gen/img/rpi/barplot_world_size.svg "Runtime")|![](./rep/gen/img/local/boxplot_com_interval.svg "Runtime")|
+| Runtime vs com_interval |![](./rep/gen/img/hpcclassa/boxplot_com_interval.svg "Runtime")|![](./rep/gen/img/hpcclassb/boxplot_com_interval.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/boxplot_com_interval.svg "Runtime")|![](./rep/gen/img/nuc/boxplot_com_interval.svg "Runtime")|![](./rep/gen/img/rpi/boxplot_com_interval.svg "Runtime")|![](./rep/gen/img/local/boxplot_com_interval.svg "Runtime")|
+| Steps vs world_size     |![](./rep/gen/img/hpcclassa/lineplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassb/lineplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/lineplot_world_size.svg "Runtime")|![](./rep/gen/img/nuc/lineplot_world_size.svg "Runtime")|![](./rep/gen/img/rpi/lineplot_world_size.svg "Runtime")|![](./rep/gen/img/local/lineplot_world_size.svg "Runtime")|
+| ?                       |![](./rep/gen/img/hpcclassa/jointplot_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/hpcclassb/jointplot_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/jointplot_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/nuc/jointplot_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/rpi/jointplot_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/local/jointplot_runtime_vi_ms.svg "Runtime")|
+| ?                       |![](./rep/gen/img/hpcclassa/scatterplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassb/scatterplot_world_size.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/scatterplot_world_size.svg "Runtime")|![](./rep/gen/img/nuc/scatterplot_world_size.svg "Runtime")|![](./rep/gen/img/rpi/scatterplot_world_size.svg "Runtime")|![](./rep/gen/img/local/scatterplot_world_size.svg "Runtime")|

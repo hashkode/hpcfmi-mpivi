@@ -3474,7 +3474,7 @@ between column types.}%
 			\begin{minipage}[c]{0.18\textwidth}
 				\begin{flushleft}
 					\hspace{1mm}
-					\includegraphics[height=2.0cm]{IMG/Logo_EI}
+					\includegraphics[height=2.0cm]{img/Logo_EI}
 				\end{flushleft}
 			\end{minipage}
 			\hfill
@@ -3485,7 +3485,7 @@ between column types.}%
 			\hfill
 			\begin{minipage}[c]{0.20\textwidth}
 				\begin{flushright}
-					\includegraphics[height=1.5cm]{IMG/Logo_TUM}
+					\includegraphics[height=1.5cm]{img/Logo_TUM}
 					\hspace{1mm}
 				\end{flushright}
 			\end{minipage}

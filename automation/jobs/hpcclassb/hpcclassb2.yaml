@@ -1,0 +1,4 @@
+configuration:
+  base: hpcclassb/default.yaml
+  mpiParameters:
+    schema: MpiViSchema02
