@@ -1,0 +1,19 @@
+name: C/C++ CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: set git user to dummy value
+      run: git config user.email c-cpp_ci
+    - name: make setupToolchain
+      run: sudo make setupToolchain
+    - name: make init
+      run: make init
+    - name: make rebuild
+      run: make rebuild
+    - name: make testX nruns=2
+      run: make testX nruns=2
