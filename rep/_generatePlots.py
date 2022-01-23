@@ -1,18 +1,33 @@
 #!/usr/bin/python3
+import glob
+import matplotlib.pyplot as plt
 import os
 import pandas as pd
-import glob
+import pwd
 import seaborn as sns
-import matplotlib.pyplot as plt
+from distutils.dir_util import copy_tree
 
-def ReadandMerge():
+def CollectMeasurementFiles():
+    user_name = pwd.getpwuid( os.getuid() )[ 0 ]
+    script_dir = os.getcwd()
+    print("un: " + user_name + ", sr: " + script_dir)
+    var_dir = "/var/tmp/"
+    results_dirs =  ["/results/measurement-campaign/"]
+    for dir in results_dirs:
+        copy_tree(var_dir + user_name + dir, script_dir + "/data/")
+
+
+def ReadandMerge(dataset):
     path = os.getcwd()
-    all_files = glob.glob(path + "/data/master/*.csv")
+    all_files = glob.glob(path + "/data/*.csv")
     appended_data = []
     for filename in all_files:
         df = pd.read_csv(filename)
         appended_data.append(df)
     dfResults = pd.concat(appended_data)
+
+    dfResults = dfResults[(dfResults['data_set'] == dataset)]
+
     return dfResults
 
 
@@ -37,7 +52,7 @@ def BoxPlot(dataTarget, x, y, hue):
         boxplot.set_title('Runtime VI')
         boxplot.set_ylabel(str(y))
         boxplot.set_xlabel(str(x))
-        plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "boxplot_" + x + "_" + y + ".svg")
+        plt.savefig(BuildFileName(dataTarget, "boxplot_" + x + "_" + y))
         plt.close()
     return
 
@@ -57,7 +72,7 @@ def Lineplot(dataTarget, x, y):
     plt.ylabel(str(y))
     plt.xlabel(str(x))
     #plt.show()
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "lineplot_" + x + "_" + y + ".svg")
+    plt.savefig(BuildFileName(dataTarget, "lineplot_" + x + "_" + y))
     plt.close()
     return
 
@@ -70,7 +85,7 @@ def Scatterplot(dataTarget, x, y, hue):
     scatterplot.set_xlabel(str(x))
     # scatterplot.set_legend()
     plt.figure()
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "scatterplot_" + x + "_" + y + ".svg")
+    plt.savefig(BuildFileName(dataTarget, "scatterplot_" + x + "_" + y))
     plt.close()
     return
 
@@ -80,7 +95,7 @@ def Jointplot(dataTarget, x, y):
 
     jointplot = sns.JointGrid(data=dfResults, x=dfResults[x], y=dfResults[y])
     plt.figure()
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "jointplot_" + x + "_" + y + ".svg")
+    plt.savefig(BuildFileName(dataTarget, "jointplot_" + x + "_" + y))
     plt.close()
     # Joint.set_ylabel(str(y))
     # Joint.set_xlabel(str(x))
@@ -99,17 +114,25 @@ def Barplot(dataTarget, x, y):
 
     plt.ylabel(str(y))
     plt.xlabel(str(x))
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "barplot_" + x + "_" + y + ".svg")
+
+    plt.savefig(BuildFileName(dataTarget, "barplot_" + x + "_" + y))
     plt.close()
     return
 
+def BuildFileName(dataTarget, graphicName):
+    fileName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/" + graphicName + ".svg")
+    return fileName
 
-def GeneratePlots(keyTarget):
-    dataTarget = DataTarget(keyTarget, ParseDevice(dfResults, keyTarget))
+def BuildDirectoryName(dataTarget):
+    directoryName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/")
+    return directoryName
+
+def GeneratePlots(keyTarget, ds_dirstring):
+    dataTarget = DataTarget(keyTarget, ParseDevice(dfResults, keyTarget), ds_dirstring)
     print("Processing target: " + dataTarget.getName())
 
     if not dataTarget.getDataFrame().empty:
-        path = os.path.join(dataTarget.getOutDir() + dataTarget.getName())
+        path = os.path.join(BuildDirectoryName(dataTarget))
         try:
             os.makedirs(path)
         except OSError as error:
@@ -136,15 +159,22 @@ class DataTarget():
     def getOutDir(self):
         return self.out_dir
 
-    def __init__(self, name, data_frame):
+    def getDSDirString(self):
+        return self.ds_dirstring
+
+    def __init__(self, name, data_frame, ds_dirstring):
         self.name = name
         self.data_frame = data_frame
         self.out_dir = "./gen/img/"
+        self.ds_dirstring = ds_dirstring
 
 
 if __name__ == "__main__":
-    dfResults = ReadandMerge()
-
-    keyTarget = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
-    for key in keyTarget:
-        GeneratePlots(key)
+    CollectMeasurementFiles()
+    keyDataSet = ["/data/data_debug/", "/data/data_small/", "/data/data_normal/"]
+    dirStringDataSet = ["debug", "small", "normal"]
+    for idxD, keyD in enumerate(keyDataSet):
+        dfResults = ReadandMerge(keyD)
+        targetKeys = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
+        for keyT in targetKeys:
+            GeneratePlots(keyT, dirStringDataSet[idxD])

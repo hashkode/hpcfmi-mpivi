@@ -4,6 +4,7 @@ clean:
 	rm -f *.o errors.err
 	rm -f *.aux *.bbl *.blg *.log *.out
 	rm -f *.synctex.gz
+	rm -rf data/
 	@echo
 
 # Adapted from: https://tex.stackexchange.com/a/596785
