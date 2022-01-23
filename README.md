@@ -1,6 +1,6 @@
 [![C/C++ CI](https://github.com/hashkode/hpcfmi-mpivi/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/hashkode/hpcfmi-mpivi/actions/workflows/c-cpp.yml)
 
-# MPI applied to Value Iteration, HPCfMI WS20/21, Group 3
+# MPI applied to Value Iteration, HPCfMI WS21/22, Group 3
 Tobias Krug, Tobias Klama, Till Hülder
 
 This project is part of the course High Performance Computing for Machine Intelligence. It is used to evaluate different Open MPI communication schemes. Each scheme implements a different way of yielding an optimal solution to a space navigation problem with asynchronous value iteration. (if more than one processor is involved)
@@ -18,9 +18,24 @@ As of now, three schemes are implemented and can be tested via configuration. Th
 | **Key concept** | Distributed calculation of J, exchange of J via broadcast, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J based on subset of data without access to data files for ranks other than rank_0, exchange of J via accumulation at every rank, synchronised calculation of epsGlobal as convergence criterion. | Distributed calculation of J, exchange of J via accumulation at rank_0, synchronised calculation of epsGlobal as convergence criterion. |
 | **PlantUML** | !["Scheme 1"](./rep/gen/puml/scheme1.svg "Scheme 1") | !["Scheme 2"](./rep/gen/puml/scheme2.svg "Scheme2") | !["Scheme 3"](./rep/gen/puml/scheme3.svg "Scheme 3") |
 
-Some schemes rely on local availability of the data sets, these schemes execute the following sub-scheme as shown above.
+Some schemes rely on local availability of the data sets, these schemes execute the following sub-scheme as referenced above.
 
 !["Scheme Load Data"](./rep/gen/puml/scheme_load_data.svg "Scheme Load Data")
+
+## Software, methods and tools
+This project is implemented using a set of software tools, namely:
+- CLion from JetBrains for C++/Python development
+- Sublime Merge from Sublime for professional git usage
+
+Concerning infrastructure, the project depends on
+- HiDrive from Strato for exchange of measurement files and easy distribution of data sets
+
+and supports
+- continuous integration, continuous testing and even continuous deployment via GitHub actions.
+ 
+Deployment is not activated by default, as it would require a sshkey for the TUM HPC cluster on GitHub. This is considered unsafe and is therefore not realised.
+
+The team worked together in a SCRUM style fashion based on issues and a per-issue branch and merge-request.
 
 # Makefile
 The project can be executed using the make commands listed below.
@@ -70,6 +85,8 @@ The project can be executed using the make commands listed below.
   - Execute all Raspberry Pi standard tests
 - runLocalTests
   - Execute all Local standard tests
+- runCITests
+  - Execute all CI standard tests 
 
 # Running tests
 ## Preconditions

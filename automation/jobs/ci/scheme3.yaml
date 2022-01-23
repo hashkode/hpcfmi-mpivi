@@ -1,0 +1,4 @@
+configuration:
+  base: ci/default.yaml
+  mpiParameters:
+    schema: MpiViSchema03

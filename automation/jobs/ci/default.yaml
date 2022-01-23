@@ -1,0 +1,5 @@
+configuration:
+  base: default.yaml
+  target: ci
+  mpiParameters:
+    maxIterations: 5000

@@ -150,7 +150,14 @@ _prepareRpi:
 _testRpi:
 	$(MAKE) _testTarget root=$(rpiRoot) nruns=$(nruns) nproca=$(nproc) nprocb=0 maketarget=_testRpiTarget
 
+# HPC Class Local
 _testLocal:
 	$(MAKE) _preTest
 	./local/_testLocalTarget.sh $(nruns) $(nproca)
+	$(MAKE) _postTest
+
+# HPC Class CI
+_testCI:
+	$(MAKE) _preTest
+	./local/_testCI.sh
 	$(MAKE) _postTest

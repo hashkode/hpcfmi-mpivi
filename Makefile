@@ -118,3 +118,7 @@ runRpiTests:
 # Execute all Local standard tests
 runLocalTests: rebuild
 	$(MAKE) -C utl/ _testLocal nruns=1 nproca=4
+
+# Execute all CI standard tests
+runCITests:
+	$(MAKE) -C utl/ _testCI
