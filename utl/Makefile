@@ -34,32 +34,32 @@ _prepareTarget:
 	./_prepareTarget.sh $(host) $(runtype)
 
 _testTarget:
-	./_testTarget.sh $(root) $(nruns) $(nproca) $(nprocb) $(maketarget)
+	./_testTarget.sh $(root) $(maketarget)
 
 # Shell scripted local test execution
 _testHpcClassATarget:
 	$(MAKE) _preTest
-	./hpcclassa/_testHpcClassATarget.sh $(nruns) $(nproca) $(nprocb)
+	./hpcclassa/_testHpcClassATarget.sh
 	$(MAKE) _postTest
 
 _testHpcClassBTarget:
 	$(MAKE) _preTest
-	./hpcclassb/_testHpcClassBTarget.sh $(nruns) $(nproca) $(nprocb)
+	./hpcclassb/_testHpcClassBTarget.sh
 	$(MAKE) _postTest
 
 _testHpcClassMixedTarget:
 	$(MAKE) _preTest
-	./hpcclassmixed/_testHpcClassMixedTarget.sh $(nruns) $(nproca) $(nprocb)
+	./hpcclassmixed/_testHpcClassMixedTarget.sh
 	$(MAKE) _postTest
 
 _testNucTarget:
 	$(MAKE) _preTest
-	./nuc/_testNucTarget.sh $(nruns) $(nproca) $(nprocb)
+	./nuc/_testNucTarget.sh
 	$(MAKE) _postTest
 	
 _testRpiTarget:
 	$(MAKE) _preTest
-	./rpi/_testRpiTarget.sh $(nruns) $(nproca) $(nprocb)
+	./rpi/_testRpiTarget.sh
 	$(MAKE) _postTest
 
 # Retrieve latest measurements from server, check data set integrity
@@ -83,7 +83,7 @@ _prepareHpcClassA:
 	# $(MAKE) _prepareHpcClassA root=$(hpcClARoot) node1=$(hpcClANode1) ...
 
 _testHpcClassA:
-	$(MAKE) _testTarget root=$(hpcClARoot) nruns=$(nruns) nproca=$(nproc) nprocb=0 maketarget=_testHpcClassATarget
+	$(MAKE) _testTarget root=$(hpcClARoot) maketarget=_testHpcClassATarget
 
 # HPC Class TUM HPC B
 _prepareHpcClassB:
@@ -103,7 +103,7 @@ _prepareHpcClassB:
 	# $(MAKE) _prepareHpcClassB root=$(hpcClBRoot) node1=$(hpcClBNode1) ...
 
 _testHpcClassB:
-	$(MAKE) _testTarget root=$(hpcClBRoot) nruns=$(nruns) nproca=$(nproc) nprocb=0 maketarget=_testHpcClassBTarget
+	$(MAKE) _testTarget root=$(hpcClBRoot) maketarget=_testHpcClassBTarget
 
 # HPC Class TUM HPC Mixed
 _prepareHpcClassMixed:
@@ -126,7 +126,7 @@ _prepareHpcClassMixed:
 	$(MAKE) _prepareTarget host=$(hpcClARoot) runtype=rebuild # TODO: figure out, why mixed class fails with build on class B target but works when building on A
 
 _testHpcClassMixed:
-	$(MAKE) _testTarget root=$(hpcClARoot) nruns=$(nruns) nproca=$(nproca) nprocb=$(nprocb) maketarget=_testHpcClassMixedTarget
+	$(MAKE) _testTarget root=$(hpcClARoot) maketarget=_testHpcClassMixedTarget
 
 # HPC Class Nuc
 _prepareNuc:
@@ -137,7 +137,7 @@ _prepareNuc:
 	# $(MAKE) _prepareTarget host=$(nucNode1) runtype=build
 
 _testNuc:
-	$(MAKE) _testTarget root=$(nucRoot) nruns=$(nruns) nproca=$(nproc) nprocb=0 maketarget=_testNucTarget
+	$(MAKE) _testTarget root=$(nucRoot) maketarget=_testNucTarget
 
 # HPC Class Rpi
 _prepareRpi:
@@ -148,12 +148,12 @@ _prepareRpi:
 	# $(MAKE) _prepareTarget host=$(RPINode1) runtype=build
 
 _testRpi:
-	$(MAKE) _testTarget root=$(rpiRoot) nruns=$(nruns) nproca=$(nproc) nprocb=0 maketarget=_testRpiTarget
+	$(MAKE) _testTarget root=$(rpiRoot) maketarget=_testRpiTarget
 
 # HPC Class Local
 _testLocal:
 	$(MAKE) _preTest
-	./local/_testLocalTarget.sh $(nruns) $(nproca)
+	./local/_testLocalTarget.sh $(nruns)
 	$(MAKE) _postTest
 
 # HPC Class CI

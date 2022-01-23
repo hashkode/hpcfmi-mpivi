@@ -38,6 +38,7 @@ clean:
 	@# Is created when opening the CMake Project with Visual Studio, blows up the size
 	@# of the directories for sharing the code due to VS database
 	rm -rf .vs/
+	rm -rf automation/jobs/gen/
 	$(MAKE) -C rep/ clean
 
 # Run a clean build/rebuild of the project
@@ -82,42 +83,42 @@ unpack:
 ########################################################################################################################
 ### Remote test make targets for all implemented targets
 # Execute all TUM HPC standard tests
-runAllHpcTests:
+runAllHpcTests: clean
 	$(MAKE) -C utl/ _prepareHpcClassA
-	$(MAKE) -C utl/ _testHpcClassA nruns=1 nproc=10
+	$(MAKE) -C utl/ _testHpcClassA
 	$(MAKE) -C utl/ _prepareHpcClassB
-	$(MAKE) -C utl/ _testHpcClassB nruns=1 nproc=20
+	$(MAKE) -C utl/ _testHpcClassB
 	$(MAKE) -C utl/ _prepareHpcClassMixed
-	$(MAKE) -C utl/ _testHpcClassMixed nruns=1 nproca=10 nprocb=20
+	$(MAKE) -C utl/ _testHpcClassMixed
 
 # Execute TUM HPC Class A standard tests
-runHpcATests:
+runHpcATests: clean
 	$(MAKE) -C utl/ _prepareHpcClassA
-	$(MAKE) -C utl/ _testHpcClassA nruns=1 nproc=10
+	$(MAKE) -C utl/ _testHpcClassA
 
 # Execute TUM HPC Class B standard tests
-runHpcBTests:
+runHpcBTests: clean
 	$(MAKE) -C utl/ _prepareHpcClassB
-	$(MAKE) -C utl/ _testHpcClassB nruns=1 nproc=40
+	$(MAKE) -C utl/ _testHpcClassB
 
 # Execute TUM HPC Class Mixed standard tests
-runHpcMixedTests:
+runHpcMixedTests: clean
 	$(MAKE) -C utl/ _prepareHpcClassMixed
-	$(MAKE) -C utl/ _testHpcClassMixed nruns=1 nproca=10 nprocb=20
+	$(MAKE) -C utl/ _testHpcClassMixed
 
 # Execute all NUC standard tests
-runNucTests:
+runNucTests: clean
 	$(MAKE) -C utl/ _prepareNuc
-	$(MAKE) -C utl/ _testNuc nruns=1 nproc=3
+	$(MAKE) -C utl/ _testNuc
 
 # Execute all Raspberry Pi standard tests
-runRpiTests:
+runRpiTests: clean
 	$(MAKE) -C utl/ _prepareRpi
-	$(MAKE) -C utl/ _testRpi nruns=1 nproc=16
+	$(MAKE) -C utl/ _testRpi
 
 # Execute all Local standard tests
 runLocalTests: rebuild
-	$(MAKE) -C utl/ _testLocal nruns=1 nproca=4
+	$(MAKE) -C utl/ _testLocal
 
 # Execute all CI standard tests
 runCITests:

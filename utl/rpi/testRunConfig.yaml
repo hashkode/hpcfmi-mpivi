@@ -1,0 +1,14 @@
+outdir: ../automation/jobs/gen/ds/
+base: rpi/default.yaml
+datasets:
+  - debug
+  - small
+  - normal
+comintervals:
+  - [1, 8]
+  - [1, 2, 4, 8, 16, 32, 64]
+  - [1, 4, 16]
+schemes:
+  - [MpiViSchema01, MpiViSchema02, MpiViSchema03]
+  - [MpiViSchema01, MpiViSchema02, MpiViSchema03]
+  - [MpiViSchema01, MpiViSchema02, MpiViSchema03]

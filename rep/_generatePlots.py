@@ -113,7 +113,6 @@ def GeneratePlots(keyTarget):
         try:
             os.makedirs(path)
         except OSError as error:
-            print("OSError: " + str(error))
             pass
 
         BoxPlot(dataTarget, 'world_size', 'runtime_vi_ms', 'schema')
