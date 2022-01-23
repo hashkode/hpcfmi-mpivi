@@ -139,10 +139,13 @@ def GeneratePlots(keyTarget, ds_dirstring):
             pass
 
         BoxPlot(dataTarget, 'world_size', 'runtime_vi_ms', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'steps_total', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'rss_sum_all_kb', 'schema')
+
         BoxPlot(dataTarget, 'com_interval', 'runtime_vi_ms', 'schema')
-        Barplot(dataTarget, 'world_size', 'rss_max_rank0_kb')
-        Barplot(dataTarget, 'world_size', 'rss_sum_all_kb')
-        Lineplot(dataTarget, 'world_size', 'steps_total')
+        BoxPlot(dataTarget, 'com_interval', 'steps_total', 'schema')
+
         Scatterplot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
         Scatterplot(dataTarget, 'world_size', 'eps_global', 'schema')
         Jointplot(dataTarget, 'runtime_vi_ms', 'eps_global')
