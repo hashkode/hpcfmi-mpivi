@@ -147,9 +147,16 @@ def GeneratePlots(keyTarget, ds_dirstring):
         BoxPlot(dataTarget, 'world_size', 'steps_total', 'schema')
         BoxPlot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
         BoxPlot(dataTarget, 'world_size', 'rss_sum_all_kb', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'jdiff_maxnorm', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'jdiff_l2norm', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'jdiff_mse', 'schema')
 
         BoxPlot(dataTarget, 'com_interval', 'runtime_vi_ms', 'schema')
         BoxPlot(dataTarget, 'com_interval', 'steps_total', 'schema')
+        BoxPlot(dataTarget, 'com_interval', 'jdiff_maxnorm', 'schema')
+        BoxPlot(dataTarget, 'com_interval', 'jdiff_l2norm', 'schema')
+        BoxPlot(dataTarget, 'com_interval', 'jdiff_mse', 'schema')
+
 
         Scatterplot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
         Scatterplot(dataTarget, 'world_size', 'eps_global', 'schema')
