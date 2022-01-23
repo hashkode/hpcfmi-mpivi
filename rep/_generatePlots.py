@@ -7,6 +7,8 @@ import pwd
 import seaborn as sns
 from distutils.dir_util import copy_tree
 
+schema_list = ['MpiViSchema01', 'MpiViSchema02', 'MpiViSchema03']
+
 def CollectMeasurementFiles():
     user_name = pwd.getpwuid( os.getuid() )[ 0 ]
     script_dir = os.getcwd()
@@ -37,9 +39,9 @@ def ParseDevice(dfResults, target):
 
 
 def ParseSchema(dfResults):
-    dataSchema01 = dfResults[(dfResults['schema'] == "MpiViSchema01")];
-    dataSchema02 = dfResults[(dfResults['schema'] == "MpiViSchema02")];
-    dataSchema03 = dfResults[(dfResults['schema'] == "MpiViSchema03")];
+    dataSchema01 = dfResults[(dfResults['schema'] == schema_list[1])];
+    dataSchema02 = dfResults[(dfResults['schema'] == schema_list[2])];
+    dataSchema03 = dfResults[(dfResults['schema'] == schema_list[3])];
     return dataSchema01, dataSchema02, dataSchema03
 
 
@@ -48,8 +50,9 @@ def BoxPlot(dataTarget, x, y, hue):
 
     if ((not dfResults[x].empty) and (not dfResults[y].empty) and (not dfResults[hue].empty)):
         plt.figure()
-        boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults)
-        boxplot.set_title('Runtime VI')
+        hue_order = schema_list
+        boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults, hue_order=hue_order)
+        boxplot.set_title("<" + y + "> vs. <" + x + ">")
         boxplot.set_ylabel(str(y))
         boxplot.set_xlabel(str(x))
         plt.savefig(BuildFileName(dataTarget, "boxplot_" + x + "_" + y))
@@ -71,7 +74,7 @@ def Lineplot(dataTarget, x, y):
     #  plt.xticks(new_list)
     plt.ylabel(str(y))
     plt.xlabel(str(x))
-    #plt.show()
+    plt.title("")
     plt.savefig(BuildFileName(dataTarget, "lineplot_" + x + "_" + y))
     plt.close()
     return
