@@ -48,11 +48,13 @@ def ParseSchema(dfResults):
 def BoxPlot(dataTarget, x, y, hue):
     dfResults = dataTarget.getDataFrame()
 
+
     if ((not dfResults[x].empty) and (not dfResults[y].empty) and (not dfResults[hue].empty)):
+        ncount = len(dfResults.index)
         plt.figure()
         hue_order = schema_list
         boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults, hue_order=hue_order)
-        boxplot.set_title("<" + y + "> vs. <" + x + ">")
+        boxplot.set_title("<" + y + "> vs. <" + x + ">, with " + str(ncount) + " samples")
         boxplot.set_ylabel(str(y))
         boxplot.set_xlabel(str(x))
         plt.savefig(BuildFileName(dataTarget, "boxplot_" + x + "_" + y))
