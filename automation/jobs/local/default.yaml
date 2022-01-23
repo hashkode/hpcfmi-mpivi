@@ -1,0 +1,5 @@
+configuration:
+  base: default.yaml
+  target: local
+  mpiParameters:
+    maxIterations: 5000

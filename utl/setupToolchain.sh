@@ -19,7 +19,7 @@ if ! dpkg -l | grep libopenmpi-dev -c >>/dev/null; then sudo apt-get install lib
 
 ## pip packages
 echo ">> installing python packages with pip"
-pip3 install numpy scipy
+pip3 install numpy scipy pyyaml
 
 ## get host keys, not needed currently due to disabled host-key check
 #TODO: check security impact of disabled host-key check

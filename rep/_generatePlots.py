@@ -13,10 +13,6 @@ def ReadandMerge():
         df = pd.read_csv(filename)
         appended_data.append(df)
     dfResults = pd.concat(appended_data)
-    # handle typo in column of old measurement files
-    if 'com_intervall' in dfResults.columns:
-        dfResults.rename(columns = {'com_intervall':'com_interval'}, inplace = True)
-
     return dfResults
 
 
@@ -35,18 +31,20 @@ def ParseSchema(dfResults):
 def BoxPlot(dataTarget, x, y, hue):
     dfResults = dataTarget.getDataFrame()
 
-    plt.figure()
-    boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults)
-    boxplot.set_title('Runtime')
-    boxplot.set_ylabel(str(y))
-    boxplot.set_xlabel(str(x))
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "boxplot_" + x + ".svg")
-    plt.close()
+    if ((not dfResults[x].empty) and (not dfResults[y].empty) and (not dfResults[hue].empty)):
+        plt.figure()
+        boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults)
+        boxplot.set_title('Runtime VI')
+        boxplot.set_ylabel(str(y))
+        boxplot.set_xlabel(str(x))
+        plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "boxplot_" + x + "_" + y + ".svg")
+        plt.close()
     return
 
 
 def Lineplot(dataTarget, x, y):
     dfResults = dataTarget.getDataFrame()
+    dfResults = dfResults.sort_values(x, ascending = False).reset_index(drop=True)
     dataSchema01, dataSchema02, dataSchema03 = ParseSchema(dfResults)
 
     plt.figure()
@@ -59,7 +57,7 @@ def Lineplot(dataTarget, x, y):
     plt.ylabel(str(y))
     plt.xlabel(str(x))
     #plt.show()
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "lineplot_" + x + ".svg")
+    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "lineplot_" + x + "_" + y + ".svg")
     plt.close()
     return
 
@@ -72,7 +70,7 @@ def Scatterplot(dataTarget, x, y, hue):
     scatterplot.set_xlabel(str(x))
     # scatterplot.set_legend()
     plt.figure()
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "scatterplot_" + x + ".svg")
+    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "scatterplot_" + x + "_" + y + ".svg")
     plt.close()
     return
 
@@ -82,7 +80,7 @@ def Jointplot(dataTarget, x, y):
 
     jointplot = sns.JointGrid(data=dfResults, x=dfResults[x], y=dfResults[y])
     plt.figure()
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "jointplot_" + x + ".svg")
+    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "jointplot_" + x + "_" + y + ".svg")
     plt.close()
     # Joint.set_ylabel(str(y))
     # Joint.set_xlabel(str(x))
@@ -101,25 +99,26 @@ def Barplot(dataTarget, x, y):
 
     plt.ylabel(str(y))
     plt.xlabel(str(x))
-    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "barplot_" + x + ".svg")
+    plt.savefig(dataTarget.getOutDir() + dataTarget.getName() + "/" + "barplot_" + x + "_" + y + ".svg")
     plt.close()
     return
 
 
 def GeneratePlots(keyTarget):
     dataTarget = DataTarget(keyTarget, ParseDevice(dfResults, keyTarget))
+    print("Processing target: " + dataTarget.getName())
 
     if not dataTarget.getDataFrame().empty:
         path = os.path.join(dataTarget.getOutDir() + dataTarget.getName())
         try:
             os.makedirs(path)
         except OSError as error:
-            print("OSError: " + str(error))
             pass
 
         BoxPlot(dataTarget, 'world_size', 'runtime_vi_ms', 'schema')
         BoxPlot(dataTarget, 'com_interval', 'runtime_vi_ms', 'schema')
         Barplot(dataTarget, 'world_size', 'rss_max_rank0_kb')
+        Barplot(dataTarget, 'world_size', 'rss_sum_all_kb')
         Lineplot(dataTarget, 'world_size', 'steps_total')
         Scatterplot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
         Scatterplot(dataTarget, 'world_size', 'eps_global', 'schema')
