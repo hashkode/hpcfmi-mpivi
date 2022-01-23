@@ -159,5 +159,5 @@ _testLocal:
 # HPC Class CI
 _testCI:
 	$(MAKE) _preTest
-	./local/_testCI.sh
+	./ci/_testCI.sh
 	$(MAKE) _postTest
