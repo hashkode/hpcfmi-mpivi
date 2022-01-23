@@ -54,7 +54,7 @@ def BoxPlot(dataTarget, x, y, hue):
         plt.figure()
         hue_order = schema_list
         boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults, hue_order=hue_order)
-        boxplot.set_title("<" + y + "> vs. <" + x + ">, with " + str(ncount) + " samples")
+        boxplot.set_title(dataTarget.getName() + ": " + y + "/" + x + " (" + str(ncount) + " runs)")
         boxplot.set_ylabel(str(y))
         boxplot.set_xlabel(str(x))
         plt.savefig(BuildFileName(dataTarget, "boxplot_" + x + "_" + y))
@@ -134,7 +134,7 @@ def BuildDirectoryName(dataTarget):
 
 def GeneratePlots(keyTarget, ds_dirstring):
     dataTarget = DataTarget(keyTarget, ParseDevice(dfResults, keyTarget), ds_dirstring)
-    print("Processing target: " + dataTarget.getName())
+    print("Processing dataset <" + ds_dirstring + "> for target <" + keyTarget + ">")
 
     if not dataTarget.getDataFrame().empty:
         path = os.path.join(BuildDirectoryName(dataTarget))
