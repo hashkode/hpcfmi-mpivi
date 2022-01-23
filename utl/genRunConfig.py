@@ -35,7 +35,7 @@ def main(argv):
             schema_set = schemes[i_ds]
             for schema in schema_set:
 
-                configuration = {'configuration' : {'base': base_config, 'dataSubPath': "/data/data_" + data_set + "/" ,'mpiParameters': { 'schema': schema}, 'comInterval' : com_interval}}
+                configuration = {'configuration' : {'base': base_config, 'dataSubPath': "/data/data_" + data_set + "/" ,'mpiParameters': { 'schema': schema, 'comInterval' : com_interval}}}
                 path = os.path.join(out_dir + data_set + '/')
                 filename = str(i) + '_' + schema + '_' + str(com_interval) + '.yaml'
                 try:
