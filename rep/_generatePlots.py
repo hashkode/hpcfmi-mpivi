@@ -29,6 +29,9 @@ def ReadandMerge(dataset):
     dfResults = pd.concat(appended_data)
 
     dfResults = dfResults[(dfResults['data_set'] == dataset)]
+    # add maximum configured iterations to remove not fully converged measurements
+    filterBrokenRuns = [5000, 10000]
+    dfResults = dfResults[dfResults['steps_total'].isin(filterBrokenRuns) == False]
 
     return dfResults
 
@@ -188,8 +191,10 @@ if __name__ == "__main__":
     CollectMeasurementFiles()
     keyDataSet = ["/data/data_debug/", "/data/data_small/", "/data/data_normal/"]
     dirStringDataSet = ["debug", "small", "normal"]
+
+    targetKeys = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
+
     for idxD, keyD in enumerate(keyDataSet):
         dfResults = ReadandMerge(keyD)
-        targetKeys = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
         for keyT in targetKeys:
             GeneratePlots(keyT, dirStringDataSet[idxD])

@@ -1,0 +1,12 @@
+datetime,target,configuration,data_set,schema,world_size,com_interval,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
+2022-01-23_23:30:49,hpcclassb,../automation/jobs/gen/ds/small/10_MpiViSchema02_2.yaml,/data/data_small/,MpiViSchema02,10,2,3868,3392,43704,279832,24068,43704,316,0.000000,0.087891,0.976927,0.000010
+2022-01-23_23:30:53,hpcclassb,../automation/jobs/gen/ds/small/11_MpiViSchema03_2.yaml,/data/data_small/,MpiViSchema03,10,2,3867,3586,33680,327528,32576,33680,316,0.000000,0.087891,0.976927,0.000010
+2022-01-23_23:30:59,hpcclassb,../automation/jobs/gen/ds/small/12_MpiViSchema01_4.yaml,/data/data_small/,MpiViSchema01,10,4,4100,3805,33592,327948,32588,33592,528,0.000000,0.091309,0.887874,0.000008
+2022-01-23_23:31:03,hpcclassb,../automation/jobs/gen/ds/small/13_MpiViSchema02_4.yaml,/data/data_small/,MpiViSchema02,10,4,4253,3809,44052,280892,24024,44052,528,0.000000,0.091309,0.887874,0.000008
+2022-01-23_23:31:08,hpcclassb,../automation/jobs/gen/ds/small/14_MpiViSchema03_4.yaml,/data/data_small/,MpiViSchema03,10,4,4256,3983,33996,327612,32456,33996,528,0.000000,0.091309,0.887874,0.000008
+2022-01-23_23:31:13,hpcclassb,../automation/jobs/gen/ds/small/15_MpiViSchema01_8.yaml,/data/data_small/,MpiViSchema01,10,8,5445,5166,33740,327516,32380,33740,1016,0.000000,0.056152,0.609761,0.000004
+2022-01-23_23:31:19,hpcclassb,../automation/jobs/gen/ds/small/16_MpiViSchema02_8.yaml,/data/data_small/,MpiViSchema02,10,8,5608,5160,43812,280064,24140,43812,1016,0.000000,0.056152,0.609761,0.000004
+2022-01-23_23:31:26,hpcclassb,../automation/jobs/gen/ds/small/17_MpiViSchema03_8.yaml,/data/data_small/,MpiViSchema03,10,8,5611,5343,34076,328272,32576,34076,1016,0.000000,0.056152,0.609761,0.000004
+2022-01-23_23:31:32,hpcclassb,../automation/jobs/gen/ds/small/18_MpiViSchema01_16.yaml,/data/data_small/,MpiViSchema01,10,16,7949,7678,33508,327004,32436,33508,1888,0.000000,0.092773,1.101866,0.000012
+2022-01-23_23:31:41,hpcclassb,../automation/jobs/gen/ds/small/19_MpiViSchema02_16.yaml,/data/data_small/,MpiViSchema02,10,16,7805,7371,43480,280092,24148,43480,1888,0.000000,0.092773,1.101866,0.000012
+2022-01-23_23:31:49,hpcclassb,../automation/jobs/gen/ds/small/20_MpiViSchema03_16.yaml,/data/data_small/,MpiViSchema03,10,16,7817,7540,34072,327892,32456,34072,1888,0.000000,0.092773,1.101866,0.000012
