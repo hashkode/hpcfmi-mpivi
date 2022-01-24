@@ -19,7 +19,8 @@ def CollectMeasurementFiles():
         copy_tree(var_dir + user_name + dir, script_dir + "/data/")
 
 
-def ReadandMerge(dataset):
+def ReadandMerge(dsConfiguration, idx):
+    dataset = dsConfiguration.getDataKey(idx)
     path = os.getcwd()
     all_files = glob.glob(path + "/data/*.csv")
     appended_data = []
@@ -48,9 +49,8 @@ def ParseSchema(dfResults):
     return dataSchema01, dataSchema02, dataSchema03
 
 
-def BoxPlot(dataTarget, x, y, hue):
+def BoxPlot(dataTarget, x, y, hue, yLim):
     dfResults = dataTarget.getDataFrame()
-
 
     if ((not dfResults[x].empty) and (not dfResults[y].empty) and (not dfResults[hue].empty)):
         ncount = len(dfResults.index)
@@ -60,7 +60,14 @@ def BoxPlot(dataTarget, x, y, hue):
         boxplot.set_title(dataTarget.getName() + ": " + y + "/" + x + " (" + str(ncount) + " runs)")
         boxplot.set_ylabel(str(y))
         boxplot.set_xlabel(str(x))
-        plt.savefig(BuildFileName(dataTarget, "boxplot_" + x + "_" + y))
+        if yLim != None:
+            plt.ylim(yLim[0], yLim[1])
+            plt.yscale('log')
+
+        plt.grid(axis='y')
+        plt.grid(axis='x')
+
+        SaveFigureToFiles(dataTarget, "boxplot_" + x + "_" + y)
         plt.close()
     return
 
@@ -80,7 +87,7 @@ def Lineplot(dataTarget, x, y):
     plt.ylabel(str(y))
     plt.xlabel(str(x))
     plt.title("")
-    plt.savefig(BuildFileName(dataTarget, "lineplot_" + x + "_" + y))
+    SaveFigureToFiles(dataTarget, "lineplot_" + x + "_" + y)
     plt.close()
     return
 
@@ -93,7 +100,7 @@ def Scatterplot(dataTarget, x, y, hue):
     scatterplot.set_xlabel(str(x))
     # scatterplot.set_legend()
     plt.figure()
-    plt.savefig(BuildFileName(dataTarget, "scatterplot_" + x + "_" + y))
+    SaveFigureToFiles(dataTarget, "scatterplot_" + x + "_" + y)
     plt.close()
     return
 
@@ -103,7 +110,7 @@ def Jointplot(dataTarget, x, y):
 
     jointplot = sns.JointGrid(data=dfResults, x=dfResults[x], y=dfResults[y])
     plt.figure()
-    plt.savefig(BuildFileName(dataTarget, "jointplot_" + x + "_" + y))
+    SaveFigureToFiles(dataTarget, "jointplot_" + x + "_" + y)
     plt.close()
     # Joint.set_ylabel(str(y))
     # Joint.set_xlabel(str(x))
@@ -123,21 +130,29 @@ def Barplot(dataTarget, x, y):
     plt.ylabel(str(y))
     plt.xlabel(str(x))
 
-    plt.savefig(BuildFileName(dataTarget, "barplot_" + x + "_" + y))
+    SaveFigureToFiles(dataTarget, "barplot_" + x + "_" + y)
     plt.close()
     return
 
-def BuildFileName(dataTarget, graphicName):
-    fileName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/" + graphicName + ".svg")
-    return fileName
+def SaveFigureToFiles(dataTarget, graphicName):
+    fileName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/" + graphicName)
+    plt.savefig(fileName + ".svg")
+    plt.savefig(fileName + ".pdf")
+    return
 
 def BuildDirectoryName(dataTarget):
     directoryName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/")
     return directoryName
 
-def GeneratePlots(keyTarget, ds_dirstring):
+def GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT):
+    keyTarget = targetConfiguration.getTargetKey(idxT)
+    ds_dirstring = dsConfiguration.getDirString(idxD)
+
     dataTarget = DataTarget(keyTarget, ParseDevice(dfResults, keyTarget), ds_dirstring)
     print("Processing dataset <" + ds_dirstring + "> for target <" + keyTarget + ">")
+
+    yLimDefault = None
+    yLimRT = dsConfiguration.getYLim(idxD)
 
     if not dataTarget.getDataFrame().empty:
         path = os.path.join(BuildDirectoryName(dataTarget))
@@ -146,28 +161,33 @@ def GeneratePlots(keyTarget, ds_dirstring):
         except OSError as error:
             pass
 
-        BoxPlot(dataTarget, 'world_size', 'runtime_vi_ms', 'schema')
-        BoxPlot(dataTarget, 'world_size', 'steps_total', 'schema')
-        BoxPlot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
-        BoxPlot(dataTarget, 'world_size', 'rss_sum_all_kb', 'schema')
-        BoxPlot(dataTarget, 'world_size', 'jdiff_maxnorm', 'schema')
-        BoxPlot(dataTarget, 'world_size', 'jdiff_l2norm', 'schema')
-        BoxPlot(dataTarget, 'world_size', 'jdiff_mse', 'schema')
+        BoxPlot(dataTarget, 'world_size', 'runtime_vi_ms', 'schema', yLimRT)
+        BoxPlot(dataTarget, 'world_size', 'steps_total', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'world_size', 'rss_sum_all_kb', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'world_size', 'jdiff_maxnorm', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'world_size', 'jdiff_l2norm', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'world_size', 'jdiff_mse', 'schema', yLimDefault)
 
-        BoxPlot(dataTarget, 'com_interval', 'runtime_vi_ms', 'schema')
-        BoxPlot(dataTarget, 'com_interval', 'steps_total', 'schema')
-        BoxPlot(dataTarget, 'com_interval', 'jdiff_maxnorm', 'schema')
-        BoxPlot(dataTarget, 'com_interval', 'jdiff_l2norm', 'schema')
-        BoxPlot(dataTarget, 'com_interval', 'jdiff_mse', 'schema')
+        BoxPlot(dataTarget, 'com_interval', 'runtime_vi_ms', 'schema', yLimRT)
+        BoxPlot(dataTarget, 'com_interval', 'steps_total', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'com_interval', 'jdiff_maxnorm', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'com_interval', 'jdiff_l2norm', 'schema', yLimDefault)
+        BoxPlot(dataTarget, 'com_interval', 'jdiff_mse', 'schema', yLimDefault)
 
-
-        Scatterplot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
-        Scatterplot(dataTarget, 'world_size', 'eps_global', 'schema')
-        Jointplot(dataTarget, 'runtime_vi_ms', 'eps_global')
+        #Scatterplot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')
+        #Scatterplot(dataTarget, 'world_size', 'eps_global', 'schema')
+        #Jointplot(dataTarget, 'runtime_vi_ms', 'eps_global')
     return
 
 
 class DataTarget():
+    def __init__(self, name, data_frame, ds_dirstring):
+        self.name = name
+        self.data_frame = data_frame
+        self.out_dir = "./gen/img/"
+        self.ds_dirstring = ds_dirstring
+
     def getName(self):
         return self.name
 
@@ -180,21 +200,41 @@ class DataTarget():
     def getDSDirString(self):
         return self.ds_dirstring
 
-    def __init__(self, name, data_frame, ds_dirstring):
-        self.name = name
-        self.data_frame = data_frame
-        self.out_dir = "./gen/img/"
-        self.ds_dirstring = ds_dirstring
 
-
-if __name__ == "__main__":
-    CollectMeasurementFiles()
+class DataSetConfiguration():
     keyDataSet = ["/data/data_debug/", "/data/data_small/", "/data/data_normal/"]
     dirStringDataSet = ["debug", "small", "normal"]
 
+    ylimList = [[0, 10], [1000, 100000], [100000, 4000000]]
+
+    def getNumberDatasets(self):
+        return len(self.keyDataSet)
+
+    def getDataKey(self, idx):
+        return self.keyDataSet[idx]
+
+    def getDirString(self, idx):
+        return self.dirStringDataSet[idx]
+
+    def getYLim(self, idx):
+        return self.ylimList[idx]
+
+
+class TargetConfiguration():
     targetKeys = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
 
-    for idxD, keyD in enumerate(keyDataSet):
-        dfResults = ReadandMerge(keyD)
-        for keyT in targetKeys:
-            GeneratePlots(keyT, dirStringDataSet[idxD])
+    def getNumberTargets(self):
+        return len(self.targetKeys)
+
+    def getTargetKey(self, idx):
+        return self.targetKeys[idx]
+
+
+if __name__ == "__main__":
+    dsConfiguration = DataSetConfiguration()
+    targetConfiguration = TargetConfiguration()
+
+    for idxD in range(0, dsConfiguration.getNumberDatasets()):
+        dfResults = ReadandMerge(dsConfiguration, idxD)
+        for idxT in range(0, targetConfiguration.getNumberTargets()):
+            GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT)
