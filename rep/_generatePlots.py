@@ -56,7 +56,7 @@ def BoxPlot(dataTarget, x, y, hue):
         ncount = len(dfResults.index)
         plt.figure()
         hue_order = schema_list
-        boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults, hue_order=hue_order)
+        boxplot = sns.boxplot(x=dfResults[x], y=dfResults[y], hue=dfResults[hue], data=dfResults, hue_order=hue_order, showfliers = False)
         boxplot.set_title(dataTarget.getName() + ": " + y + "/" + x + " (" + str(ncount) + " runs)")
         boxplot.set_ylabel(str(y))
         boxplot.set_xlabel(str(x))

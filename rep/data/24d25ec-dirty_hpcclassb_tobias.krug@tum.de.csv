@@ -485,3 +485,4 @@ datetime,target,configuration,data_set,schema,world_size,com_interval,runtime_ms
 2022-01-24_01:02:12,hpcclassb,../automation/jobs/gen/ds/normal/27_MpiViSchema01_1.yaml,/data/data_normal/,MpiViSchema01,20,1,395528,390262,1751788,34326000,1714192,1751788,340,0.000000,0.008545,2.256457,0.000001
 2022-01-24_01:08:48,hpcclassb,../automation/jobs/gen/ds/normal/28_MpiViSchema02_1.yaml,/data/data_normal/,MpiViSchema02,20,1,415674,400109,3046160,33756452,1423736,3046160,340,0.000000,0.008545,2.256457,0.000001
 2022-01-24_01:15:45,hpcclassb,../automation/jobs/gen/ds/normal/29_MpiViSchema03_1.yaml,/data/data_normal/,MpiViSchema03,20,1,387291,385903,1751968,34323068,1714036,1751968,340,0.000000,0.008545,2.256457,0.000001
+2022-01-24_01:22:13,hpcclassb,../automation/jobs/gen/ds/normal/30_MpiViSchema01_4.yaml,/data/data_normal/,MpiViSchema01,20,4,485757,484492,1751956,34325540,1714200,1751956,892,0.000000,0.008789,2.249537,0.000001
