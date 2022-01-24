@@ -4,7 +4,7 @@ _host=$1
 _runtype=$2
 
 # inform about target host and active git user-email
-_git_user_email=$(git config --get user.email)
+_git_user_email=$(git config --local --get user.email)
 echo -e "Preparing with <"${_runtype}"> on host <"${_host}"> with git user-email <"${_git_user_email}">"
 
 # local paths
