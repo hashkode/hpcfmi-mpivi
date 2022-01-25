@@ -127,6 +127,9 @@ sudo make setupToolchain
 The below graphs visualize the collected measurement files and their analysis per data set and target.
 
 ### Small dataset
+![](./rep/gen/img/ds/small/runtime_measurement_target.svg "Runtime target")
+
+![](./rep/gen/img/ds/small/number_measurement_target.svg "Number of measurement target")
 
 | Target:                     |HPC Class A|HPC Class B|HPC Class Mixed|NUC|RPi|Local|
 |-----------------------------|---|---|---|---|---|---|
@@ -140,6 +143,9 @@ The below graphs visualize the collected measurement files and their analysis pe
 | jdiff_maxnorm vs. com_interval       |![](./rep/gen/img/hpcclassa/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/nuc/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|
 
 ### Normal dataset
+![](./rep/gen/img/ds/normal/runtime_measurement_target.svg "Runtime target")
+
+![](./rep/gen/img/ds/normal/number_measurement_target.svg "Number of measurement target")
 
 | Target:                     |HPC Class A|HPC Class B|HPC Class Mixed|NUC|RPi|Local|
 |-----------------------------|---|---|---|---|---|---|

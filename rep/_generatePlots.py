@@ -139,9 +139,18 @@ def SaveFigureToFiles(dataTarget, graphicName):
     plt.savefig(fileName + ".svg")
     plt.savefig(fileName + ".pdf")
     return
+def SaveFigureToFilesData(dsConfiguration,graphicName,idxD):
+    fileName = ("./gen/img/ds/"+dsConfiguration.getDirString(idxD) + "/" + graphicName)
+    plt.savefig(fileName + ".svg")
+    plt.savefig(fileName + ".pdf")
+    return
 
 def BuildDirectoryName(dataTarget):
     directoryName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/")
+    return directoryName
+
+def BuildDirectoryNameData(dsConfiguration,idxD):
+    directoryName = ("./gen/img/ds/"+dsConfiguration.getDirString(idxD) + "/")
     return directoryName
 
 def GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT):
@@ -228,13 +237,47 @@ class TargetConfiguration():
 
     def getTargetKey(self, idx):
         return self.targetKeys[idx]
+    
+def DataDistributionPlot(dfResults,dsConfiguration,idxD):
 
+    plt.figure()
+    axSmall = dfResults.groupby(['schema','target'])['schema'].count().unstack(0).plot.bar(title="Number of measurement for each target with "+ dsConfiguration.getDirString(idxD) +" dataset")
+    axSmall.set_ylabel("Number of measurement")
+    axSmall.set_xlabel("Target")
+    plt.grid(axis='y')
+    plt.grid(axis='x')
+    graphicName="number_measurement_target"
+    SaveFigureToFilesData(dsConfiguration, graphicName,idxD)
+
+    plt.figure()
+    axSmallRuntime = dfResults.groupby(['schema','target'])['runtime_ms'].sum().unstack(0).plot.bar(title="Time of measurement for each target with "+ dsConfiguration.getDirString(idxD) +" dataset")
+    axSmallRuntime.set_ylabel("Time of measurement in ms")
+    axSmallRuntime.set_xlabel("Target")
+    plt.grid(axis='y')
+    plt.grid(axis='x')
+    graphicName="runtime_measurement_target"
+
+    SaveFigureToFilesData(dsConfiguration, graphicName,idxD)
+
+    return
+
+def GenerateDataPlot(dfResults,dsConfiguration,idxD):
+    if not dfResults.empty:
+        path = os.path.join(BuildDirectoryNameData(dsConfiguration,idxD))
+        try:
+            os.makedirs(path)
+        except OSError as error:
+            pass
+        DataDistributionPlot(dfResults,dsConfiguration,idxD)
+    
+    
+    return
 
 if __name__ == "__main__":
     dsConfiguration = DataSetConfiguration()
     targetConfiguration = TargetConfiguration()
-
     for idxD in range(0, dsConfiguration.getNumberDatasets()):
         dfResults = ReadandMerge(dsConfiguration, idxD)
+        GenerateDataPlot(dfResults,dsConfiguration,idxD)
         for idxT in range(0, targetConfiguration.getNumberTargets()):
             GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT)
