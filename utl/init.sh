@@ -66,3 +66,6 @@ then
 else
   echo "no normal dataset available in $var_path"
 fi
+
+# git confifuration
+git config core.attributesfile ~/.gitattributes
