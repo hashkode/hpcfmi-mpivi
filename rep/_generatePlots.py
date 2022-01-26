@@ -13,6 +13,58 @@ from distutils.dir_util import copy_tree
 
 schema_list = ['MpiViSchema01', 'MpiViSchema02', 'MpiViSchema03']
 
+class DataTarget():
+    def __init__(self, name, data_frame, ds_dirstring):
+        self.name = name
+        self.data_frame = data_frame
+        self.out_dir = "./gen/img/"
+        self.ds_dirstring = ds_dirstring
+
+    def getName(self):
+        return self.name
+
+    def getDataFrame(self):
+        return self.data_frame
+
+    def getOutDir(self):
+        return self.out_dir
+
+    def getDSDirString(self):
+        return self.ds_dirstring
+
+
+class DataSetConfiguration():
+    keyDataSet = ["/data/data_debug/", "/data/data_small/", "/data/data_normal/"]
+    dirStringDataSet = ["debug", "small", "normal"]
+
+    # default, small, normal; each array holds the settings per plot type/category
+    # 0: runtime (log!), 1: steps, 2: RAM
+    ylimList = [[[], [], [], []],
+                [[1, 100], [100, 8500], [10, 2000], [0, .25]],
+                [[100, 10000], [100, 8500], [1000, 100000], [0, .5]]]
+
+    def getNumberDatasets(self):
+        return len(self.keyDataSet)
+
+    def getDataKey(self, idx):
+        return self.keyDataSet[idx]
+
+    def getDirString(self, idx):
+        return self.dirStringDataSet[idx]
+
+    def getYLim(self, idxD, idxPlt):
+        return self.ylimList[idxD][idxPlt]
+
+
+class TargetConfiguration():
+    targetKeys = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
+
+    def getNumberTargets(self):
+        return len(self.targetKeys)
+
+    def getTargetKey(self, idx):
+        return self.targetKeys[idx]
+
 
 def CollectMeasurementFiles():
     user_name = pwd.getpwuid(os.getuid())[0]
@@ -53,18 +105,19 @@ def ParseDevice(dfResults, target):
 
 
 def ParseSchema(dfResults):
-    dataSchema01 = dfResults[(dfResults['schema'] == schema_list[1])];
-    dataSchema02 = dfResults[(dfResults['schema'] == schema_list[2])];
-    dataSchema03 = dfResults[(dfResults['schema'] == schema_list[3])];
+    dataSchema01 = dfResults[(dfResults['schema'] == schema_list[0])];
+    dataSchema02 = dfResults[(dfResults['schema'] == schema_list[1])];
+    dataSchema03 = dfResults[(dfResults['schema'] == schema_list[2])];
     return dataSchema01, dataSchema02, dataSchema03
 
 
-def BoxPlot(dataTarget, x, y, hue, yLim=None, do_log=False):
+def BoxPlot(dataTarget, x, y, hue, yLim=None, do_log=False, filter_com_intervall=True):
     dfResults = dataTarget.getDataFrame()
 
     # consider only standard set of com_interval values for better comparability
-    filter_com_interval = [1, 2, 4, 8, 16, 32, 64]
-    dfResults = dfResults[dfResults['com_interval'].isin(filter_com_interval) == True]
+    if filter_com_intervall:
+        filter_com_interval = [1, 2, 4, 8, 16, 32, 64]
+        dfResults = dfResults[dfResults['com_interval'].isin(filter_com_interval) == True]
 
     if ((not dfResults[x].empty) and (not dfResults[y].empty) and (not dfResults[hue].empty)):
         ncount = len(dfResults.index)
@@ -83,58 +136,64 @@ def BoxPlot(dataTarget, x, y, hue, yLim=None, do_log=False):
 
         plt.grid(axis='y')
         plt.grid(axis='x')
-
-        SaveFigureToFiles(dataTarget, "boxplot_" + x + "_" + y)
-        plt.close()
+    if filter_com_intervall:
+        SaveFigureToFilesTarget(dataTarget, "boxplot_" + x + "_" + y)
+    else:
+        SaveFigureToFilesTarget(dataTarget, "boxplot_" + x + "_" + y + "_raw")
+    plt.close()
     return
 
 
-def Lineplot(dataTarget, x, y):
+def LinePlot(dataTarget, x, y):
     dfResults = dataTarget.getDataFrame()
     dfResults = dfResults.sort_values(x, ascending=False).reset_index(drop=True)
     dataSchema01, dataSchema02, dataSchema03 = ParseSchema(dfResults)
 
     plt.figure()
-    plt.plot(dataSchema01[x], dataSchema01[y], label='Schema3')
+    plt.plot(dataSchema01[x], dataSchema01[y], label='Schema1')
     plt.plot(dataSchema02[x], dataSchema02[y], label='Schema2')
-    plt.plot(dataSchema03[x], dataSchema03[y], label='Schema1')
+    plt.plot(dataSchema03[x], dataSchema03[y], label='Schema3')
     plt.legend()
     # new_list = range(math.floor(min(dataSchema02['com_intervall'])), math.ceil(max(dataSchema02['com_intervall']))+1)
     #  plt.xticks(new_list)
     plt.ylabel(str(y))
     plt.xlabel(str(x))
     plt.title("")
-    SaveFigureToFiles(dataTarget, "lineplot_" + x + "_" + y)
+    SaveFigureToFilesTarget(dataTarget, "lineplot_" + x + "_" + y)
     plt.close()
     return
 
 
-def Scatterplot(dataTarget, x, y, hue):
+def ScatterPlot(dataTarget, x, y, hue):
     dfResults = dataTarget.getDataFrame()
+    ncount = len(dfResults.index)
 
+    plt.figure()
     scatterplot = sns.scatterplot(data=dfResults, x=dfResults[x], y=dfResults[y], hue=dfResults[hue])
     scatterplot.set_ylabel(str(y))
     scatterplot.set_xlabel(str(x))
+    scatterplot.set_title(dataTarget.getName() + ": " + y + "/" + x + " (" + str(ncount) + " runs)")
+    plt.grid(axis='y')
+    plt.grid(axis='x')
     # scatterplot.set_legend()
-    plt.figure()
-    SaveFigureToFiles(dataTarget, "scatterplot_" + x + "_" + y)
+    SaveFigureToFilesTarget(dataTarget, "scatterplot_" + x + "_" + y)
     plt.close()
     return
 
 
-def Jointplot(dataTarget, x, y):
+def JointPlot(dataTarget, x, y):
     dfResults = dataTarget.getDataFrame()
 
-    jointplot = sns.JointGrid(data=dfResults, x=dfResults[x], y=dfResults[y])
     plt.figure()
-    SaveFigureToFiles(dataTarget, "jointplot_" + x + "_" + y)
+    jointplot = sns.JointGrid(data=dfResults, x=dfResults[x], y=dfResults[y])
+    SaveFigureToFilesTarget(dataTarget, "jointplot_" + x + "_" + y)
     plt.close()
     # Joint.set_ylabel(str(y))
     # Joint.set_xlabel(str(x))
     return
 
 
-def Barplot(dataTarget, x, y):
+def BarPlot(dataTarget, x, y):
     dfResults = dataTarget.getDataFrame()
     dataSchema01, dataSchema02, dataSchema03 = ParseSchema(dfResults)
 
@@ -147,12 +206,66 @@ def Barplot(dataTarget, x, y):
     plt.ylabel(str(y))
     plt.xlabel(str(x))
 
-    SaveFigureToFiles(dataTarget, "barplot_" + x + "_" + y)
+    SaveFigureToFilesTarget(dataTarget, "barplot_" + x + "_" + y)
     plt.close()
     return
 
+def DataDistributionPlot(dfResults, dsConfiguration, idxD):
+    ncount = len(dfResults.index)
 
-def SaveFigureToFiles(dataTarget, graphicName):
+    plt.figure()
+    axSmall = dfResults.groupby(['schema', 'target'])['schema'].count().unstack(0).plot.bar(
+        title="Measurement count /target for <" + dsConfiguration.getDirString(idxD) + "> dataset" + " (" + str(ncount) + " runs)")
+    axSmall.set_ylabel("Measurement count []")
+    axSmall.set_xlabel("Target")
+
+    y_min = min(dfResults.groupby(['schema', 'target'])['schema'].count())
+    y_max = math.ceil(max(dfResults.groupby(['schema', 'target'])['schema'].count()))
+    yint = np.linspace(min(0, y_min), y_max ,num = 10, endpoint = True).astype(int)
+    plt.yticks(yint)
+
+    plt.grid(axis='y')
+    plt.grid(axis='x')
+    graphicName = "number_measurement_target"
+    SaveFigureToFilesData(dsConfiguration, graphicName, idxD)
+
+    plt.figure()
+    axSmallRuntime = dfResults.groupby(['schema', 'target'])['runtime_vi_s'].sum().unstack(0).plot.bar(
+        title="Measurement duration /target for <" + dsConfiguration.getDirString(idxD) + "> dataset " + " (" + str(ncount) + " runs)")
+    axSmallRuntime.set_ylabel("Measurement duration [s]")
+    axSmallRuntime.set_xlabel("Target")
+    plt.grid(axis='y')
+    plt.grid(axis='x')
+    graphicName = "runtime_measurement_target"
+
+    SaveFigureToFilesData(dsConfiguration, graphicName, idxD)
+
+    plt.figure()
+    axSmallRuntime = dfResults.groupby(['schema', 'world_size'])['rss_max_rank0_mb'].mean().unstack(0).plot.line(
+        title="Max-RSS at rank0 /world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
+    axSmallRuntime.set_ylabel("Max-RSS [MB]")
+    axSmallRuntime.set_xlabel("world_size")
+    plt.grid(axis='y')
+    plt.grid(axis='x')
+    graphicName = "max_rss_rank0_world_size"
+
+    SaveFigureToFilesData(dsConfiguration, graphicName, idxD)
+
+    plt.figure()
+    axSmallRuntime = dfResults.groupby(['schema', 'world_size'])['rss_sum_all_mb'].mean().unstack(0).plot.line(
+        title="Sum Max-RSS all ranks /world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
+    axSmallRuntime.set_ylabel("Avg. Max-RSS [MB]")
+    axSmallRuntime.set_xlabel("world_size")
+    plt.grid(axis='y')
+    plt.grid(axis='x')
+    graphicName = "rss_sum_all_world_size"
+
+    SaveFigureToFilesData(dsConfiguration, graphicName, idxD)
+
+    return
+
+
+def SaveFigureToFilesTarget(dataTarget, graphicName):
     fileName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/" + graphicName)
     plt.savefig(fileName + ".svg")
     plt.savefig(fileName + ".pdf")
@@ -166,7 +279,7 @@ def SaveFigureToFilesData(dsConfiguration, graphicName, idxD):
     return
 
 
-def BuildDirectoryName(dataTarget):
+def BuildDirectoryNameTarget(dataTarget):
     directoryName = (dataTarget.getOutDir() + dataTarget.getName() + "/" + dataTarget.getDSDirString() + "/")
     return directoryName
 
@@ -189,7 +302,7 @@ def GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT):
     yLimJDiff = dsConfiguration.getYLim(idxD, 3)
 
     if not dataTarget.getDataFrame().empty:
-        path = os.path.join(BuildDirectoryName(dataTarget))
+        path = os.path.join(BuildDirectoryNameTarget(dataTarget))
         try:
             os.makedirs(path)
         except OSError as error:
@@ -209,95 +322,15 @@ def GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT):
         BoxPlot(dataTarget, 'com_interval', 'jdiff_l2norm', 'schema', yLimJDiff)
         BoxPlot(dataTarget, 'com_interval', 'jdiff_mse', 'schema', yLimJDiff)
 
-        # Scatterplot(dataTarget, 'world_size', 'rss_max_rank0_kb', 'schema')  # Scatterplot(dataTarget, 'world_size', 'eps_global', 'schema')  # Jointplot(dataTarget, 'runtime_vi_ms', 'eps_global')
-    return
-
-
-class DataTarget():
-    def __init__(self, name, data_frame, ds_dirstring):
-        self.name = name
-        self.data_frame = data_frame
-        self.out_dir = "./gen/img/"
-        self.ds_dirstring = ds_dirstring
-
-    def getName(self):
-        return self.name
-
-    def getDataFrame(self):
-        return self.data_frame
-
-    def getOutDir(self):
-        return self.out_dir
-
-    def getDSDirString(self):
-        return self.ds_dirstring
-
-
-class DataSetConfiguration():
-    keyDataSet = ["/data/data_debug/", "/data/data_small/", "/data/data_normal/"]
-    dirStringDataSet = ["debug", "small", "normal"]
-
-    # default, small, normal; each array holds the settings per plot type/category
-    # 0: runtime (log!), 1: steps, 2: RAM
-    ylimList = [[[], [], [], []],
-                [[1, 100], [100, 8500], [30, 2000], [0, .25]],
-                [[100, 10000], [100, 8500], [1500, 51000], [0, .5]]]
-
-    def getNumberDatasets(self):
-        return len(self.keyDataSet)
-
-    def getDataKey(self, idx):
-        return self.keyDataSet[idx]
-
-    def getDirString(self, idx):
-        return self.dirStringDataSet[idx]
-
-    def getYLim(self, idxD, idxPlt):
-        return self.ylimList[idxD][idxPlt]
-
-
-class TargetConfiguration():
-    targetKeys = ["hpcclassa", "hpcclassb", "hpcclassmixed", "nuc", "rpi", "local"]
-
-    def getNumberTargets(self):
-        return len(self.targetKeys)
-
-    def getTargetKey(self, idx):
-        return self.targetKeys[idx]
-
-
-def DataDistributionPlot(dfResults, dsConfiguration, idxD):
-    plt.figure()
-    axSmall = dfResults.groupby(['schema', 'target'])['schema'].count().unstack(0).plot.bar(
-        title="Measurement count per target for <" + dsConfiguration.getDirString(idxD) + "> dataset")
-    axSmall.set_ylabel("Measurement count []")
-    axSmall.set_xlabel("Target")
-
-    y_min = min(dfResults.groupby(['schema', 'target'])['schema'].count())
-    y_max = math.ceil(max(dfResults.groupby(['schema', 'target'])['schema'].count()))
-    yint = np.linspace(min(0, y_min), y_max ,num = 10, endpoint = True).astype(int)
-    plt.yticks(yint)
-
-    plt.grid(axis='y')
-    plt.grid(axis='x')
-    graphicName = "number_measurement_target"
-    SaveFigureToFilesData(dsConfiguration, graphicName, idxD)
-
-    plt.figure()
-    axSmallRuntime = dfResults.groupby(['schema', 'target'])['runtime_vi_s'].sum().unstack(0).plot.bar(
-        title="Measurement duration per target for <" + dsConfiguration.getDirString(idxD) + "> dataset")
-    axSmallRuntime.set_ylabel("Measurement duration [s]")
-    axSmallRuntime.set_xlabel("Target")
-    plt.grid(axis='y')
-    plt.grid(axis='x')
-    graphicName = "runtime_measurement_target"
-
-    SaveFigureToFilesData(dsConfiguration, graphicName, idxD)
+        # create com_interval sweep plot for target nuc for dataset small
+        if keyTarget == 'nuc' and ds_dirstring == 'small':
+            ScatterPlot(dataTarget, 'com_interval', 'runtime_vi_s', 'schema')
+            ScatterPlot(dataTarget, 'com_interval', 'steps_total', 'schema')
 
     return
 
 
-def GenerateDataPlot(dfResults, dsConfiguration, idxD):
+def GenerateDataPlots(dfResults, dsConfiguration, idxD):
     if not dfResults.empty:
         path = os.path.join(BuildDirectoryNameData(dsConfiguration, idxD))
         try:
@@ -308,12 +341,16 @@ def GenerateDataPlot(dfResults, dsConfiguration, idxD):
 
     return
 
+def GenerateMiscPlots(dsConfiguration, targetConfiguration):
+    return
 
 if __name__ == "__main__":
     dsConfiguration = DataSetConfiguration()
     targetConfiguration = TargetConfiguration()
     for idxD in range(0, dsConfiguration.getNumberDatasets()):
         dfResults = ReadandMerge(dsConfiguration, idxD)
-        GenerateDataPlot(dfResults, dsConfiguration, idxD)
+        GenerateDataPlots(dfResults, dsConfiguration, idxD)
         for idxT in range(0, targetConfiguration.getNumberTargets()):
             GeneratePlots(dfResults, dsConfiguration, idxD, targetConfiguration, idxT)
+
+    GenerateMiscPlots(dsConfiguration, targetConfiguration)

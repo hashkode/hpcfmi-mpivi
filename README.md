@@ -126,11 +126,22 @@ sudo make setupToolchain
 ## Visualization
 The below graphs visualize the collected measurement files and their analysis per data set and target.
 
+### Special plots
+#### com_interval sweep for dataset small on target nuc
+| Runtime VI per com_intervall                                                                            | Steps per com_interval                                                                               |
+|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| ![](./rep/gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.svg "Runtime com_interval sweep nuc") | ![](./rep/gen/img/nuc/small/scatterplot_com_interval_steps_total.svg "Steps com_interval sweep nuc") |
+
 ### Small dataset
 #### General plots
 |Measurement count|Measurement duration|
 |---|---|
 |![](./rep/gen/img/ds/small/number_measurement_target.svg "Runtime target")|![](./rep/gen/img/ds/small/runtime_measurement_target.svg "Number of measurement target")|
+
+| Max-RSS at rank0 per world_size                                                        | Sum of Max-RSS of all ranks per world_size                                     |
+|--------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| ![](./rep/gen/img/ds/small/max_rss_rank0_world_size.svg "Max-RSS Rank0") | ![](./rep/gen/img/ds/small/rss_sum_all_world_size.svg "Max-RSS all ranks") |
+
 
 #### Target plots: hpcclassa, hpcclassb, hpcclassmixed
 | Target:                     |HPC Class A|HPC Class B|HPC Class Mixed|
@@ -161,6 +172,11 @@ The below graphs visualize the collected measurement files and their analysis pe
 |Measurement count|Measurement duration|
 |---|---|
 |![](./rep/gen/img/ds/normal/number_measurement_target.svg "Number of measurement target")|![](./rep/gen/img/ds/normal/runtime_measurement_target.svg "Runtime target")|
+
+
+| Max-RSS at rank0 per world_size                                           | Sum of Max-RSS of all ranks per world_size                                     |
+|---------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| ![](./rep/gen/img/ds/normal/max_rss_rank0_world_size.svg "Max-RSS Rank0") | ![](./rep/gen/img/ds/normal/rss_sum_all_world_size.svg "Max-RSS all ranks") |
 
 #### Target plots: hpcclassa, hpcclassb, hpcclassmixed
 | Target:                     |HPC Class A|HPC Class B|HPC Class Mixed|
