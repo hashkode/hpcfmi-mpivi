@@ -215,7 +215,7 @@ def DataDistributionPlot(dfResults, dsConfiguration, idxD):
 
     plt.figure()
     axSmall = dfResults.groupby(['schema', 'target'])['schema'].count().unstack(0).plot.bar(
-        title="Measurement count /target for <" + dsConfiguration.getDirString(idxD) + "> dataset" + " (" + str(ncount) + " runs)")
+        title="Measurement count/target for <" + dsConfiguration.getDirString(idxD) + "> dataset" + " (" + str(ncount) + " runs)")
     axSmall.set_ylabel("Measurement count []")
     axSmall.set_xlabel("Target")
 
@@ -231,7 +231,7 @@ def DataDistributionPlot(dfResults, dsConfiguration, idxD):
 
     plt.figure()
     axSmallRuntime = dfResults.groupby(['schema', 'target'])['runtime_vi_s'].sum().unstack(0).plot.bar(
-        title="Measurement duration /target for <" + dsConfiguration.getDirString(idxD) + "> dataset " + " (" + str(ncount) + " runs)")
+        title="Measurement duration/target for <" + dsConfiguration.getDirString(idxD) + "> dataset " + " (" + str(ncount) + " runs)")
     axSmallRuntime.set_ylabel("Measurement duration [s]")
     axSmallRuntime.set_xlabel("Target")
     plt.grid(axis='y')
@@ -242,7 +242,7 @@ def DataDistributionPlot(dfResults, dsConfiguration, idxD):
 
     plt.figure()
     axSmallRuntime = dfResults.groupby(['schema', 'world_size'])['rss_max_rank0_mb'].mean().unstack(0).plot.line(
-        title="Max-RSS at rank0 /world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
+        title="Mean Max-RSS at rank0/world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
     axSmallRuntime.set_ylabel("Max-RSS [MB]")
     axSmallRuntime.set_xlabel("world_size")
     plt.grid(axis='y')
@@ -253,7 +253,7 @@ def DataDistributionPlot(dfResults, dsConfiguration, idxD):
 
     plt.figure()
     axSmallRuntime = dfResults.groupby(['schema', 'world_size'])['rss_sum_all_mb'].mean().unstack(0).plot.line(
-        title="Sum Max-RSS all ranks /world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
+        title="Mean Max-RSS sum all ranks/world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
     axSmallRuntime.set_ylabel("Avg. Max-RSS [MB]")
     axSmallRuntime.set_xlabel("world_size")
     plt.grid(axis='y')

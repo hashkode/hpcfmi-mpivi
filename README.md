@@ -24,7 +24,7 @@ Some schemes rely on local availability of the data sets, these schemes execute 
 
 ## Software, methods and tools
 This project is implemented using a set of software tools, namely:
-- CLion from JetBrains for C++/Python development
+- CLion from JetBrains for C++/Python development and LaTeX documentation
 - Sublime Merge from Sublime for professional git usage
 
 Concerning infrastructure, the project depends on
