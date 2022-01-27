@@ -1,13 +1,17 @@
 \label{apx:a}
-
-\subsection{Gprahiken, Benchmark}
+\section{Gprahiken, Benchmark}
 \label{sec:benchmark}
 
-\subsubsection{Benchmak Datensatz small}
+\subsection{Benchmak Datensatz small}
 
-Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz small.
+Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz small:
 
-%TODO: Abbildungen aufzählen, Abb-Verzeichnis light
+\begin{itemize}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 1/2~\autoref{fig:benchmarkHpcNormal1}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 1/2~\autoref{fig:benchmarkDivNormal1}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 2/2~\autoref{fig:benchmarkHpcNormal2}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 2/2~\autoref{fig:benchmarkDivNormal2}
+\end{itemize}
 
 \begin{figure*}
 \centering
@@ -67,6 +71,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_rss_sum_all_mb.pdf}
     	\hspace{0pt}}\\
     \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 1/2}
+	\label{fig:benchmarkHpcSmall1}
 \end{figure*}
 
 \begin{figure*}
@@ -124,7 +129,8 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_rss_sum_all_mb.pdf}
     	   \label{fig:LocalsumRSSsmall}
     	\hspace{0pt}}\\
-    \caption{Comparison between NUC, RPi and Local with dataset small, part 1/2}
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 1/2}
+	\label{fig:benchmarkDivSmall1}
 \end{figure*}
 
 \begin{figure*}
@@ -181,6 +187,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
     \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 2/2}
+	\label{fig:benchmarkHpcSmall2}
 \end{figure*}
 
 \begin{figure*}
@@ -237,14 +244,20 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between NUC, RPi and Local with dataset small, part 2/2}
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 2/2}
+	\label{fig:benchmarkDivSmall2}
 \end{figure*}
 
-\subsubsection{Benchmark Datensatz normal}
+\subsection{Benchmark Datensatz normal}
 
-Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz normal.
+Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz normal:
 
-%TODO: Abbildungen aufzählen, Abb-Verzeichnis light
+\begin{itemize}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 1/2~\autoref{fig:benchmarkHpcSmall1}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 1/2~\autoref{fig:benchmarkDivSmall1}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 2/2~\autoref{fig:benchmarkHpcSmall2}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 2/2~\autoref{fig:benchmarkDivSmall2}
+\end{itemize}
 
 \begin{figure*}
 \centering
@@ -301,6 +314,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_rss_sum_all_mb.pdf}
     	\hspace{0pt}}\\
     \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 1/2}
+	\label{fig:benchmarkHpcNormal1}
 \end{figure*}
 
 \begin{figure*}
@@ -358,6 +372,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_rss_sum_all_mb.pdf}
     	\hspace{0pt}}\\
     \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 1/2}
+	\label{fig:benchmarkDivNormal1}
 \end{figure*}
 
 \begin{figure*}
@@ -411,6 +426,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
     \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 2/2}
+	\label{fig:benchmarkHpcNormal2}
 \end{figure*}
 
 \begin{figure*}
@@ -464,4 +480,5 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
     \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 2/2}
+	\label{fig:benchmarkDivNormal2}
 \end{figure*}

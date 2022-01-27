@@ -5,13 +5,13 @@ auf unterschiedlichen Targets mit unterschiedlichen Parametern realisierbar ist.
 Unterschiede zwischen verschiedenen MPI-Schemata und deren Einflüsse auf Performance und Messwerte der Value Iteration wurden dargelegt.
 Weiterhin wurde der Einfluss verschiedener Hardware-Strukturen sowie Parameter auf die Laufzeit und Qualität der Value Iteration dargestellt.
 
-Wir konnten zeigen, dass der benötigte Arbeitsspeicher pro Processor vom verwendeten Schema und dessen Implementierung abhängt, die benötigte Rechenzeit hängt beim vorliegenden Problem in erster Linie von der Größe des com\_intervals und der gewählten Hardware ab. Hierbei zeigt sich, dass langsame Ausführungsumgebungen mit guter Parametrierung ggfs. deutlich bessere Laufzeiten erzielen können, als es schnellere Hardware mit schlechter Parametrierung vermag.
-
-Es konnte kein global gültiger Zusammenhang zwischen runtime und world\_size festgestellt werden. Dies und weitere Erkenntnisse aus der Analyse der Laufzeiten führen zu dem Schluss, dass die Lösung des vorliegenden Value Iteration Problems mittels MPI Kommunikation gegenüber einer lokalen Implentierung mittels OpenMP nur unter besonderen Bedingungen einen Mehrwert mit sich bringen kann. Die hier umgesetzten Varianten mittels synchroner MPI Kommunikation bieten diese Bedingungen nicht.
-
 Bezüglich einer Parameterempfehlung lässt sich jedoch anmerken, dass die Laufzeit und die Schritte bis Konvergenz linear vom gewählten Kommunikationsintervall (Intervall > 6) abhängen. Kleinere Kommunikationsintervalle scheinen also wünschenswert.
 
 Zudem variiert die Qualität der Value Iteration in kleinem Rahmen mit der gewählten Ausführungsumgebung und der Anzahl Processors. Je nach Anforderung an das System ist dies zu berücksichtigen.
+
+Wir konnten zeigen, dass der benötigte Arbeitsspeicher pro Processor vom verwendeten Schema und dessen Implementierung abhängt, die benötigte Rechenzeit hängt beim vorliegenden Problem in erster Linie von der Größe des com\_intervals und der gewählten Hardware ab. Hierbei zeigt sich, dass langsame Ausführungsumgebungen mit guter Parametrierung ggfs. deutlich bessere Laufzeiten erzielen können, als es schnellere Hardware mit schlechter Parametrierung vermag.
+
+Es konnte kein global gültiger Zusammenhang zwischen runtime und world\_size festgestellt werden. Dies und weitere Erkenntnisse aus der Analyse der Laufzeiten führen zu dem Schluss, dass die Lösung des vorliegenden Value Iteration Problems mittels MPI Kommunikation gegenüber einer lokalen Implentierung mittels OpenMP nur unter besonderen Bedingungen einen Mehrwert mit sich bringen kann. Die hier umgesetzten Varianten mittels synchroner MPI Kommunikation bieten diese Bedingungen zumeist nicht.
 
 \section{Beiträge}
 \label{sec:beitraege}
@@ -19,5 +19,5 @@ Zudem variiert die Qualität der Value Iteration in kleinem Rahmen mit der gewä
 \begin{itemize}
     \item Till Hülder:~\ref{sec:analyse_diskussion}
     \item Tobias Klama:~\ref{sec:thesen},~\ref{sec:erkenntnisse}
-    \item Tobias Krug:~Zusammenfassung\ref{sec:abstract},~\ref{sec:einfuehrung},~\ref{sec:methodik},~\ref{sec:erkenntnisse}
+    \item Tobias Krug:~Zusammenfassung\ref{sec:abstract},~\ref{sec:einfuehrung},~\ref{sec:methodik}
 \end{itemize}
