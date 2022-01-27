@@ -30,7 +30,7 @@ Ziel dieses Kapitels ist es Parameter die Einfluss auf die Berechnung nehmen her
 				0.23\textwidth}
 			\centering
 			\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/number_measurement_target.pdf}
-			
+
 	\end{minipage}}
 	\caption{Anzahl an Messungen pro Rechenklasse}
 	\label{fig:NumberMeasurements}
@@ -48,18 +48,16 @@ Beim Vergleich der unterschiedlichen Ausf\"uhrungsergebnissen konnte jedoch meis
 \section{Thesen}
 \label{sec:thesen}
 
-\section{Thesen, @Tobias Klama}
-
 Der folgende Abschnitt behandelt Thesen bezüglich der Zusammenhänge zwischen Messgrößen und Parametern.
 Die Thesen werden anhand der Messergebnisse, der zugrunde liegenden Schema-Architektur und Hardware erörtert.
 
 \subsection{Es besteht eine Korrelation von RAM mit world\_size}
 
 Wie zu erwarten steigt der summierte RAM-Bedarf über alle Processors mit steigender world\_size
-(Fig \ref{fig:hpcAsumRSSsmall}-l, Fig \ref{fig:NUCsumRSSsmall}-l, Fig \ref{fig:hpcAsumRSSnormal}-l und Fig \ref{fig:NUCsumRSSnormal}-l).
+(Fig \ref{fig:rssSumSmall} und Fig \ref{fig:rssSumNormal} sowie Fig \ref{fig:hpcAsumRSSsmall}-l, Fig \ref{fig:NUCsumRSSsmall}-l, Fig \ref{fig:hpcAsumRSSnormal}-l und Fig \ref{fig:NUCsumRSSnormal}-l).
 Insbesondere bei Schema 1 und 3 liegt jedem Processor
 die gesamte Datenmenge an Parametern und P-Matrix im Arbeitsspeicher vor.
-Schema 2 teilt die P-Matrix in Blöcke auf und scattert diese an alle ranks.
+Schema 2 teilt die P-Matrix in Blöcke auf und scattert diese an alle Processors.
 Diese Aufteilung und dadurch, dass rank\_0 auch an sich selbst
 scattert führt dazu, dass rank\_0 von Schema 2 einen höheren RAM Bedarf hat als bei Schema 1 und 3.
 Weiterhin kann den Messungen entnommen werden,
@@ -67,10 +65,43 @@ dass ab einer world\_size von 4 der gesamt benötigte RAM Bedarf von Schema 2 ni
 hinaus langsamer ansteigt.
 Das liegt daran, dass jeder rank nur einen Bruchteil entsprechend der world\_size der Daten erhält und somit jede Vergrößerung der
 world\_size einen niedrigeren durchschnittlichen RAM Bedarf ergibt.
-In Fig \ref{fig:hpcAmaxRSSsmall}-l, Fig \ref{fig:NUCmaxRSSsmall}-l, Fig \ref{fig:hpcAmaxRSSnormal}-l und Fig \ref{fig:NUCmaxRSSnormal}-l
+In Fig \ref{fig:rssMaxSmall} und Fig \ref{fig:rssMaxNormal} sowie Fig \ref{fig:hpcAmaxRSSsmall}-l, Fig \ref{fig:NUCmaxRSSsmall}-l, Fig \ref{fig:hpcAmaxRSSnormal}-l und Fig \ref{fig:NUCmaxRSSnormal}-l
 ist der maximal benötigte RAM-Bedarf von rank\_0 in jedem Schema dargestellt.
 Der Bedarf bleibt über alle world\_sizes konstant, da jeder rank\_0
 unabhängig von Schema und world\_size die gesamte Datenmenge im Arbeitsspeicher vorliegen hat.
+
+\begin{figure}[h]
+	\subfloat[max RSS, small]{
+		\begin{minipage}[c][1.05\width]{
+				0.23\textwidth}
+			\centering
+			\includegraphics[width=1.1\textwidth]{./gen/img/ds/small/max_rss_rank0_world_size.pdf}
+			\label{fig:rssMaxSmall}
+	\end{minipage}}
+	\subfloat[sum RSS, small]{
+		\begin{minipage}[c][1.05\width]{
+				0.23\textwidth}
+			\centering
+			\includegraphics[width=1.1\textwidth]{./gen/img/ds/small/rss_sum_all_world_size.pdf}
+            \label{fig:rssSumSmall}
+	\end{minipage}}\\
+	\subfloat[max RSS, normal]{
+    \begin{minipage}[c][1.05\width]{
+    		0.23\textwidth}
+    	\centering
+    	\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/max_rss_rank0_world_size.pdf}
+    	\label{fig:rssMaxNormal}
+    \end{minipage}}
+    \subfloat[sum RSS, normal]{
+    \begin{minipage}[c][1.05\width]{
+    			0.23\textwidth}
+    	\centering
+    	\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/rss_sum_all_world_size.pdf}
+        \label{fig:rssSumNormal}
+    \end{minipage}}
+	\caption{Verlauf des RSS-Bedarfs}
+	\label{fig:NumberMeasurements}
+\end{figure}
 
 \subsection{Es besteht eine Korrelation runtime mit com\_interval}
 
@@ -137,6 +168,6 @@ Für eine eindeutige Aussage der genauen Korrelationen sind Messungen mit garant
 
 \begin{enumerate}
     \item Till Hülder:~\ref{sec:analyse_diskussion}
-    \item Tobias Klama:~\ref{sec:thesen}
+    \item Tobias Klama:~\ref{sec:thesen},~\ref{sec:erkenntnisse}
     \item Tobias Krug:~Zusammenfassung\ref{sec:abstract},~\ref{sec:einfuehrung},~\ref{sec:methodik}
 \end{enumerate}
