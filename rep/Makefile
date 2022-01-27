@@ -17,6 +17,8 @@ clean:
 	@echo '.........: pdflatex running pass 2...'
 	pdflatex $< 2>&1 | tee errors.err
 	@echo '.........: pdflatex and bibtex run finished.'
+	pdflatex $< 2>&1 | tee errors.err
+	@echo '.........: pdflatex and bibtex run finished.'
 
 _generatePuml:
 	./_generatePuml.sh

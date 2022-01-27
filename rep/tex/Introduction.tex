@@ -1,22 +1,23 @@
-\section{Introduction}
+\section{Einführung}
+\label{sec:einfuehrung}
 % *** Motivation ***
 % Which problem leaded to this work?
 % In which research area? Which challenges can occur?
-\IEEEPARstart{P}{arallel} Processing
-- *** State of the Art *** -> cite related papers
+\IEEEPARstart{H}{igh} Performance Computing bezeichnet seit einiger Zeit eine Technik zur Verknüpfung einzelner Standardcomputer zu einem leistungsfähigen Konglomerat. Hierzu~\citep{dowd1998high}: \glqq In 1988, an article appeared in the Wall Street Journal titled ``Attack of the Killer Micros'' that described how computing systems made up of many small inexpensive processors would soon make large supercomputers obsolete.\grqq Entsprechend dieser Vision können wir heute auf Systeme zurückgreifen, die aus Standardcomputern performante Cluster bilden.
 
-- wesentliche Ziele
+Diese Arbeit befasst sich mit der Implementierung eines Optimierungsproblems aus dem Reinforcement Learning Umfeld auf genau solchen Clustern. Das Problem, welches wir lösen ist die Suche eines realisierbaren und -- bezogen auf eine Kostenfunktion -- optimale Route zwischen zwei Planeten in einem theoretischen Raumfahrtnavigationsproblem. Hierzu wenden wir den bekannten Value Iteration Algorithmus (TODO: Referenz?) in seiner asynchronen Form an. Die Implementierung der Value Iteration (TODO: abbreviations einbauen) erfolgte mittels C++ und dem Open MPI (TODO: ref) Framework.
 
 % *** This Paper ***
 % Which working steps are included and which are not?
-- Struktur des Reports
+Die vorliegende Ausarbeitung befasst sich mit der abstrakten Idee der Umsetzung des oben genannten Projekts und der Struktur der Testautomatisierung. Weiterhin wird eine Analyse und Einordnung der Resultate vorgenommen. Für detaillierte Einblicke in die Implementierung verweisen wir auf die Softwaredokumentation in Form der Markdown Readme Datei und Doxygen Kommentare.
 
 % Why and how is this work stand-alone?
-- Wesentliche Abgrenzum zum Stand der Technik
+Das Hauptmerkmal unserer Ausarbeitung ist die umfangreiche Durchführung von Benchmarks mittels Variation von Datensätzen, Testumgebung, MPI Schemata und MPI Parametern.
 
 % *** Methodology and Workflow ***
 % How should the goals of this work be reached?
-- Projektplan, Schritte der Umsetzung
+Die Grundlage dieser Arbeit war eine konkrete Formulierung eines Projektplans, welcher Inhalt und Umfang des Projekts abgesteckt hat. Um das Ziel einer funktionsfähigen Implementierung und einer aussagekräftigen Analyse zu erreichen, hat das Team anschließend auf Ansätze der SCRUM Methodik gesetzt und mittels regelmäßiger Meetings und ausgeprägter Nutzung von Issues und Branches regelmäßigen Fortschritt erreicht.
 
 % How is the work structured?
-- Struktur der Umsetzung
+Diese Ausarbeitung startet in~\ref{sec:methodik} mit einer Erläuterung der Projektstruktur und zeigt darauf aufbauend welche Testmöglichkeiten sich hiermit bieten. Anhand dreier Schemata validieren wir die automatisierte Erfassung und Verarbeitung von Messdaten. Die so gewonnenen Ergebnisse werden in~\ref{sec:analyse_diskussion} mit einer vergleichenden Perspektive auf getestete Schemata und Ausführungsumgebungen analysiert. In~\ref{sec:thesen} behandeln wir konkrete Thesen, welche im HPC (TODO: abbreviation) Kontext auftreten.
+Den inhaltlichen Abschluss bilden eine Darstellung unserer Beiträge in~\ref{sec:beitraege} und eine Aufstellung der wesentlichen Erkenntnisse in~\ref{sec:erkenntnisse}. Für weitergehende Einblicke in die Ergebnisse der Arbeit, schlüsseln wir im Anhang in~\ref{sec:benchmark} die Ergebnisse je Datensatz, Testumgebung und MPI Schema auf.
