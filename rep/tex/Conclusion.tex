@@ -6,7 +6,16 @@ Unterschiede zwischen verschiedenen MPI-Schemata und deren Einflüsse auf Perfor
 Weiterhin wurde der Einfluss verschiedener Hardware-Strukturen sowie Parameter auf die Value Iteration dargestellt.
 
 Wir konnten zeigen, dass der benötigte Arbeitsspeicher pro Processor vom verwendeten Schema und dessen Implementierung abhängt,
-die benötigte Zeitdauer hängt beim vorliegenden Problem in erster Linie von der Größe des com\_intervals und der gewählten Hardware ab.
+die benötigte Rechenzeit hängt beim vorliegenden Problem in erster Linie von der Größe des com\_intervals und der gewählten Hardware ab.
 
 Es konnte kein eindeutiger und starker Zusammenhang zwischen runtime und world\_size festgestellt werden was zu dem Schluss führt, dass
-die Lösung des vorliegenden Value Iteration Problems mit MPI keinen signifikanten Mehrwert mit sich bringt.
+die Lösung des vorliegenden Value Iteration Problems mittels synchronisierter MPI Kommunikation keinen signifikanten Mehrwert mit sich bringt. (TODO: Sicher? Der mean in den boxplots geht schon eindeutig nach unten. Ausnahmen wie 56 bei mixed (Störungen), 16 bei rpi (ich vermute Überhitzung und Drosselung) sind ja nicht konträr zum sonstigen Trend.) (+: mit neuem Local Target eher falsch, das Ding ist deutlich langsamer)
+
+\section{Beiträge}
+\label{sec:beitraege}
+
+\begin{itemize}
+    \item Till Hülder:~\ref{sec:analyse_diskussion}
+    \item Tobias Klama:~\ref{sec:thesen},~\ref{sec:erkenntnisse}
+    \item Tobias Krug:~Zusammenfassung\ref{sec:abstract},~\ref{sec:einfuehrung},~\ref{sec:methodik}
+\end{itemize}

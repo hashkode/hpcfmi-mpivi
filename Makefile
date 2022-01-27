@@ -70,6 +70,7 @@ documentation: clean
 	$(MAKE) -C rep/ _generatePuml
 	$(MAKE) -C utl/ _preTest
 	$(MAKE) -C rep/ _generatePlots
+	$(MAKE) -C rep/ _cropPdfPLots
 	git add rep/gen/
 	git add rep/data/
 	$(MAKE) -C rep/ report.pdf

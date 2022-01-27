@@ -25,3 +25,6 @@ _generatePuml:
 
 _generatePlots:
 	./_generatePlots.py
+
+_cropPdfPLots:
+	./_cropPdfPLots.sh

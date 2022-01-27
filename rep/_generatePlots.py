@@ -169,7 +169,8 @@ def ScatterPlot(dataTarget, x, y, hue):
     ncount = len(dfResults.index)
 
     plt.figure()
-    scatterplot = sns.scatterplot(data=dfResults, x=dfResults[x], y=dfResults[y], hue=dfResults[hue])
+    hue_order = schema_list
+    scatterplot = sns.scatterplot(data=dfResults, x=dfResults[x], y=dfResults[y], hue=dfResults[hue], hue_order=hue_order)
     scatterplot.set_ylabel(str(y))
     scatterplot.set_xlabel(str(x))
     scatterplot.set_title(dataTarget.getName() + ": " + y + "/" + x + " (" + str(ncount) + " runs)")

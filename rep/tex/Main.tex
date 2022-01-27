@@ -1,11 +1,14 @@
 \section{Methodik}
 \label{sec:methodik}
 
-Zur erfolgreichen Durchführung umfassender Benchmarks setzen wir auf eine flexible Softwarearchitektur, welche eine einfache Parametrierung von vorhandenen MPI Schemata
+Zur erfolgreichen Durchführung umfassender Benchmarks setzen wir auf eine flexible Softwarearchitektur, welche eine einfache Parametrierung von vorhandenen MPI Schemata erlaubt. Diese Ansatz wird nachfolgend erläutert.
 
 \subsection{Softwarearchitektur}
-- Parameter structs als leichtgewichtige Umsetzung des Flyweight Patterns~\citep{gamma1995design}
-- MVC~\citep{buschmann1996pattern-oriented}, Model: VI, Controller: MPI Schemes, View: Main + Configuration Parser + Logging <> Datenaustausch mittels Flyweight
+Die Softwarearchitektur des Projekts setzt auf zwei wesentlichen Prinzipien auf:
+\begin{enumerate}
+	\item Parameter structs für Value Iteration (TODO: abbreviation), MPI und Logging dienen als leichtgewichtige Umsetzung des Flyweight Patterns~\citep[S.195ff.]{gamma1995design}. Dieses Vorgehen erlaubt das unkomplizierte Lesen und Schreiben von Parametern, Laufzeitgrößen zur Steuerung und Messwerten ohne Kopien.
+	\item Eine an MVC~\citep[S.125ff.]{buschmann1996pattern-oriented} angelehnte und durch das Flyweight vernetzte Struktur. Diese besteht aus generischer Value Iteration (TODO: abbreviation) Implementierung (Model), flexibler Eingabe von Steuergrößen und Ausgabe von Messwerten (View) und verschiedenen, interfacekompatiblen MPI Schemata (Controller).
+\end{enumerate}
 
 \subsection{Automatisierung}
 - nrun als innere Schleife war suboptimal, äußere wäre besser gewesen
@@ -13,6 +16,27 @@ Zur erfolgreichen Durchführung umfassender Benchmarks setzen wir auf eine flexi
 \subsection{Ausführungsumgebungen für Tests}
 
 \subsection{Schemata}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme1}
+	\caption{MpiViSchema01}
+	\label{fig:mpiViSchema01}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme2}
+	\caption{MpiViSchema02}
+	\label{fig:mpiViSchema02}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme3}
+	\caption{MpiViSchema03}
+	\label{fig:mpiViSchema03}
+\end{figure}
 
 \section{Analyse \& Diskussion}
 \label{sec:analyse_diskussion}
@@ -36,7 +60,7 @@ Ziel dieses Kapitels ist es Parameter die Einfluss auf die Berechnung nehmen her
 Bei den Messdaten die \"uber die Anzahl an Recheneinheiten und dem Kommunikationsintervall variieren, kann gesehen werden, dass es zwischen den einzelnen Schemen, in Bezug auf Rechenzeit und Konvergenzschritten, zu keinen gro\ss{}en Unterschieden kommt. Dies kann den Messungen auf den Nuc Rechnern aus der Grafik (\ref{fig:NUCworldTimesmall}) und der Grafik (\ref{fig:NUCStepWorldSizesmall}) besonders gut entnommen werden. Dennoch k\"onnen mit steigender Anzahl der Recheneinheiten  etwas schnellere Ergebenisse erziehlt werden, siehe Grafik (\ref{fig:hpcBworldTimesmall}). Allerdings kann der Gewinn an Rechenzeit durch die Parallelisierung von Rechenschritten bei einer zu gro\ss{}en Anzahl an Recheneinheiten, durch den den gro\ss{}en Kommunikationsaufwand, schnell wieder zunichte gemacht werden, wie in Abbilung (\ref{fig:hpcMixedworldTimesmall}) gesehen werden kann. Die Anzahl der Recheneinheiten hat au\ss{}erdem eine Auswirkung auf die Anzahl der Iterationsschritte. So steigt mit der Anzahl der Recheneinheiten auch die Anzahl der ben\"otigten Iterationsschritte. Einen gro\ss{}en Einfluss auf die Rechenzeit hat das Kommunikationsintervall, siehe  Grafik (\ref{fig:NUCcomTimesmall}). So kann beobachtet werden, dass ganz am Anfang die Rechenzeit mit zunehmendem Kommunikationsintervall verk\"urzt werden kann. Doch tritt schon fr\"uh nach einer weitere Erh\"ohung des Kommunikationsintervalls eine Zunahme der Rechenzeit ein. Im von uns gew\"ahlten Kommunikationsintervall ist gegen Ende hin eine lineare Zunahme der Rechenzeit zu sehen, Grafik (\ref{fig:hpcMixedcomTimesmall}). Diese Zunahme der Rechenzeit resultiert vor allem aus einer h\"oheren Anzahl an ben\"otigten Iterationsschritten bis zur Konvergenz, siehe Grafik (\ref{fig:NUCIterationWorldSizesmall}). Es wird au\ss{}erdem aus der Grafik (\ref{fig:NUCIterationWorldSizesmall}) sichtbar, dass mit einem h\"oherem Kommunikationsintervall eine h\"ohere Varianz bei den Iterationsschritten entsteht. Diese entstehende Varianz ist bei allen gemessenen Schemen gleich ausgepr\"agt.\\ Auch bei der Frage des Speicherbedarfs k\"onnen einige Erkenntnisse gewonnen werden. Generell ist zu sehen, dass Schema 1 und Schema 3 beim Speicherbedarf nahe beieinander liegen. Schema 2 ben\"otigt auf der Recheneinheit mit dem Rang 0 einen deutlich h\"oheren Speicherbedarf als die anderen beiden Schemata. Wenn man jedoch den gesamten Speicher f\"ur die Recheneinheiten \"uber die Anzahl von Recheneinheiten anschaut, wie in Grafik (\ref{fig:LocalsumRSSsmall}), so sieht man dass mit h\"oherer Anzahl an Recheneinheiten der Speicherbedarf steigt. Bei Schema 2 jedoch nicht so stark wie bei den anderen Schemata. Daher ist etwa ab 4 Recheneinheiten besser das Speicher\"armer Schema 2 zu verwenden. Das k\"onnte mit dem Schemaaufbau erkl\"art werden, da hier nur ein Rang alle Daten einliest und erst danach auf die anderen Rechner weiterveteilt.\\
 Bei der Analyse des Rechenfehlers ist es schwieriger anhand der gewonnenen Messdaten eine Aussage zu treffen, da die Messergebnisse je nach Rechnerklasse variieren k\"onnen.  Jedoch l\"asst sich sagen, dass der Mittelwert bei gleicher Parameterwahl und gleicher Rechnerklasse zwischen den Schemen wenig variiert. Dies gilt sowohl f\"ur die l2, die Maxnorm und die mittlere quadratische Abweichung. Au\ss{}erdem bleibt der Fehler je nach Recheneinheit mit varrierender Rechenanzahl und Kommunikationsintervall gleich, siehe Grafik (\ref{fig:hpcAcomJdiffssmall}) oder Grafik (\ref{fig:hNUCcomJdiffssmall}).\\
 
-\subsection{Vergleich der Ausf\"uhrungsumgebungen}
+\subsection{Vergleich der Ausführungsumgebungen}
 Beim Vergleich der verschiedenen Ausf\"uhrungsrechenklassen f\"allt vorallem auf, dass die Rechenzeit auf den Nuc, Lokalen und Raspberry PI Rechnern zwischen den implementierten Schemen weniger variiert. Da die Auslastung auf den HPC Rechnern, je nach Anzahl der Benutzer stark variiert, wird hier auch eine Varianz in den Rechenzeiten sichtbar. Da die Rechnergruppen jedoch unterschiedliche Rechenleistungen aufweisen, kann man keinen direkten Vergleich der Rechenzeit vornehmen. Dennoch k\"onnen bei der Analyse der Rechenzeit auf den verschiedenen Messger\"atklassen, Eigenschaften der verschiedenen Schemata aufgezeigt werden. So sieht man dass der Mittelwert der Rechenzeit bei gr\"o\ss{}eren Kommunikationsintervallen in der Mixed Klasse gr\"o\ss{}er ist als in Klasse B. Die Mixed Rechnerklasse HPC Rechner beinhaltet Rechner aus Klasse A und Klasse B. Dabei weist die Rechnerklasse A eine leicht schlechtere Rechenleistung auf, wie der Vergleich der mittleren Laufzeiten von Klasse A und Klasse B sich zeigt. Da nun in den implementierten Schemen bei der Kommunikation auf das langsamste Glied gewartet werden muss, kann die leicht homogen perfomantere Rechnerklasse schneller zu einem Ergebniss kommen.\\
 Auch bei der Betrachtung des Rechenfehlers gab es Unterschiede zwischen den Rechnerklassen. So die wird Berechnungen auf Rechnerklasse A mit einem gr\"o\ss{}er Fehler ausgef\"uhrt als auf Rechnerklasse B. \\
 Beim Vergleich der unterschiedlichen Ausf\"uhrungsergebnissen konnte jedoch meistens die Erkenntnisse aus dem Unterkapitel A auf allen Rechnerklassen best\"atigt werden. 
@@ -57,7 +81,7 @@ Schema 2 teilt die P-Matrix in Blöcke auf und scattert diese an alle Processors
 Diese Aufteilung und dadurch, dass rank\_0 auch an sich selbst
 scattert führt dazu, dass rank\_0 von Schema 2 einen höheren RAM Bedarf hat als bei Schema 1 und 3.
 Weiterhin kann den Messungen entnommen werden,
-dass ab einer world\_size von 4 der gesamt benötigte RAM Bedarf von Schema 2 niedriger als bei den anderen beiden Schemas ist und darüber
+dass ab einer world\_size von 4 (TODO: nur bei small, normal erst später) der gesamt benötigte RAM Bedarf von Schema 2 niedriger als bei den anderen beiden Schemas ist und darüber
 hinaus langsamer ansteigt.
 Das liegt daran, dass jeder rank nur einen Bruchteil entsprechend der world\_size der Daten erhält und somit jede Vergrößerung der
 world\_size einen niedrigeren durchschnittlichen RAM Bedarf ergibt.
@@ -106,10 +130,10 @@ dargestellt. Die runtime ist bei allen drei Schemas sehr ähnlich und die Iterat
 daher überdecken die Messpunkte von Schema 3 zum Großteil die anderen beiden Schemata. Die beiden nebeneinander verlaufenden Kurven resultieren
 aus den zwei unterschiedlichen world\_sizes 2 \& 4. In Fig \ref{fig:ScatRunCom} gehört die Kurve mit niedrigerer runtime zu world\_size 4 und
 in Fig \ref{fig:ScatStepCom} gehört der Verlauf mit höherer benötigter Iterationsanzahl zu world\_size 4.
-Eine durch niedriges com\_interval geringere Häufigkeit der Kommunikation zwischen den Processors führt dazu, dass die Processors
+Eine durch höheres com\_interval geringere Häufigkeit der Kommunikation zwischen den Processors führt dazu, dass die Processors
 mehr Iterationen der Value Iteration durchführen bevor die Ergebnisse untereinander ausgetauscht werden.
 Im Idealfall würde durch selteneres Austauschen weniger Zeit für eben diese Kommunikation verwandt werden und die runtime dadurch sinken.
-Jedoch im Gegensazt dazu führt ein größeres com\_interval dazu, dass durch das seltenere
+Tatsächlich führt ein größeres com\_interval dazu, dass durch das seltenere
 Update des J-Vektors die Konvergenz beinträchtigt wird. Das führt zu einer höheren benötigten Iterationsanzahl was schlussendlich
 wieder zu einer höheren Anzahl an benötigten Kommunikationen und dadurch
 zu einer längeren Laufzeit führt. Der ansteigende Bedarf an Iterationen bei steigendem com\_interval ist in Fig \ref{fig:ScatStepCom}
@@ -119,22 +143,22 @@ Bei den anderen Targets liegt das Minimum ebenfalls in dieser Größenordnung. O
 kein Schluss daraus gezogen werden ob das Minimum bei com\_interval 3 hardware-unabhängig ist.
 
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.pdf}
-\caption{NUC, runtime vs. com\_interval, world\_size 2 \& 4}
-\label{fig:ScatRunCom}
+	\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.pdf}
+	\label{fig:ScatRunCom}
+	\caption{NUC, runtime\_vi vs. com\_interval, world\_size 2 \& 4}
 \end{figure}
 
 \begin{figure}[h]
-\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_steps_total.pdf}
-\caption{NUC, runtime vs. com\_interval, world\_size 2 \& 4}
-\label{fig:ScatStepCom}
+	\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_steps_total.pdf}
+	\label{fig:ScatStepCom}
+	\caption{NUC, steps vs. com\_interval, world\_size 2 \& 4}
 \end{figure}
 
 \subsection{Es besteht eine inverse Korrelation zwischen world\_size und runtime}
 
-Eine größere world\_size sorgt für eine größere Anzahl an Berechnungen, die parallel durchgeführt werden.
+Eine größere world\_size erhöht die Anzahl an Berechnungen, die parallel durchgeführt werden können.
 Sind die Berechnungen pro Processor komplex/lange genug um den Mehraufwand an inter-Processor Kommunikation zu
-gerechtfertigen so führt das zu einer veringerten runtime.
+rechtfertigen so führt dies zu einer veringerten runtime.
 In der vorliegenden Value-Iteration ist der Effekt nicht besonders stark, da die Berechnungen für die nötige
 Konvergenz nicht unabhängig voneinander durchgeführt werden können. Ein Austausch der Ergebnisse während des Algorithmus ist für ein
 richtiges Ergebnis zwingend nötig. Das führt zu einer notwendigen Kommunikation zwischen den Processors,
@@ -143,22 +167,13 @@ Anhand der Messergebnisse in Fig \ref{fig:hpcAworldTimenormal}-c und Fig \ref{fi
 kein eindeutiger Zusammenhang zwischen der world\_size und der runtime festgestellt werden.
 Die Auswirkung einer größeren world\_size fällt von Target zu Target unterschiedlich aus.
 Bei den isolierten Targets NUC, RPi und Local bleibt die Zeit weitgehend gleich mit einer Tendenz zu geringfügig schnellere Ausführung
-bei größerer world\_size. Aufgrund der Varianz der Messdaten ist es jedoch nicht möglich eine zuverlässige darüber zu treffen.
+bei größerer world\_size. Aufgrund der Varianz der Messdaten ist es jedoch nicht möglich eine zuverlässige Aussage darüber zu treffen.
 Beim kleinen Datensatz (siehe Fig \ref{fig:hpcAworldTimesmall}-c und Fig \ref{fig:NUCworldTimesmall}-c) ist im Allgemeinen,
 bis auf world\_size 56 bei HPC Class mixed, eine leichte Tendenz zur schnelleren Ausführung bei größerer world\_size zu beobachten.
 Das liegt vermutlich daran, dass die HPCs frei zugänglich sind und die Wahrscheinlichkeit weiterer Nutzer, die die runtime
 stören, mit steigender world\_size und grundsätzlich längerer Berechnungsdauer beim größeren Datensatz steigt.
 Weiterhin sind die Schemas mit blockierenden MPI-Funktionen implementiert. Das bedeutet, dass in jeder Kommunikations-Iteration
-auf den langsamsten Processor gewartet wird. So führt einerseits die Heterogenität beim mixed-cluster zu Performance Einbußen,
-weiterhin, falls ein Processor durch einen zusätzlichen Nuter am HPC verlangsamt wird müssen alle restlichen Processors warten.
+auf den langsamsten Processor gewartet wird. So führt einerseits die Heterogenität beim mixed-cluster zu Performance Einbußen, andererseits
+müssen alle genutzten Processors warten, falls ein Processor durch einen zusätzlichen Nutzer am HPC verlangsamt wird.
 
 Für eine eindeutige Aussage der genauen Korrelationen sind Messungen mit garantiert freiem Cluster und kontrollierten Störungen nötig.
-
-\section{Beiträge}
-\label{sec:beitraege}
-
-\begin{enumerate}
-    \item Till Hülder:~\ref{sec:analyse_diskussion}
-    \item Tobias Klama:~\ref{sec:thesen},~\ref{sec:erkenntnisse}
-    \item Tobias Krug:~Zusammenfassung\ref{sec:abstract},~\ref{sec:einfuehrung},~\ref{sec:methodik}
-\end{enumerate}
