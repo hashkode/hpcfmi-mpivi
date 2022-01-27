@@ -81,7 +81,8 @@ Schema 2 teilt die P-Matrix in Blöcke auf und scattert diese an alle Processors
 Diese Aufteilung und dadurch, dass rank\_0 auch an sich selbst
 scattert führt dazu, dass rank\_0 von Schema 2 einen höheren RAM Bedarf hat als bei Schema 1 und 3.
 Weiterhin kann den Messungen entnommen werden,
-dass ab einer world\_size von 4 (TODO: nur bei small, normal erst später) der gesamt benötigte RAM Bedarf von Schema 2 niedriger als bei den anderen beiden Schemas ist und darüber
+dass ab einer world\_size von 4 beim kleinen Datensatz und 16 beim normalen Datensatz
+der gesamt benötigte RAM Bedarf von Schema 2 niedriger als bei den anderen beiden Schemas ist und darüber
 hinaus langsamer ansteigt.
 Das liegt daran, dass jeder rank nur einen Bruchteil entsprechend der world\_size der Daten erhält und somit jede Vergrößerung der
 world\_size einen niedrigeren durchschnittlichen RAM Bedarf ergibt.
@@ -162,7 +163,7 @@ Konvergenz nicht unabhängig voneinander durchgeführt werden können. Ein Austa
 richtiges Ergebnis zwingend nötig. Das führt zu einer notwendigen Kommunikation zwischen den Processors,
 die dem Effekt der Zeitersparnis durch Parallelisierung entgegenwirkt.
 Anhand der Messergebnisse in Fig \ref{fig:hpcAworldTimenormal}-c und Fig \ref{fig:NUCworldTimenormal}-c kann besonders beim normalen Datensatz
-kein eindeutiger Zusammenhang zwischen der world\_size und der runtime festgestellt werden.
+kein Zusammenhang zwischen der world\_size und der runtime festgestellt werden.
 Die Auswirkung einer größeren world\_size fällt von Target zu Target unterschiedlich aus.
 Bei den isolierten Targets NUC, RPi und Local bleibt die Zeit weitgehend gleich mit einer Tendenz zu geringfügig schnellere Ausführung
 bei größerer world\_size. Aufgrund der Varianz der Messdaten ist es jedoch nicht möglich eine zuverlässige Aussage darüber zu treffen.
@@ -173,5 +174,22 @@ stören, mit steigender world\_size und grundsätzlich längerer Berechnungsdaue
 Weiterhin sind die Schemas mit blockierenden MPI-Funktionen implementiert. Das bedeutet, dass in jeder Kommunikations-Iteration
 auf den langsamsten Processor gewartet wird. So führt einerseits die Heterogenität beim mixed-cluster zu Performance Einbußen, andererseits
 müssen alle genutzten Processors warten, falls ein Processor durch einen zusätzlichen Nutzer am HPC verlangsamt wird.
-
 Für eine eindeutige Aussage der genauen Korrelationen sind Messungen mit garantiert freiem Cluster und kontrollierten Störungen nötig.
+Im Vergleich zur asynchronen Value Iteration ohne MPI-Kommunikation (siehe Tabelle \ref{tab:vergleich}) zeigt sich, dass im vorliegenden Fall der Value Iteration beim großen Datensatz MPI zu keiner Verbesserung der
+Performance führt.
+Beim kleinen Datensatz konnte bei HPC class A mit world\_size 12 und HPC class B mit world\_size 30 der openMP-Wert unterschritten werden.
+Allerdings ist die Varianz der Zeiten so hoch, dass im Mittel kein Performance Gewinn erreicht wird.
+
+\begin{table}[h]
+\caption{Vergleich der runtime von openMP und MPI}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{l|c|c|c|c}
+ Datensatz &\multicolumn{2}{c|}{HPC class A} & \multicolumn{2}{c}{HPC class B}\\
+ \hline
+ & openMP & MPI & openMP & MPI\\
+ \hline\hline
+small & \textasciitilde 5s & \textasciitilde 4-11s & \textasciitilde 3.5s & \textasciitilde 2-10s \\
+normal & \textasciitilde 490s & \textasciitilde 600-800s & \textasciitilde 360s & \textasciitilde 400-600s \\
+\label{tab:vergleich}
+\end{tabular}}
+\end{table}
