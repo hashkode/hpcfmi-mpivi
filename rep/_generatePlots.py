@@ -255,7 +255,7 @@ def DataDistributionPlot(dfResults, dsConfiguration, idxD):
     plt.figure()
     axSmallRuntime = dfResults.groupby(['schema', 'world_size'])['rss_sum_all_mb'].mean().unstack(0).plot.line(
         title="Mean Max-RSS sum all ranks/world_size for <" + dsConfiguration.getDirString(idxD) + "> dataset"  + " (" + str(ncount) + " runs)")
-    axSmallRuntime.set_ylabel("Avg. Max-RSS [MB]")
+    axSmallRuntime.set_ylabel("Max-RSS [MB]")
     axSmallRuntime.set_xlabel("world_size")
     plt.grid(axis='y')
     plt.grid(axis='x')

@@ -11,41 +11,38 @@ Die Softwarearchitektur des Projekts setzt auf zwei wesentlichen Prinzipien auf:
 \end{enumerate}
 
 \subsection{Automatisierung}
-- nrun als innere Schleife war suboptimal, äußere wäre besser gewesen
+Aufbauend auf der flexiblen Softwarearchitektur konnten wir eine weitgehende Automatisierung der Messdatenerfassung und -auswertung erzielen. Wie das Ablaufdiagramm (TODO: add ref) zeigt, bietet das Projekt verschiedene make Targets für die jeweiligen Ausführungsumgebungen. Diese werden in \ref{ssec:ausfuehrungsumgebungen} genauer aufgeführt. Jedem dieser Testziele ist gemein, dass die Ausführung vollständig automatisiert auf Basis eines mehrstufigen Konfigurationsprozesses abläuft. In der ersten Stufe können die gewünschten Messzyklen und zu testenden Processorcounts je Datensatz vorgegeben werden. Diese werden schließlich auf jeder der Konfiguration angewandt, welche mittels eines Testauftraggenerators erzeugt werden. Dieser kann mittels YAML-Dateien (TODO: Referenz) konfiguriert werden und erlaubt es, die zu testenden Kombinationen aus Datensatz, MPI Kommunikationsintervall und MPI Schema zu definieren. Der Generator speichert hierzu je Auftrag eine YAML-Datei ab, welche sich über einen Vererbungsprozess einer definierten Standardkonfiguration des Testziels bedient.
+
+Der eigentliche Test iteriert nun entsprechend der gewählten Anzahl Zyklen und Varianten Processorcount über die Testaufträge und arbeitet je einen Auftrag mittels eines Aufrufs von mpirun ab. Jeder dieser Durchläufe schreibt eine Reihe von Mess- und Kenngrößen in eine CSV-Datei in ein automatisch erzeugtes Verzeichnis. Dieses Verzeichnis wird automatisiert vor und nach einem Test mittels rsync auf eine HiDrive Instanz von Strato synchronisiert, sodass jeder Tester zu jeder Zeit alle aktuellen Messdaten zur Verfügung hat.
+Um eine hohe Reproduzierbarkeit zu gewährleisten, werden die Testdatei zudem mittels Metainformationen wie aktiviertem git Branch, git Commit Hash (mit dirty Erkennung), genutzter Testumgebung und git User-Email des Testers abgespeichert. Hiermit lässt sich stets auf den genutzten Softwarestand schließen, welcher den erzeugten Messdaten zugrundeliegt.
+
+Eine Erkenntnis aus der Anwendung dieses Systems auf die HPC Cluster der TUM ist die Relevanz der Testausführung: werden Zyklen gleicher Testaufträge hintereinander abgearbeitet ergibt sich eine hohe Vergleichbarkeit der Daten durch gleiche Rahmenbedingungen. Liegen hierbei anhalten schwierige Bedingungen, z.B. durch eine hohe Auslastung durch andere Nutzer, vor, führt dies jedoch zu suboptimalen Messdaten für alle Zyklen. Die vorliegenden Daten sind zur Besserung Interpretierbarkeit daher mit der ersten Variante erzeugt worden.
 
 \subsection{Ausführungsumgebungen für Tests}
+\label{ssec:ausfuehrungsumgebungen}
+Um plattformspezifische Einflüsse wie Betriebssystem, Hardware oder Netzwerktechnik vermeiden zu können, haben wir die Automatisierung auf eine Reihe von Testumgebungen angewandt. Die Daten von sechs dieser Umgebungen bilden die Grundlage für unsere Analysen und werden zusätzlich in Bezug mit der dieser Ausarbeitung zugrundeliegenden Implementierung der asynchronen Value Iteration mittels OpenMP verglichen. Die Testumgebungen sind folgende:
 
-\subsection{Schemata}
+\begin{enumerate}
+	\item HPC Class A: Bis zu 5 (hpc01 - hpc05) PCs des LDV mit je einer Vierkern-CPU und 8GB RAM
+	\item HPC Class B: Bis zu 10 (hpc06 - hpc015) PCs des LDV mit je einer Vierkern-CPU und 8GB RAM
+	\item HPC Class Mixed: Bis zu 15 (hpc01 - hpc015) PCs des LDV mit je einer Vierkern-CPU und 8GB RAM
+	\item HPC NUC: 2 NUC Computer mit je einer Zweikern-CPU und 32GB RAM
+	\item HPC RPi: 4 RaspberryPi Single-Board-Computer mit je einer Vierkern-CPU und 8GB RAM
+	\item Lokal: 1 PC (hpc04) des LDV mit einer Vierkern-CPU und 8GB RAM
+\end{enumerate}
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme1}
-	\caption{MpiViSchema01}
-	\label{fig:mpiViSchema01}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme2}
-	\caption{MpiViSchema02}
-	\label{fig:mpiViSchema02}
-\end{figure}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme3}
-	\caption{MpiViSchema03}
-	\label{fig:mpiViSchema03}
-\end{figure}
-
-\section{Analyse \& Diskussion}
-\label{sec:analyse_diskussion}
-Ziel dieses Kapitels ist es Parameter die Einfluss auf die Berechnung nehmen hervorzuheben und die drei oben erw\"ahnten implementierten Schemen zu analysieren. Dabei soll der Fokus vorallem auf der Rechenzeit, den Speicherbedarfs und den Rechenfehler liegen. \\ Um die  Schemta zu Vergleichen wurden Testl\"aufe mit unterschiedlichen Parametern gemessen. Diese Ergebnisse werden in Unterkapitel A er\"ortert. Um erworbene Erkenntnisse auf anderen Systemen zu verifizieren wurden Messungen auf verschiedenen Klassen an Recheneinheiten ausgef\"uhrt. Dies wird in Unterkapitel B beschrieben. Zu den verwendeten Klassen geh\"oren: HPC Klasse A (HPC 1 - HPC 5), HPC Klasse B (HPC 6 - HPC 15), eine gemischte HPC Klasse (HPC 1 - HPC15) und aus privat stammendem Besitz  Raspberry Pi Klasse, NUC Rechnerklasse und eine lokale Rechnerklasse. \\ Da es teilweise auf den Messger\"aten zu einer ungleichm\"a\ss{}igen Auslastung kam und damit Datenausrei\ss{}er generiert wurden, wurden pro Messzyklen mehrere Messungen durchgef\"uhrt. Die Anzahl und Messzeiten pro Ger\"at und Schema k\"onnen der Abbildung (\ref{fig:NumberMeasurementsSmall} und \ref{fig:NumberMeasurementsNormal}) entnommen werden. Auf allen Messger\"aten wurden Messungen mit je dem klein und normal gro\ss{}en Datensatz vorgenommen. Die in diesem Kapitel angesprochenen Grafiken und weitere Grafiken sind der \"Ubersicht halber im Anhang abgebildet.
+In Summe liegen dieser Ausarbeitung schließlich Messdaten entsprechend \autoref{fig:NumberMeasurementsSmall} und \autoref{fig:durationMeasurementsSmall} für den Datensatz <small> und \autoref{fig:NumberMeasurementsNormal} und \autoref{fig:durationMeasurementsNormal} für den Datensatz <normal> zugrunde.
 
 \begin{figure}[h]
 	\includegraphics[width=0.5\textwidth]{./gen/img/ds/small/number_measurement_target.pdf}
 	\caption{Anzahl an Messungen pro Rechenklasse mit kleinem Datensatz}
 	\label{fig:NumberMeasurementsSmall}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=0.5\textwidth]{./gen/img/ds/small/runtime_measurement_target.pdf}
+	\caption{Gesamtdauer an Messungen pro Rechenklasse mit kleinem Datensatz}
+	\label{fig:durationMeasurementsSmall}
 \end{figure}
 
 \begin{figure}[h]
@@ -55,6 +52,50 @@ Ziel dieses Kapitels ist es Parameter die Einfluss auf die Berechnung nehmen her
 \end{figure}
 
 
+\begin{figure}[h]
+	\includegraphics[width=0.5\textwidth]{../gen/img/ds/normal/runtime_measurement_target.pdf}
+	\caption{Gesamtdauer der Messungen pro Rechenklasse mit normalen Datensatz}
+	\label{fig:durationMeasurementsNormal}
+\end{figure}
+
+\subsection{Schemata}
+\label{ssec:schemata}
+
+Den Kern dieser Arbeit bildet die Validierung und das Benchmarking verschiedener Kommunikationsschemata mittels Open MPI. Hierzu wurden drei Schemata implementiert, welche nachfolgend vorgestellt werden sollten. Außerhalb der eigentlichen Schemata ist eine Verteilung der Testkonfiguration und Aggregation von Messgrößen von/zu dem Processor mit Rank0 mittels verschiedener MPI Mechanismen realisiert.
+
+\subsubsection{MpiViSchema01}
+Das erste Schema \autoref{fig:mpiViSchema01} ist ein synchronisiertes Schema, welches einen Zugriff auf den Datensatz bei jedem Processor voraussetzt. Dieses Schema nutzt die MPI Mechanismen Allgatherv zur Synchronisation des aktuellen Kostenvektors, Allreduce zur Bestimmung eines globalen Konvergenzkriteriums eps und Gatherv zur Bereitstellung des globalen Aktionsvektors.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme1}
+	\caption{MpiViSchema01}
+	\label{fig:mpiViSchema01}
+\end{figure}
+
+\subsubsection{MpiViSchema02}
+Das Schema Nummer zwei \autoref{fig:mpiViSchema02} ist ebenfalls ein synchronisiertes Schema, welches jedoch als wesentlichen Unterschied eine Verteilung des Datensatzes ausgehend vom Processor mit Rank0 umsetzt. Hierbei müssen andere Processors mitunter keinen Zugriff auf die Datensätze haben und können somit mit weniger Arbeits- und Festspeicher arbeiten. Dieser Vorgang wird mittels des MPI Mechanismus Scatterv umgesetzt und implementiert eine aufwändige Spaltung des Datensatz in abgeschlossene Blöcke, wovon jedem Processor nur einer vorliegt. Die eigentliche Ablauf der Value Iteration erfolgt vergleichbar zu Schema01.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme2}
+	\caption{MpiViSchema02}
+	\label{fig:mpiViSchema02}
+\end{figure}
+
+\subsubsection{MpiViSchema03}
+Das dritte und letzte Schema \autoref{fig:mpiViSchema03} dieser Ausarbeitung ist ebenso ein synchrones Schema, nutzt statt optimierter Routinen für den großflächige Datenaustausch jedoch die trivialen MPI Methoden wie Sendv und Recv zum Austausch des Kostenvektors J und des Konvergenzkriteriums eps.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\textwidth]{/home/tobias/git/ldv/gruppe-3-hauptprojekt-doc/rep/gen/puml/scheme3}
+	\caption{MpiViSchema03}
+	\label{fig:mpiViSchema03}
+\end{figure}
+
+\section{Analyse \& Diskussion}
+\label{sec:analyse_diskussion}
+Ziel dieses Kapitels ist es Parameter die Einfluss auf die Berechnung nehmen hervorzuheben und die drei oben erw\"ahnten implementierten Schemen zu analysieren. Dabei soll der Fokus vorallem auf der Rechenzeit, den Speicherbedarfs und den Rechenfehler liegen. \\ Um die  Schemta zu Vergleichen wurden Testl\"aufe mit unterschiedlichen Parametern gemessen. Diese Ergebnisse werden in Unterkapitel A er\"ortert. Um erworbene Erkenntnisse auf anderen Systemen zu verifizieren wurden Messungen auf verschiedenen Klassen an Recheneinheiten ausgef\"uhrt. Dies wird in Unterkapitel B beschrieben. Zu den verwendeten Klassen geh\"oren: HPC Klasse A (HPC 1 - HPC 5), HPC Klasse B (HPC 6 - HPC 15), eine gemischte HPC Klasse (HPC 1 - HPC15) und aus privat stammendem Besitz  Raspberry Pi Klasse, NUC Rechnerklasse und eine lokale Rechnerklasse. \\ Da es teilweise auf den Messger\"aten zu einer ungleichm\"a\ss{}igen Auslastung kam und damit Datenausrei\ss{}er generiert wurden, wurden pro Messzyklen mehrere Messungen durchgef\"uhrt. Die Anzahl und Messzeiten pro Ger\"at und Schema k\"onnen der Abbildung (\ref{fig:NumberMeasurementsSmall} und \ref{fig:NumberMeasurementsNormal}) entnommen werden. Auf allen Messger\"aten wurden Messungen mit je dem klein und normal gro\ss{}en Datensatz vorgenommen. Die in diesem Kapitel angesprochenen Grafiken und weitere Grafiken sind der \"Ubersicht halber im Anhang abgebildet.
 
 \subsection{Vergleich der Schemata}
 Bei den Messdaten die \"uber die Anzahl an Recheneinheiten und dem Kommunikationsintervall variieren, kann gesehen werden, dass es zwischen den einzelnen Schemen, in Bezug auf Rechenzeit und Konvergenzschritten, zu keinen gro\ss{}en Unterschieden kommt. Dies kann den Messungen auf den Nuc Rechnern aus der Grafik (\ref{fig:NUCworldTimesmall}) und der Grafik (\ref{fig:NUCStepWorldSizesmall}) besonders gut entnommen werden. Dennoch k\"onnen mit steigender Anzahl der Recheneinheiten  etwas schnellere Ergebenisse erziehlt werden, siehe Grafik (\ref{fig:hpcBworldTimesmall}). Allerdings kann der Gewinn an Rechenzeit durch die Parallelisierung von Rechenschritten bei einer zu gro\ss{}en Anzahl an Recheneinheiten, durch den den gro\ss{}en Kommunikationsaufwand, schnell wieder zunichte gemacht werden, wie in Abbilung (\ref{fig:hpcMixedworldTimesmall}) gesehen werden kann. Die Anzahl der Recheneinheiten hat au\ss{}erdem eine Auswirkung auf die Anzahl der Iterationsschritte. So steigt mit der Anzahl der Recheneinheiten auch die Anzahl der ben\"otigten Iterationsschritte. Einen gro\ss{}en Einfluss auf die Rechenzeit hat das Kommunikationsintervall, siehe  Grafik (\ref{fig:NUCcomTimesmall}). So kann beobachtet werden, dass ganz am Anfang die Rechenzeit mit zunehmendem Kommunikationsintervall verk\"urzt werden kann. Doch tritt schon fr\"uh nach einer weitere Erh\"ohung des Kommunikationsintervalls eine Zunahme der Rechenzeit ein. Im von uns gew\"ahlten Kommunikationsintervall ist gegen Ende hin eine lineare Zunahme der Rechenzeit zu sehen, Grafik (\ref{fig:hpcMixedcomTimesmall}). Diese Zunahme der Rechenzeit resultiert vor allem aus einer h\"oheren Anzahl an ben\"otigten Iterationsschritten bis zur Konvergenz, siehe Grafik (\ref{fig:NUCIterationWorldSizesmall}). Es wird au\ss{}erdem aus der Grafik (\ref{fig:NUCIterationWorldSizesmall}) sichtbar, dass mit einem h\"oherem Kommunikationsintervall eine h\"ohere Varianz bei den Iterationsschritten entsteht. Diese entstehende Varianz ist bei allen gemessenen Schemen gleich ausgepr\"agt.\\ Auch bei der Frage des Speicherbedarfs k\"onnen einige Erkenntnisse gewonnen werden. Generell ist zu sehen, dass Schema 1 und Schema 3 beim Speicherbedarf nahe beieinander liegen. Schema 2 ben\"otigt auf der Recheneinheit mit dem Rang 0 einen deutlich h\"oheren Speicherbedarf als die anderen beiden Schemata. Wenn man jedoch den gesamten Speicher f\"ur die Recheneinheiten \"uber die Anzahl von Recheneinheiten anschaut, wie in Grafik (\ref{fig:LocalsumRSSsmall}), so sieht man dass mit h\"oherer Anzahl an Recheneinheiten der Speicherbedarf steigt. Bei Schema 2 jedoch nicht so stark wie bei den anderen Schemata. Daher ist etwa ab 4 Recheneinheiten besser das speicherärmere Schema 2 zu verwenden. Das k\"onnte mit dem Schemaaufbau erkl\"art werden, da hier nur ein Rang alle Daten einliest und erst danach auf die anderen Rechner weiterveteilt.\\

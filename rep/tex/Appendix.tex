@@ -1,72 +1,13 @@
 \label{apx:a}
 
-%\subsection{Graphiken, divers}
-%
-%\subsubsection{Aufstellung der Datengrundlage}
-%
-%\begin{figure*}[h]
-%	\centering
-%	\subfloat[kleiner Datensatz]{
-%		\begin{minipage}[c][1.05\width]{
-%			0.4\textwidth}
-%			\centering
-%	\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/number_measurement_target.pdf}
-%		\end{minipage}}
-%	\hfill
-%	\subfloat[normaler Datensatz]{
-%		\begin{minipage}[c][1.05\width]{
-%			0.4\textwidth}
-%			\centering
-%	\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/number_measurement_target.pdf}
-%		\end{minipage}}
-%	\hfill
-%	\centering
-%	\subfloat[kleiner Datensatz]{
-%		\begin{minipage}[c][1.05\width]{
-%			0.4\textwidth}
-%			\centering
-%			\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/runtime_measurement_target.pdf}
-%		\end{minipage}}
-%	\hfill
-%	\subfloat[normaler Datensatz]{
-%		\begin{minipage}[c][1.05\width]{
-%			0.4\textwidth}
-%			\centering
-%			\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/runtime_measurement_target.pdf}
-%		\end{minipage}}
-%	\hfill
-%	\caption{Anzahl\&Dauer an Messungen pro Rechenklasse}
-%	\label{fig:3211} %TODO: add label
-%\end{figure*}
-%
-%\subsubsection{Parametersweep: com\_interval}
-%
-%\begin{figure*}[h]
-%	\centering
-%	\subfloat[NUC, runtime\_vi/com\_interval, world\_size 2 \& 4]{
-%		\begin{minipage}[c][1.05\width]{
-%			0.4\textwidth}
-%			\centering
-%			\includegraphics[width=1.1\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.pdf}
-%		\end{minipage}}
-%	\hfill
-%	\subfloat[NUC, steps/com\_interval, world\_size 2 \& 4]{
-%		\begin{minipage}[c][1.05\width]{
-%			0.4\textwidth}
-%			\centering
-%			\includegraphics[width=1.1\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_steps_total.pdf}
-%		\end{minipage}}
-%	\hfill
-%	\caption{Parametersweep: co\_interval}
-%	\label{fig:321} %TODO: add label
-%\end{figure*}
-
 \subsection{Gprahiken, Benchmark}
 \label{sec:benchmark}
 
 \subsubsection{Benchmak Datensatz small}
 
 Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz small.
+
+%TODO: Abbildungen aufzählen, Abb-Verzeichnis light
 
 \begin{figure*}
 \centering
@@ -125,7 +66,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	\centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_rss_sum_all_mb.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between HPC classes with dataset small}
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 1/2}
 \end{figure*}
 
 \begin{figure*}
@@ -183,7 +124,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_rss_sum_all_mb.pdf}
     	   \label{fig:LocalsumRSSsmall}
     	\hspace{0pt}}\\
-    \caption{Comparison between NUC, RPi and Local with dataset small}
+    \caption{Comparison between NUC, RPi and Local with dataset small, part 1/2}
 \end{figure*}
 
 \begin{figure*}
@@ -239,7 +180,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between HPC classes with dataset small}
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 2/2}
 \end{figure*}
 
 \begin{figure*}
@@ -296,12 +237,14 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between NUC, RPi and Local with dataset small}
+    \caption{Comparison between NUC, RPi and Local with dataset small, part 2/2}
 \end{figure*}
 
 \subsubsection{Benchmark Datensatz normal}
 
 Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz normal.
+
+%TODO: Abbildungen aufzählen, Abb-Verzeichnis light
 
 \begin{figure*}
 \centering
@@ -357,7 +300,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_rss_sum_all_mb.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between HPC classes with dataset normal}
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 1/2}
 \end{figure*}
 
 \begin{figure*}
@@ -414,7 +357,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_rss_sum_all_mb.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between NUC, RPi and Local with dataset normal}
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 1/2}
 \end{figure*}
 
 \begin{figure*}
@@ -467,7 +410,7 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between HPC classes with dataset normal}
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 2/2}
 \end{figure*}
 
 \begin{figure*}
@@ -520,5 +463,5 @@ Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datens
     	   \centering
     	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
     	\hspace{0pt}}\\
-    \caption{Comparison between NUC, RPi and Local with dataset normal}
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 2/2}
 \end{figure*}
