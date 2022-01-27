@@ -102,19 +102,15 @@ unabhängig von Schema und world\_size die gesamte Datenmenge im Arbeitsspeicher
             \label{fig:rssSumSmall}
 	}\\
 	\subfloat[max RSS, normal]{
-    \begin{minipage}[c][1.05\width]{
-    		0.23\textwidth}
-    	\centering
-    	\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/max_rss_rank0_world_size.pdf}
+       	\centering
+    	\includegraphics[width=0.25\textwidth]{./gen/img/ds/normal/max_rss_rank0_world_size.pdf}
     	\label{fig:rssMaxNormal}
-    \end{minipage}}
+    \hspace{0pt}}
     \subfloat[sum RSS, normal]{
-    \begin{minipage}[c][1.05\width]{
-    			0.23\textwidth}
     	\centering
-    	\includegraphics[width=1.1\textwidth]{./gen/img/ds/normal/rss_sum_all_world_size.pdf}
+    	\includegraphics[width=0.25\textwidth]{./gen/img/ds/normal/rss_sum_all_world_size.pdf}
         \label{fig:rssSumNormal}
-    \end{minipage}}
+    }
 	\caption{Verlauf des RSS-Bedarfs}
 	\label{fig:NumberMeasurements}
 \end{figure}
@@ -143,15 +139,17 @@ Bei den anderen Targets liegt das Minimum ebenfalls in dieser Größenordnung. O
 kein Schluss daraus gezogen werden ob das Minimum bei com\_interval 3 hardware-unabhängig ist.
 
 \begin{figure}[h]
-	\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.pdf}
-	\label{fig:ScatRunCom}
-	\caption{NUC, runtime\_vi vs. com\_interval, world\_size 2 \& 4}
+\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.pdf}
+\vspace*{-8mm}
+\caption{NUC, runtime\_vi vs. com\_interval, world\_size 2 \& 4}
+\label{fig:ScatRunCom}
 \end{figure}
 
 \begin{figure}[h]
-	\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_steps_total.pdf}
-	\label{fig:ScatStepCom}
-	\caption{NUC, steps vs. com\_interval, world\_size 2 \& 4}
+\includegraphics[width=0.5\textwidth]{./gen/img/nuc/small/scatterplot_com_interval_steps_total.pdf}
+\vspace*{-8mm}
+\caption{NUC, steps vs. com\_interval, world\_size 2 \& 4}
+\label{fig:ScatStepCom}
 \end{figure}
 
 \subsection{Es besteht eine inverse Korrelation zwischen world\_size und runtime}
