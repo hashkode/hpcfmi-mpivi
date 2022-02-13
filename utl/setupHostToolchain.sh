@@ -17,6 +17,7 @@ if ! dpkg -l | grep texlive-full -c >>/dev/null; then sudo apt-get install texli
 echo ">> installing python packages with pip"
 pip3 install matplotlib pandas seaborn
 
+#TODO: remove, binaries now shipped with project
 ## PlantUML
-wget http://sourceforge.net/projects/plantuml/files/plantuml.jar/download -O plantuml.jar
-sudo mv plantuml.jar /usr/bin
+#wget http://sourceforge.net/projects/plantuml/files/plantuml.jar/download -O plantuml.jar
+#sudo mv plantuml.jar /usr/bin

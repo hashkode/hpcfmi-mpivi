@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Technische Universität München
-%% Lehrstuhl für Elektrische Energiespeichertechnik
-%% Latex-Vorlage für Short Paper/Hauptseminar
+%% Technische UniversitÃ¤t MÃ¼nchen
+%% Lehrstuhl fÃ¼r Elektrische Energiespeichertechnik
+%% Latex-Vorlage fÃ¼r Short Paper/Hauptseminar
 %% Kontakt: 
 %% Stand: 10.05.2013
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -11,31 +11,31 @@
 
 
 %% *** Schriften und Sprache ***
-	\usepackage[latin1]{inputenc}		% Texcodierung
+	\usepackage[utf8]{inputenc}		% Texcodierung
 	\usepackage[T1]{fontenc}				% T1 Schriften
-	\usepackage[english]{babel}			% deutsche Silbentrennung und Beschriftungen
+	\usepackage[german]{babel}			% deutsche Silbentrennung und Beschriftungen
 	%\usepackage{mathptmx} 					% Times Schriftart
 	%\usepackage[scaled]{helvet} 		% Helvetica Serifenfreie Schriftart
 	%\usepackage{courier}
-	\usepackage[babel,german=quotes]{csquotes} % Deutsche Anführungszeichen mittels \enquote{}
+	\usepackage[babel,german=quotes]{csquotes} % Deutsche Anfï¿½hrungszeichen mittels \enquote{}
 	\usepackage{xspace}							% Intelligente Leerzeichen
 
 
 %% *** Bilder und Geometrie ***
 	\usepackage[pdftex]{graphicx}			% Grafiken einbinden
 	
-		\graphicspath{{img/}} 												% Pfad für Bilder angeben
+		\graphicspath{{img/}} 												% Pfad fï¿½r Bilder angeben
 		\DeclareGraphicsExtensions{.pdf,.jpeg,.png}		% Endungen die eingebunden werden
-	\usepackage[caption=false,font=footnotesize]{subfig}	% Caption wird von IEEE übernommen: http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
+	\usepackage[caption=false,font=footnotesize]{subfig}	% Caption wird von IEEE ï¿½bernommen: http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
 	\usepackage[a4paper,left=1.65cm,right=1.65cm,top=1.78cm,bottom=1.78cm,includeheadfoot]{geometry}
-	%\usepackage{pdfpages}						% PDF Dateien einfügen
-	%\usepackage{color}								% Farben ermöglichen
+	%\usepackage{pdfpages}						% PDF Dateien einfï¿½gen
+	%\usepackage{color}								% Farben ermï¿½glichen
 	%\usepackage{capt-of}
 	%\usepackage{setspace}	
 
 
 %% *** Tabellen ***
-	%\usepackage{longtable}						% Tabellen über mehrere Seiten
+	%\usepackage{longtable}						% Tabellen ï¿½ber mehrere Seiten
 	\usepackage{array}								% erweitern Tabelleneigenschaften: http://www.ctan.org/tex-archive/macros/latex/required/tools/
 	\usepackage{mdwtab}								% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
 	%\usepackage{booktabs}
@@ -45,7 +45,7 @@
 
 %% *** Mathe ***
 	\usepackage[cmex10]{amsmath}
-		\interdisplaylinepenalty=2500 	% Verhindert Seitenumbruch bei längeren Formeln
+		\interdisplaylinepenalty=2500 	% Verhindert Seitenumbruch bei lï¿½ngeren Formeln
 	\usepackage{mdwmath}							% http://www.ctan.org/tex-archive/macros/latex/contrib/mdwtools/
 	\usepackage{amsmath,amsfonts,amssymb}
 	\usepackage[squaren,textstyle]{SIunits}
@@ -53,7 +53,7 @@
 	%\sisetup{locale = DE, per-mode=symbol,range-units=single} 
 	\usepackage{icomma}
 
-%Abkürzungsverzeichnispakete
+%AbkÃ¼rzungsverzeichnispakete
 \usepackage[nolist]{acronym}
 	
 	
@@ -61,7 +61,7 @@
 %% *** Algorithmen ***
 	%\usepackage{algorithmic} 				% http://www.ctan.org/tex-archive/macros/latex/contrib/algorithmicx/
 		%\floatname{algorithm}{Algorithmus}
-		%\renewcommand{\algorithmicfor}{\textbf{Für}}
+		%\renewcommand{\algorithmicfor}{\textbf{Fï¿½r}}
 		%\renewcommand{\algorithmicdo}{\textbf{:}}
 		%\renewcommand{\algorithmicendfor}{}
 
@@ -80,7 +80,7 @@
 	%\onehalfspacing
 		
 	%\setlength{\parindent}{0mm}			% Erstzeileneinzug bei neuem Absatz
-	%\setlength{\parskip}{8pt}				% Abstand zwischen Absätzen einstellen
+	%\setlength{\parskip}{8pt}				% Abstand zwischen Absï¿½tzen einstellen
 	%\setcapindent{1em}								% Zeilenumbruch bei Bildbeschreibungen
 
 
@@ -129,7 +129,7 @@
 
 %% *** PDF, URL und HYPERLINK Packete ***
 %% *** MEISTENS ALS LETZES EINBINDEN! ***
-	\usepackage{url}															% Einfügen von URLs: \url{my_url_here}
+	\usepackage{url}															% Einfï¿½gen von URLs: \url{my_url_here}
 	\usepackage{float}														% http://www.ctan.org/tex-archive/macros/latex/contrib/float
 	\newcommand\MYhyperrefoptions{
 		bookmarks					= true,
@@ -159,3 +159,9 @@
 		pdfcreator		= {LaTeX},
 		pdfproducer		= {LaTeX}
 	}
+
+\usepackage{ifthen}
+\makeatletter
+\let\@autoref=\autoref
+\renewcommand*{\autoref}[2][]{\ifthenelse{\equal{#1}{}}{\@autoref{#2}}{\hyperref[#1]{\begin{NoHyper}\@autoref{#2}~\subref{#1}\end{NoHyper}}}\xspace}
+\makeatother

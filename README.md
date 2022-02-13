@@ -24,7 +24,7 @@ Some schemes rely on local availability of the data sets, these schemes execute 
 
 ## Software, methods and tools
 This project is implemented using a set of software tools, namely:
-- CLion from JetBrains for C++/Python development
+- CLion from JetBrains for C++/Python development and LaTeX documentation
 - Sublime Merge from Sublime for professional git usage
 
 Concerning infrastructure, the project depends on
@@ -106,14 +106,14 @@ sudo apt install make
 sudo make setupToolchain
 ```
 
-## Measurement objectives
-### Measured parameters
+# Measurement objectives
+## Measured parameters
 - execution time (total, vi)
 - iterations until convergence
 - memory usage (RAM) (max at rank0; sum, min, max of all nodes)
 - quality of VI solution (max norm, l2 norm, MSE)
 
-### Possible variation points
+## Possible variation points
 - data set
 - MPI target (TUM HPC Class A, TUM HPC Class B, TUM HPC Class Mixed, NUC cluster, Raspberry Pi cluster)
 - MPI scheme
@@ -123,15 +123,79 @@ sudo make setupToolchain
 - VI parameters
 - asynchronous vs. synchronous VI with OpenMP
 
-### Visualization
-The below graphs visualize the collected measurement files and their analysis per target.
+## Visualization
+The below graphs visualize the collected measurement files and their analysis per data set and target.
 
-| Target:                    |HPC Class A|HPC Class B|HPC Class Mixed|NUC|RPi|Local|
-|----------------------------|---|---|---|---|---|---|
-| Runtime vs world_size      |![](./rep/gen/img/hpcclassa/boxplot_world_size_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/hpcclassb/boxplot_world_size_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/boxplot_world_size_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/nuc/boxplot_world_size_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/rpi/boxplot_world_size_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/local/boxplot_world_size_runtime_vi_ms.svg "Runtime")|
-| maxRSSU@rank0 vs world_size |![](./rep/gen/img/hpcclassa/barplot_world_size_rss_max_rank0_kb.svg "Runtime")|![](./rep/gen/img/hpcclassb/barplot_world_size_rss_max_rank0_kb.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/barplot_world_size_rss_max_rank0_kb.svg "Runtime")|![](./rep/gen/img/nuc/barplot_world_size_rss_max_rank0_kb.svg "Runtime")|![](./rep/gen/img/rpi/barplot_world_size_rss_max_rank0_kb.svg "Runtime")|![](./rep/gen/img/local/barplot_world_size_rss_max_rank0_kb.svg "Runtime")|
-| maxRSSU_sum vs world_size  |![](./rep/gen/img/hpcclassa/barplot_world_size_rss_sum_all_kb.svg "Runtime")|![](./rep/gen/img/hpcclassb/barplot_world_size_rss_sum_all_kb.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/barplot_world_size_rss_sum_all_kb.svg "Runtime")|![](./rep/gen/img/nuc/barplot_world_size_rss_sum_all_kb.svg "Runtime")|![](./rep/gen/img/rpi/barplot_world_size_rss_sum_all_kb.svg "Runtime")|![](./rep/gen/img/local/barplot_world_size_rss_sum_all_kb.svg "Runtime")|
-| Runtime vs com_interval    |![](./rep/gen/img/hpcclassa/boxplot_com_interval_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/hpcclassb/boxplot_com_interval_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/boxplot_com_interval_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/nuc/boxplot_com_interval_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/rpi/boxplot_com_interval_runtime_vi_ms.svg "Runtime")|![](./rep/gen/img/local/boxplot_com_interval_runtime_vi_ms.svg "Runtime")|
-| Steps vs world_size        |![](./rep/gen/img/hpcclassa/lineplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassb/lineplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/lineplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/nuc/lineplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/rpi/lineplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/local/lineplot_world_size_steps_total.svg "Runtime")|
-| ?                          |![](./rep/gen/img/hpcclassa/jointplot_runtime_vi_ms_eps_global.svg "Runtime")|![](./rep/gen/img/hpcclassb/jointplot_runtime_vi_ms_eps_global.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/jointplot_runtime_vi_ms_eps_global.svg "Runtime")|![](./rep/gen/img/nuc/jointplot_runtime_vi_ms_eps_global.svg "Runtime")|![](./rep/gen/img/rpi/jointplot_runtime_vi_ms_eps_global.svg "Runtime")|![](./rep/gen/img/local/jointplot_runtime_vi_ms_eps_global.svg "Runtime")|
-| ?                          |![](./rep/gen/img/hpcclassa/scatterplot_world_size_eps_global.svg "Runtime")|![](./rep/gen/img/hpcclassb/scatterplot_world_size_eps_global.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/scatterplot_world_size_eps_global.svg "Runtime")|![](./rep/gen/img/nuc/scatterplot_world_size_eps_global.svg "Runtime")|![](./rep/gen/img/rpi/scatterplot_world_size_eps_global.svg "Runtime")|![](./rep/gen/img/local/scatterplot_world_size_eps_global.svg "Runtime")|
+### Special plots
+#### com_interval sweep for dataset small on target nuc
+| Runtime VI per com_intervall                                                                            | Steps per com_interval                                                                               |
+|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| ![](./rep/gen/img/nuc/small/scatterplot_com_interval_runtime_vi_s.svg "Runtime com_interval sweep nuc") | ![](./rep/gen/img/nuc/small/scatterplot_com_interval_steps_total.svg "Steps com_interval sweep nuc") |
+
+### Small dataset
+#### General plots
+|Measurement count|Measurement duration|
+|---|---|
+|![](./rep/gen/img/ds/small/number_measurement_target.svg "Runtime target")|![](./rep/gen/img/ds/small/runtime_measurement_target.svg "Number of measurement target")|
+
+| Max-RSS at rank0 per world_size                                                        | Sum of Max-RSS of all ranks per world_size                                     |
+|--------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| ![](./rep/gen/img/ds/small/max_rss_rank0_world_size.svg "Max-RSS Rank0") | ![](./rep/gen/img/ds/small/rss_sum_all_world_size.svg "Max-RSS all ranks") |
+
+
+#### Target plots: hpcclassa, hpcclassb, hpcclassmixed
+| Target:                     |HPC Class A|HPC Class B|HPC Class Mixed|
+|-----------------------------|---|---|---|
+| runtime_vi_s vs. world_size       |![](./rep/gen/img/hpcclassa/small/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_world_size_runtime_vi_s.svg "Runtime")|
+| runtime_vi_s vs. com_interval     |![](./rep/gen/img/hpcclassa/small/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_com_interval_runtime_vi_s.svg "Runtime")|
+| rss_max_rank0_mb vs. world_size |![](./rep/gen/img/hpcclassa/small/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|
+| rss_sum_all_mb vs. world_size   |![](./rep/gen/img/hpcclassa/small/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|
+| steps_total vs. world_size         |![](./rep/gen/img/hpcclassa/small/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_world_size_steps_total.svg "Runtime")|
+| steps_total vs. com_interval       |![](./rep/gen/img/hpcclassa/small/boxplot_com_interval_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_com_interval_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_com_interval_steps_total.svg "Runtime")|
+| jdiff_maxnorm vs. world_size       |![](./rep/gen/img/hpcclassa/small/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|
+| jdiff_maxnorm vs. com_interval       |![](./rep/gen/img/hpcclassa/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassb/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|
+
+#### Target plots: nuc, rpi, local
+| Target:                     |NUC|RPi|Local|
+|-----------------------------|---|---|---|
+| runtime_vi_s vs. world_size       |![](./rep/gen/img/nuc/small/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_world_size_runtime_vi_s.svg "Runtime")|
+| runtime_vi_s vs. com_interval     |![](./rep/gen/img/nuc/small/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_com_interval_runtime_vi_s.svg "Runtime")|
+| rss_max_rank0_mb vs. world_size |![](./rep/gen/img/nuc/small/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|
+| rss_sum_all_mb vs. world_size   |![](./rep/gen/img/nuc/small/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|
+| steps_total vs. world_size         |![](./rep/gen/img/nuc/small/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_world_size_steps_total.svg "Runtime")|
+| steps_total vs. com_interval       |![](./rep/gen/img/nuc/small/boxplot_com_interval_steps_total.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_com_interval_steps_total.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_com_interval_steps_total.svg "Runtime")|
+| jdiff_maxnorm vs. world_size       |![](./rep/gen/img/nuc/small/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|
+| jdiff_maxnorm vs. com_interval       |![](./rep/gen/img/nuc/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/rpi/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/local/small/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|
+
+### Normal dataset
+#### General plots
+|Measurement count|Measurement duration|
+|---|---|
+|![](./rep/gen/img/ds/normal/number_measurement_target.svg "Number of measurement target")|![](./rep/gen/img/ds/normal/runtime_measurement_target.svg "Runtime target")|
+
+
+| Max-RSS at rank0 per world_size                                           | Sum of Max-RSS of all ranks per world_size                                     |
+|---------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| ![](./rep/gen/img/ds/normal/max_rss_rank0_world_size.svg "Max-RSS Rank0") | ![](./rep/gen/img/ds/normal/rss_sum_all_world_size.svg "Max-RSS all ranks") |
+
+#### Target plots: hpcclassa, hpcclassb, hpcclassmixed
+| Target:                     |HPC Class A|HPC Class B|HPC Class Mixed|
+|-----------------------------|---|---|---|
+| runtime_vi_s vs. world_size       |![](./rep/gen/img/hpcclassa/normal/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_world_size_runtime_vi_s.svg "Runtime")|
+| runtime_vi_s vs. com_interval     |![](./rep/gen/img/hpcclassa/normal/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_com_interval_runtime_vi_s.svg "Runtime")|
+| rss_max_rank0_mb vs. world_size |![](./rep/gen/img/hpcclassa/normal/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|
+| rss_sum_all_mb vs. world_size   |![](./rep/gen/img/hpcclassa/normal/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|
+| steps_total vs. world_size         |![](./rep/gen/img/hpcclassa/normal/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_world_size_steps_total.svg "Runtime")|
+| jdiff_maxnorm vs. world_size       |![](./rep/gen/img/hpcclassa/normal/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|
+| jdiff_maxnorm vs. com_interval       |![](./rep/gen/img/hpcclassa/normal/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassb/normal/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/hpcclassmixed/normal/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|
+
+#### Target plots: nuc, rpi, local
+| Target:                     |NUC|RPi|Local|
+|-----------------------------|---|---|---|
+| runtime_vi_s vs. world_size       |![](./rep/gen/img/nuc/normal/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_world_size_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_world_size_runtime_vi_s.svg "Runtime")|
+| runtime_vi_s vs. com_interval     |![](./rep/gen/img/nuc/normal/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_com_interval_runtime_vi_s.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_com_interval_runtime_vi_s.svg "Runtime")|
+| rss_max_rank0_mb vs. world_size |![](./rep/gen/img/nuc/normal/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_world_size_rss_max_rank0_mb.svg "Runtime")|
+| rss_sum_all_mb vs. world_size   |![](./rep/gen/img/nuc/normal/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_world_size_rss_sum_all_mb.svg "Runtime")|
+| steps_total vs. world_size         |![](./rep/gen/img/nuc/normal/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_world_size_steps_total.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_world_size_steps_total.svg "Runtime")|
+| jdiff_maxnorm vs. world_size       |![](./rep/gen/img/nuc/normal/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_world_size_jdiff_maxnorm.svg "Runtime")|
+| jdiff_maxnorm vs. com_interval       |![](./rep/gen/img/nuc/normal/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/rpi/normal/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|![](./rep/gen/img/local/normal/boxplot_com_interval_jdiff_maxnorm.svg "Runtime")|

@@ -1,6 +1,0 @@
-datetime,target,configuration,data_set,schema,world_size,com_interval,runtime_ms,runtime_vi_ms,rss_max_rank0_kb,rss_sum_all_kb,rss_min_all_kb,rss_max_all_kb,steps_total,eps_global,jdiff_maxnorm,jdiff_l2norm,jdiff_mse
-2022-01-22_20:46:10,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7958,5620,33684,133456,33088,33684,264,0.000000,0.003906,0.177200,0.000000
-2022-01-22_20:46:19,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7993,5705,33104,133096,33036,33596,264,0.000000,0.003906,0.177200,0.000000
-2022-01-22_20:46:33,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7897,5635,33296,133400,33068,33584,264,0.000000,0.003906,0.177200,0.000000
-2022-01-22_20:46:42,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7922,5659,33292,133196,33068,33624,264,0.000000,0.003906,0.177200,0.000000
-2022-01-22_20:46:57,nuc,../automation/jobs/nuc/default.yaml,/data/data_small/,MpiViSchema01,4,1,7945,5658,33608,133652,33232,33608,264,0.000000,0.003906,0.177200,0.000000

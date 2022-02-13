@@ -36,5 +36,4 @@
 *.vrb
 *.xdy
 
-report.pdf
-
+/gen/**/**/*.pdf

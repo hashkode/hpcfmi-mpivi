@@ -1,2 +1,484 @@
-\addchap{Appendix}
-\label{sec:Appendix}
+\label{apx:a}
+\section{Gprahiken, Benchmark}
+\label{sec:benchmark}
+
+\subsection{Benchmak Datensatz small}
+
+Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz small:
+
+\begin{itemize}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 1/2~\autoref{fig:benchmarkHpcNormal1}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 1/2~\autoref{fig:benchmarkDivNormal1}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 2/2~\autoref{fig:benchmarkHpcNormal2}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 2/2~\autoref{fig:benchmarkDivNormal2}
+\end{itemize}
+
+\begin{figure*}
+\centering
+    \subfloat[HPC class A, runtime vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_world_size_runtime_vi_s.pdf}
+    	   \label{fig:hpcAworldTimesmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B, runtime vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_world_size_runtime_vi_s.pdf}
+     	  \label{fig:hpcBworldTimesmall}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed, runtime vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_runtime_vi_s.pdf}
+    	   \label{fig:hpcMixedworldTimesmall}
+    	}\\
+    \subfloat[HPC class A runtime vs. com\_interval]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_com_interval_runtime_vi_s.pdf}
+    	   \label{fig:hpcAcomTimesmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B runtime vs. com\_interval]{
+    	\centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_com_interval_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed runtime vs. com\_interval]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_com_interval_runtime_vi_s.pdf}
+    	 \label{fig:hpcMixedcomTimesmall}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A max rss rank\_0 vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	   \label{fig:hpcAmaxRSSsmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B max rss rank\_0 vs. world\_size]{
+    	\centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_world_size_rss_max_rank0_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed max rss rank\_0 vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A rss-sum vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_world_size_rss_sum_all_mb.pdf}
+    	   \label{fig:hpcAsumRSSsmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B rss-sum vs. world\_size]{
+    	\centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_world_size_rss_sum_all_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed rss-sum vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_rss_sum_all_mb.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 1/2}
+	\label{fig:benchmarkHpcSmall1}
+\end{figure*}
+
+\begin{figure*}
+\centering
+    \subfloat[NUC, runtime vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_world_size_runtime_vi_s.pdf}
+    	   \label{fig:NUCworldTimesmall}
+    	\hspace{0pt}}
+    \subfloat[RPi, runtime vs. world\_size]{
+    	\centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_world_size_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local, runtime vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_runtime_vi_s.pdf}
+    	}\\
+    \subfloat[NUC runtime vs. com\_interval]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_com_interval_runtime_vi_s.pdf}
+    	   \label{fig:NUCcomTimesmall}
+    	\hspace{0pt}}
+    \subfloat[RPi runtime vs. com\_interval]{
+    	\centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_com_interval_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local runtime vs. com\_interval]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_com_interval_runtime_vi_s.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC max rss rank\_0 vs. world\_size]{
+    	 \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	   \label{fig:NUCmaxRSSsmall}
+    	\hspace{0pt}}
+    \subfloat[RPi max rss rank\_0 vs. world\_size]{
+    	 \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_world_size_rss_max_rank0_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local max rss rank\_0 vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC rss-sum vs. world\_size]{
+    	 \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_world_size_rss_sum_all_mb.pdf}
+    	   \label{fig:NUCsumRSSsmall}
+    	\hspace{0pt}}
+    \subfloat[RPi rss-sum vs. world\_size]{
+    	\centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_world_size_rss_sum_all_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local rss-sum vs. world\_size]{
+    	\centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_rss_sum_all_mb.pdf}
+    	   \label{fig:LocalsumRSSsmall}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 1/2}
+	\label{fig:benchmarkDivSmall1}
+\end{figure*}
+
+\begin{figure*}
+\centering
+    \subfloat[HPC class A, Iterations vs. world\_size]{
+    	 \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_world_size_steps_total.pdf}
+    	   \label{fig:hpcAworldStepssmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B, Iterations vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_world_size_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_com_interval_steps_total.pdf}
+    	   \label{fig:hpcAcomStepssmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B Iterations vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_com_interval_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_com_interval_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}
+    \subfloat[HPC class B J-diff maxnorm vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_world_size_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/small/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	   \label{fig:hpcAcomJdiffssmall}
+    	\hspace{0pt}}
+    \subfloat[HPC class B J-diff maxnorm vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/small/boxplot_com_interval_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/small/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <small>, Teil 2/2}
+	\label{fig:benchmarkHpcSmall2}
+\end{figure*}
+
+\begin{figure*}
+\centering
+    \subfloat[NUC, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_world_size_steps_total.pdf}
+    	  \label{fig:NUCStepWorldSizesmall}
+    	\hspace{0pt}}
+    \subfloat[RPi, Iterations vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_world_size_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_com_interval_steps_total.pdf}
+    	   \label{fig:NUCIterationWorldSizesmall}
+    	\hspace{0pt}}
+    \subfloat[RPi Iterations vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_com_interval_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_com_interval_steps_total.pdf}
+    	}\\
+    \subfloat[NUC J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_world_size_jdiff_maxnorm.pdf}
+    	   \label{fig:NucWsJdiffssmall}
+    	\hspace{0pt}}
+    \subfloat[RPi J-diff maxnorm vs. world\_size]{	
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_world_size_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/small/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	   \label{fig:NuccomJdiffssmall}
+    	\hspace{0pt}}
+    \subfloat[RPi J-diff maxnorm vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/small/boxplot_com_interval_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/small/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <small>, Teil 2/2}
+	\label{fig:benchmarkDivSmall2}
+\end{figure*}
+
+\subsection{Benchmark Datensatz normal}
+
+Die nachfolgenden Graphiken zeigen die Ergebnisse der Benchmarks für den Datensatz normal:
+
+\begin{itemize}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 1/2~\autoref{fig:benchmarkHpcSmall1}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 1/2~\autoref{fig:benchmarkDivSmall1}
+	\item Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 2/2~\autoref{fig:benchmarkHpcSmall2}
+	\item Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 2/2~\autoref{fig:benchmarkDivSmall2}
+\end{itemize}
+
+\begin{figure*}
+\centering
+    \subfloat[HPC class A, runtime vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_world_size_runtime_vi_s.pdf}
+    	   \label{fig:hpcAworldTimenormal}
+    	\hspace{0pt}}
+    \subfloat[HPC class B, runtime vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_world_size_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed, runtime vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_runtime_vi_s.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A runtime vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_com_interval_runtime_vi_s.pdf}
+    	   \label{fig:hpcAcomTimenormal}
+    	\hspace{0pt}}
+    \subfloat[HPC class B runtime vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_com_interval_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed runtime vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_com_interval_runtime_vi_s.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A max rss rank\_0 vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	   \label{fig:hpcAmaxRSSnormal}
+    	\hspace{0pt}}
+    \subfloat[HPC class B max rss rank\_0 vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_world_size_rss_max_rank0_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed max rss rank\_0 vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A rss-sum vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_world_size_rss_sum_all_mb.pdf}
+    	   \label{fig:hpcAsumRSSnormal}
+    	\hspace{0pt}}
+    \subfloat[HPC class B rss-sum vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_world_size_rss_sum_all_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed rss-sum vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_rss_sum_all_mb.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 1/2}
+	\label{fig:benchmarkHpcNormal1}
+\end{figure*}
+
+\begin{figure*}
+\centering
+    \subfloat[NUC, runtime vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_world_size_runtime_vi_s.pdf}
+    	   \label{fig:NUCworldTimenormal}
+    	\hspace{0pt}}
+    \subfloat[RPi, runtime vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_world_size_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local, runtime vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_runtime_vi_s.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC runtime vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_com_interval_runtime_vi_s.pdf}
+    	   \label{fig:NUCcomTimenormal}
+    	\hspace{0pt}}
+    \subfloat[RPi runtime vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_com_interval_runtime_vi_s.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local runtime vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_com_interval_runtime_vi_s.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC max rss rank\_0 vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	   \label{fig:NUCmaxRSSnormal}
+    	\hspace{0pt}}
+    \subfloat[RPi max rss rank\_0 vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_world_size_rss_max_rank0_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local max rss rank\_0 vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_rss_max_rank0_mb.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC rss-sum vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_world_size_rss_sum_all_mb.pdf}
+    	   \label{fig:NUCsumRSSnormal}
+    	\hspace{0pt}}
+    \subfloat[RPi rss-sum vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_world_size_rss_sum_all_mb.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local rss-sum vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_rss_sum_all_mb.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 1/2}
+	\label{fig:benchmarkDivNormal1}
+\end{figure*}
+
+\begin{figure*}
+\centering
+    \subfloat[HPC class A, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_world_size_steps_total.pdf}
+    	\hspace{0pt}}
+    \subfloat[HPC class B, Iterations vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_world_size_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_com_interval_steps_total.pdf}
+    	\hspace{0pt}}
+    \subfloat[HPC class B Iterations vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_com_interval_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_com_interval_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}
+    \subfloat[HPC class B J-diff maxnorm vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_world_size_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[HPC class A J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassa/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}
+    \subfloat[HPC class B J-diff maxnorm vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassb/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[HPC class mixed J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/hpcclassmixed/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen HPC Cluster mit dem Datensatz <normal>, Teil 2/2}
+	\label{fig:benchmarkHpcNormal2}
+\end{figure*}
+
+\begin{figure*}
+\centering
+    \subfloat[NUC, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_world_size_steps_total.pdf}
+    	\hspace{0pt}}
+    \subfloat[RPi, Iterations vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_world_size_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local, Iterations vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_com_interval_steps_total.pdf}
+    	\hspace{0pt}}
+    \subfloat[RPi Iterations vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_com_interval_steps_total.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local Iterations vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_com_interval_steps_total.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}
+    \subfloat[RPi J-diff maxnorm vs. world\_size]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_world_size_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local J-diff maxnorm vs. world\_size]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_world_size_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \subfloat[NUC J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/nuc/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}
+    \subfloat[RPi J-diff maxnorm vs. com\_interval]{
+     	   \centering
+     	   \includegraphics[width=0.33\textwidth]{./gen/img/rpi/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
+     	\hspace{0pt}}
+    \subfloat[Local J-diff maxnorm vs. com\_interval]{
+    	   \centering
+    	   \includegraphics[width=0.33\textwidth]{./gen/img/local/normal/boxplot_com_interval_jdiff_maxnorm.pdf}
+    	\hspace{0pt}}\\
+    \caption{Vergleich der Ausführungsumgebungen NUC, RPi und HPC lokal mit dem Datensatz <normal>, Teil 2/2}
+	\label{fig:benchmarkDivNormal2}
+\end{figure*}
